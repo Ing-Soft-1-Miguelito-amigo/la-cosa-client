@@ -1,29 +1,22 @@
-import { useState } from 'preact/hooks'
-import preactLogo from '/cosa.svg'
-import './app.css'
+import { Route, Router, Routes } from 'react-router-dom'
+import HomeRouter from './routes/HomeRouter'
+import GameCreationFormRouter from './routes/GameCreationFormRouter'
+import GameJoinFormRouter from './routes/GameJoinFormRouter'
+import GameRouter from './routes/GameRouter'
+import EndOfGameRouter from './routes/EndOfGameRouter'
 
-export function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo cosa" alt="Preact logo" />
-        </a>
-      </div>
-      <h1>THE THING</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
-    </>
+    <div>
+      <Routes>
+        <Route path="/home" element={<HomeRouter></HomeRouter>}></Route>
+        <Route path="/game-creation-form" element={<GameCreationFormRouter></GameCreationFormRouter>}></Route>
+        <Route path="/game-join-form" element={<GameJoinFormRouter></GameJoinFormRouter>}></Route>
+        <Route path="/game" element={<GameRouter></GameRouter>}></Route>
+        <Route path="/end-of-game" element={<EndOfGameRouter></EndOfGameRouter>}></Route>
+      </Routes>
+    </div>
   )
 }
+
+export default App;
