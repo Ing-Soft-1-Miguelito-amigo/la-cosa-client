@@ -1,14 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import Hand from './hand/hand';
+import { gameId, playerId } from '../../mocks/gameData'
 
 const Game = () => {
     const navigate = useNavigate()
     const gotoEndOfGame = () => {
         navigate("/end-of-game")
     }
-
-    const gameId = 1; 
-    const playerId = 1;
 
     return (
         <>

@@ -2,21 +2,7 @@ import Card from '../card/card';
 import { useState, useEffect } from 'react';
 import style from '../hand/hand.module.css';
 import { httpRequest } from '../../../services/HttpService';
-
-const cardsFromBack = [
-    {
-    card_id: 1, 
-    },
-    {
-    card_id: 2
-    },
-    {
-    card_id: 3
-    },
-    {
-    card_id: 4
-    }
-]
+import cardsFromBack from '../../../mocks/cardsData';
 
 const Hand = (
     gameId, 

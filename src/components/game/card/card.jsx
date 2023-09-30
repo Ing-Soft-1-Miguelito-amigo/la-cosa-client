@@ -1,5 +1,5 @@
 import style from'../card/card.module.css'
-import lanzallamas from '/public/img/lanzallamas.jpg';
+import lanzallamas from '../../../mocks/imgImports';
 
 const Card = ({
     card_id
@@ -7,7 +7,7 @@ const Card = ({
     
     return (
         <div>
-            <img src={lanzallamas} alt='fueguito' className={style.card}/>
+            <img src={lanzallamas} alt='lanzallamasImg' className={style.card}/>
         </div>
     )}
 
