@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Table from "./table/Table";
 
 const Game = () => {
     const navigate = useNavigate()
@@ -8,8 +9,13 @@ const Game = () => {
 
     return (
         <div className="game">
-            <h2>Esta es la partida</h2>
-            <button onClick={ gotoEndOfGame }>Ir a pantalla de finalizcion de partida</button>
+            <div>
+                <h2>Esta es la partida</h2>
+                <button onClick={ gotoEndOfGame }>Ir a pantalla de finalizcion de partida</button>
+            </div>
+            <div>
+                <Table></Table>
+            </div>
         </div>
     )
 }
