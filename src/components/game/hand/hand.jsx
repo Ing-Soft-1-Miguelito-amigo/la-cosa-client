@@ -13,7 +13,7 @@ const Hand = (
     useEffect(() => {
         const fetchHand = async () => {
             try {
-            const data = await httpRequest({ method: 'GET', service: '/game/' + gameId + '/player/'+ playerId});
+            const data = await httpRequest({ method: 'GET', service: 'game/' + gameId + '/player/'+ playerId});
             setHand(data.my_cards);
             } catch (error) {
             console.log(error);
