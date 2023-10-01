@@ -1,0 +1,21 @@
+import { httpRequest } from "../services/HttpService";
+
+//Check if name has quotation marks
+export const valueHasQuotationMarks = (name) => {
+  const nameTrimmed = name.trim();
+  return nameTrimmed.includes('"');
+};
+
+//Make the request to the server
+export const createGame = async (data) => {
+  try {
+    const response = await httpRequest({
+      method: "POST",
+      service: "/game/create",
+      payload: data,
+    });
+    return response;
+  } catch (error) {
+    return null; 
+  }
+};
