@@ -31,7 +31,7 @@ async function httpRequest({ method, service, headers, payload }) {
         if (response.ok) {
           return resolve(response.json);
         }
-        return reject(response.json);
+        return reject(response);
       })
       .catch((error) => reject(error));
   });

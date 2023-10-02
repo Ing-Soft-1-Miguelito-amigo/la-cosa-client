@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import {
   valueHasQuotationMarks,
   createGame,
@@ -8,9 +8,9 @@ import "./gameCreationForm.module.css";
 import { useNavigate } from "react-router-dom";
 
 const GameCreationForm = () => {
- const navigate = useNavigate();
-
+  const navigate = useNavigate();
   const [errorData, setErrorData] = useState(false);
+  const [message, setMessage] = useState("");
 
   const {
     register,
@@ -25,12 +25,17 @@ const GameCreationForm = () => {
 
   const onSubmit = async (data) => {
     const response = await createGame(data);
-
-    if (response === null) {
+    if (response.status === 201){
+      setErrorData(false);
+      navigate("/game");
+    }
+    else if (response.status === 422) {
+      console.log("responsess",response);
+      setMessage(response.json.detail);
       setErrorData(true);
     } else {
-      setErrorData(false);
-     navigate("/game");
+      setMessage("Error al crear la partida");
+      setErrorData(true);
     }
   };
 
@@ -38,7 +43,7 @@ const GameCreationForm = () => {
     <>
       <form className="creationForm" onSubmit={handleSubmit(onSubmit)}>
         {/*Host Name*/}
-        <label className="label2" htmlFor="hostName">
+        <label  htmlFor="hostName">
           {" "}
           &nbsp;&nbsp;Nombre Host
         </label>
@@ -60,7 +65,7 @@ const GameCreationForm = () => {
         {errors?.host?.name && <span>{errors.host.name.message}</span>}
 
         {/*Game Name*/}
-        <label className="label1" htmlFor="gameName">
+        <label  htmlFor="gameName">
           Nombre Partida
         </label>
         <input
@@ -80,7 +85,7 @@ const GameCreationForm = () => {
         />
         {errors?.game?.name && <span>{errors.game.name.message}</span>}
 
-        {errorData && <span role="alert">Partida existente</span>}
+        {errorData && <span role="alert">{message}</span>}
 
         <button type="submit">&nbsp;Crear Partida&nbsp;</button>
       </form>
