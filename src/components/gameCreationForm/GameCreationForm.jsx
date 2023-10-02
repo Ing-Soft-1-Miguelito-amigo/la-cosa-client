@@ -4,7 +4,8 @@ import {
   valueHasQuotationMarks,
   createGame,
 } from "../../containers/FormValidation.js";
-import "./gameCreationForm.module.css";
+import styles from "./gameCreationForm.module.css";
+import FunctionButton from "../FunctionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
 
 const GameCreationForm = () => {
@@ -25,13 +26,11 @@ const GameCreationForm = () => {
 
   const onSubmit = async (data) => {
     const response = await createGame(data);
-    if (response.status === 201){
+    if (response.status === 201) {
       setErrorData(false);
       navigate("/game");
-    }
-    else if (response.status === 422) {
-      console.log("responsess",response);
-      setMessage(response.json.detail);
+    } else if (response.status === 422) {
+      setMessage("Nombre existente");
       setErrorData(true);
     } else {
       setMessage("Error al crear la partida");
@@ -40,16 +39,17 @@ const GameCreationForm = () => {
   };
 
   return (
-    <>
-      <form className="creationForm" onSubmit={handleSubmit(onSubmit)}>
+    <div className={styles.body}>
+      <form className={styles.creationForm}>
         {/*Host Name*/}
-        <label  htmlFor="hostName">
+        <label className={styles.labelCreation} htmlFor="hostName">
           {" "}
           &nbsp;&nbsp;Nombre Host
         </label>
         <input
           type="text"
           id="hostName"
+          className={styles.inputCreation}
           {...register("host.name", {
             required: {
               value: true,
@@ -57,20 +57,25 @@ const GameCreationForm = () => {
             },
             validate: (value) => {
               if (valueHasQuotationMarks(value))
-                return "Nombre de host no puede contener comillas";
+                return "No puede contener comillas";
               else return true;
             },
           })}
         />
-        {errors?.host?.name && <span>{errors.host.name.message}</span>}
+        {errors?.host?.name && (
+          <span className={styles.spanCreation}>
+            {errors.host.name.message}
+          </span>
+        )}
 
         {/*Game Name*/}
-        <label  htmlFor="gameName">
+        <label className={styles.labelCreation} htmlFor="gameName">
           Nombre Partida
         </label>
         <input
           type="text"
           id="gameName"
+          className={styles.inputCreation}
           {...register("game.name", {
             required: {
               value: true,
@@ -78,18 +83,31 @@ const GameCreationForm = () => {
             },
             validate: (value) => {
               if (valueHasQuotationMarks(value))
-                return "Nombre de la partida no puede contener comillas";
+                return "Partida no puede contener comillas";
               else return true;
             },
           })}
         />
-        {errors?.game?.name && <span>{errors.game.name.message}</span>}
+        {errors?.game?.name && (
+          <span className={styles.spanCreation}>
+            {errors.game.name.message}
+          </span>
+        )}
 
-        {errorData && <span role="alert">{message}</span>}
+        {errorData && (
+          <span className={styles.spanCreation} role="alert">
+            {message}
+          </span>
+        )}
 
-        <button type="submit">&nbsp;Crear Partida&nbsp;</button>
+        <div className={styles.button}>
+          <FunctionButton
+            text={"Crear Partida"}
+            onClick={handleSubmit(onSubmit)}
+          />
+        </div>
       </form>
-    </>
+    </div>
   );
 };
 

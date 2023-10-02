@@ -29,7 +29,7 @@ async function httpRequest({ method, service, headers, payload }) {
       .then(parseJSONResponse)
       .then((response) => {
         if (response.ok) {
-          return resolve(response.json);
+          return resolve(response);
         }
         return reject(response);
       })

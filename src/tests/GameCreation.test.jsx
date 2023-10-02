@@ -50,10 +50,10 @@ describe("GameCreationForm", () => {
     await userEvent.click(button);
 
     expect(
-      screen.getByText("Nombre de la partida no puede contener comillas")
+      screen.getByText("No puede contener comillas")
     ).toBeDefined();
     expect(
-      screen.getByText("Nombre de host no puede contener comillas")
+      screen.getByText("Partida no puede contener comillas")
     ).toBeDefined();
   });
 
