@@ -4,10 +4,10 @@ import style from '../hand/hand.module.css';
 import { httpRequest } from '../../../services/HttpService';
 import cardsFromBack from '../../../mocks/cardsData';
 
-const Hand = (
+const Hand = ({ 
     gameId, 
-    playerId
-    ) => {
+    playerId 
+    }) => {
   
     const [hand, setHand] = useState([]);
     useEffect(() => {
