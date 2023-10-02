@@ -1,4 +1,4 @@
-.container {
+.cardGroup {
     display: flex;
     justify-content: center; 
     position: fixed;
@@ -7,3 +7,8 @@
     transform: translate(-50%, -50%);
 }
 
+.cornerCard {
+    position: absolute;
+    right: 245px; /* Ajusta la distancia desde la derecha */
+    top: 325px; /* Ajusta la distancia desde arriba para superponerla sobre las otras cartas */
+  }
