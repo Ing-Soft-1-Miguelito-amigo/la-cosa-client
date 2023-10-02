@@ -4,7 +4,8 @@ import {
   valueHasQuotationMarks,
   JoinGame,
 } from "../../containers/FormValidation.js";
-import "./gameJoinForm.module.css";
+import styles from "./gameJoinForm.module.css";
+import FunctionButton from "../FunctionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
 
 const GameJoinForm = () => {
@@ -32,7 +33,7 @@ const GameJoinForm = () => {
       setMessage("Partida no encontrada");
       setErrorData(true);
     } else if (response.status === 422) {
-      setMessage("Nombre existente o Partida Completa");
+      setMessage('Nombre existente/Partida Completa');
       setErrorData(true);
     } else {
       setMessage("Error al unirse a la partida");
@@ -41,15 +42,16 @@ const GameJoinForm = () => {
   };
 
   return (
-    <>
-      <form className="creationForm" onSubmit={handleSubmit(onSubmit)}>
+    <div className={styles.body}>
+      <form>
         {/*Player Name*/}
-        <label id="labelJoin" htmlFor="playerName">
+        <label className={styles.labelJoin} htmlFor="playerName">
           Nombre Jugador
         </label>
         <input
           type="text"
           id="playerName"
+          className={styles.inputJoin}
           {...register("player_name", {
             required: {
               value: true,
@@ -62,12 +64,14 @@ const GameJoinForm = () => {
             },
           })}
         />
-        {errors?.player_name && <span id="spanInput">{errors.player_name.message}</span>}
-        {errorData && <span id="spanInput">{message}</span>}
+        {errors?.player_name && <span className={styles.spanJoin}>{errors.player_name.message}</span>}
+        {errorData && <span className={styles.spanJoin}>{message}</span>}
 
-        <button id="buttonJoin" type="submit">&nbsp;Unirse&nbsp;</button>
+         <div className={styles.buttonJoin}>
+            <FunctionButton text={"Unirse"} onClick={handleSubmit(onSubmit)} />
+         </div> 
       </form>
-    </>
+    </div>
   );
 };
 

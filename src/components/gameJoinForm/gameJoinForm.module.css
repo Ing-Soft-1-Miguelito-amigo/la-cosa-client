@@ -1,4 +1,4 @@
-body {
+.body {
     background-color: rgb(13, 22, 18);
     display: flex;
     justify-content: center;
@@ -8,17 +8,17 @@ body {
 
 }
 
-#labelJoin{
+.labelJoin{
     display: flex;
     display: block;
-    margin-left: 10%;
+    margin-left: 23%;
     margin-top: 10%;    
     font-size: 180%;
     color: #ffffff;
     height: 20%;
 }
 
-#playerName{
+.inputJoin{
     display: flex;
     display: block;
     margin-left: 15%;
@@ -31,24 +31,17 @@ body {
     background-color: #942d29;
 }
 
-#spanJoin {
+.spanJoin {
     display: flex;
     display: block;
     color: rgb(181, 35, 35);
     font-size: 100%;
     margin-bottom: 10%;
-    margin-left: 25%;
+    margin-left: 15%;
 }
 
-#buttonJoin{
-    display: flex;
-    display: block;
-    justify-content: center;
-    align-items: center;
-    margin-left: 20%;
+.buttonJoin{
     margin-top: 7%;
-    font-family: 'Creepster', cursive;
-    font-size: 140%;
-    border-style: double;
-    border-radius: 10px;
+    margin-left: 20%;
+    margin-right: 20%;
 }
