@@ -12,7 +12,7 @@ const App = () => {
         <Route path="/home" element={<HomeRouter></HomeRouter>}></Route>
         <Route path="/game-creation-form" element={<GameCreationFormRouter></GameCreationFormRouter>}></Route>
         <Route path="/game-join-form" element={<GameJoinFormRouter></GameJoinFormRouter>}></Route>
-        <Route path="/game" element={<GameRouter></GameRouter>}></Route>
+        <Route path="/game/:id" element={<GameRouter></GameRouter>}></Route>
         <Route path="/end-of-game" element={<EndOfGameRouter></EndOfGameRouter>}></Route>
       </Routes>
     </div>

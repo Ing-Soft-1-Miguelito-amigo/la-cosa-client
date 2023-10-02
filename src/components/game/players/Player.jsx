@@ -1,28 +1,19 @@
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import styles from "./player.module.css";
 
-const Player = ({ name, tablePosition }) => {
-    const [isAlive, setIsAlive] = useState(true)
-    const [turn, setTurn] = useState(false)
+const Player = ({ name, apiData }) => {
+    const playerData = apiData.players.find((player) => player.name === name);
+    const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
+    const hasTurn = useMemo(() => apiData.turn_owner === playerData.table_position, [apiData]);
 
-    useEffect(() =>{
-        // retrieve api data
-        const apiData = {   gameId: 1,
-                            name: "partidita",
-                            state: 0,
-                            turnOwner: 2,
-                            players: [  {name: "augusto", position: 1, alive: true, quarantine: false},
-                                        {name: "corazondemiel", position: 2, alive: true, quarantine: false}]
-                        };
-        // filter api data per player (?
-        const playerData = {name: "augusto", position: 1, alive: true, quarantine: false, turnOwner: 2}
-        setIsAlive(playerData.alive)
-        setTurn(playerData.turnOwner == tablePosition)
-    }, [])
+    const style = {
+        backgroundColor: isAlive ? "rgb(68, 204, 159)": "rgb(100, 100, 100)",
+        borderColor: hasTurn ? "rgb(255, 127, 80)" : "rgb(0, 0, 0)",
+    };
 
     return (
-        <div className={styles.playerStyle}>
-            <span className={styles.playerText}>{tablePosition}</span>
+        <div className={styles.playerStyle} style={style}>
+            <span className={styles.playerText}>{name}</span>
         </div>
     )
 }

@@ -1,38 +1,71 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./game.module.css";
 import Player from "./players/Player";
+import { httpRequest } from "../../services/HttpService";
+import Lobby from "./lobby/Lobby";
 
-const players = [
-    { id: 1, name: "juan", alive: true, quarantine: false, tablePosition: 1 },
-    { id: 2, name: "pedro", alive: true, quarantine: false, tablePosition: 2 },
-    { id: 3, name: "pablo", alive: true, quarantine: false, tablePosition: 3 },
-    { id: 4, name: "roman", alive: true, quarantine: false, tablePosition: 4 },
-    { id: 5, name: "roman2", alive: true, quarantine: false, tablePosition: 5 },
-    { id: 6, name: "roman3", alive: true, quarantine: false, tablePosition: 6 },
-    { id: 7, name: "roman4", alive: true, quarantine: false, tablePosition: 7 },
-];  
 
-const Game = () => {
-    const navigate = useNavigate()
-    const gotoEndOfGame = () => {
-        navigate("/end-of-game")
-    }
+const Game = (  ) => {
+    const gameId = 1;
+   
+    
+    const [apiData, setApiData] = useState({});
+    const [players, setPlayers] = useState([]);
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const apiData = await httpRequest({ method: 'GET', service: 'game/' + gameId });
+                setApiData(apiData);
+                setPlayers(apiData.players);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchData();
+    }, []);
 
+    const gameStyle = `
+        ${apiData.state === 0 ? "lobby" : "game"}
+    `;
+    
+    useEffect(() => {
+        if (apiData.state === 2) {
+            const navigate = useNavigate();
+            navigate("/end-of-game");
+        }
+    }, [apiData]);
+
+    // sorts players array by table_position in increasing order
+    players.sort((a, b) => a.table_position - b.table_position);        
+    
     return (
-        <div className="game">
+        <div className={gameStyle}>
             <div>
-                <h2>Esta es la partida</h2>
-                <button onClick={ gotoEndOfGame }>Ir a pantalla de finalizcion de partida</button>
-            </div>
-            <div className={styles.playersContainer}>
-                {players.map((player) => {
-                    return (
-                            <Player
-                                key={player.id} 
-                                name={player.name} 
-                            />
-                    )
-                })}
+                {apiData.state === 0 ? (
+                    <Lobby apiData={apiData}></Lobby>
+                ) : (
+                    <>  
+                        <div>
+                            <span>La Cosa</span>
+                        </div>
+                        <div>
+                            <span>Jugando en {apiData.name}</span>
+                        </div>
+                        <div className={styles.playersContainer}>
+                            {players.map((player, index) => {
+                                return (
+                                        <Player
+                                            key={index} 
+                                            name={player.name}
+                                            apiData={apiData}
+                                        />
+                                )
+                            })}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     )
