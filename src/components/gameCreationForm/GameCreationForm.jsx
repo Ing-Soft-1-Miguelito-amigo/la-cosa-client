@@ -7,6 +7,7 @@ import {
 import styles from "./gameCreationForm.module.css";
 import FunctionButton from "../FunctionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
+import Game from "../game/Game";
 
 const GameCreationForm = () => {
   const navigate = useNavigate();
@@ -28,8 +29,9 @@ const GameCreationForm = () => {
     const response = await createGame(data);
     if (response.status === 201) {
       setErrorData(false);
-      navigate("/game");
+      navigate(`/game/${response.json.game_id}`);
     } else if (response.status === 422) {
+      console.log
       setMessage("Nombre existente");
       setErrorData(true);
     } else {

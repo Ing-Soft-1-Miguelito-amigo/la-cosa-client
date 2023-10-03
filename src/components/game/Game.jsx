@@ -1,26 +1,24 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./game.module.css";
 import Player from "./players/Player";
 import { httpRequest } from "../../services/HttpService";
 import Lobby from "./lobby/Lobby";
 import Hand from './hand/hand';
-import { gameId, playerId } from '../../mocks/gameData'
+import { playerId } from '../../mocks/gameData'
 
 
-const Game = (  ) => {
-    const gameId = 1;
-   
-    
+const Game = () => {
+    const {game_id} = useParams(); 
     const [apiData, setApiData] = useState({});
     const [players, setPlayers] = useState([]);
     
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const apiData = await httpRequest({ method: 'GET', service: 'game/' + gameId });
+                const apiData = await httpRequest({ method: 'GET', service: 'game/' + game_id });
                 setApiData(apiData);
-                setPlayers(apiData.players);
+                setPlayers(apiData.json.players);
             } catch (error) {
                 console.log(error);
             }
@@ -41,7 +39,7 @@ const Game = (  ) => {
 
     // sorts players array by table_position in increasing order
     players.sort((a, b) => a.table_position - b.table_position);        
-    
+
     return (
         <div className={gameStyle}>
             <div>
@@ -68,7 +66,7 @@ const Game = (  ) => {
                         </div>
                         <div>
                           <Hand
-                            gameId={gameId}
+                            gameId={game_id}
                             playerId={playerId}
                         />
                       </div>
