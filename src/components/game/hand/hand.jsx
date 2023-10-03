@@ -9,7 +9,7 @@ const Hand = ({
     playerId
     }) => {
  
-    const [stealCard, setStealCard] = useState([]);
+    {/*const [stealCard, setStealCard] = useState([]);
     useEffect(() => {
         const fetchStealCard = async () => {
             try {
@@ -22,7 +22,7 @@ const Hand = ({
         fetchStealCard();
         }
     , []);  
-
+    */}
     
     const [hand, setHand] = useState([]);
     useEffect(() => {
@@ -51,7 +51,7 @@ const Hand = ({
         {/* Renderizar las primeras cuatro cartas */}
         <div className={style.cardGroup}>
           {hand.map((card, i) => (
-            <Card key={i} card_id={card.card_id} />
+            <Card key={i} card_id={card.card_id} code={card.code}/>
           ))}
         </div>
         {/* Renderizar la quinta carta 
