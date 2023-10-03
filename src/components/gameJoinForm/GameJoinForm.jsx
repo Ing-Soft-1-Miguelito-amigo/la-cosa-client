@@ -19,16 +19,20 @@ const GameJoinForm = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      game_id: 1,
-      player_name: "",
+      gameId: 1,      // tmp
+      playerName: "",
     },
   });
 
   const onSubmit = async (data) => {
     const response = await JoinGame(data);
+    const responseData = {
+      playerId: response.json.player_id,
+      gameId: response.json.game_id,      
+    }
     if (response.status === 200) {
       setErrorData(false);
-      navigate('/game/1');
+      navigate(`/game/${gameId}`, { state: responseData });
     } else if (response.status === 404) {
       setMessage("Partida no encontrada");
       setErrorData(true);
@@ -52,7 +56,7 @@ const GameJoinForm = () => {
           type="text"
           id="playerName"
           className={styles.inputJoin}
-          {...register("player_name", {
+          {...register("playerName", {
             required: {
               value: true,
               message: "Nombre requerido",
@@ -64,7 +68,7 @@ const GameJoinForm = () => {
             },
           })}
         />
-        {errors?.player_name && <span className={styles.spanJoin}>{errors.player_name.message}</span>}
+        {errors?.playerName && <span className={styles.spanJoin}>{errors.playerName.message}</span>}
         {errorData && <span className={styles.spanJoin}>{message}</span>}
 
          <div className={styles.buttonJoin}>

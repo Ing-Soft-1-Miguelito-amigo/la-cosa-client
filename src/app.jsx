@@ -19,4 +19,6 @@ const App = () => {
   )
 }
 
+//<Route path="to/page(/:pathParam1)(/:pathParam2)" component={MyPage} />
+
 export default App;

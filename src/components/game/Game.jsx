@@ -1,23 +1,27 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styles from "./game.module.css";
 import Player from "./players/Player";
 import { httpRequest } from "../../services/HttpService";
 import Lobby from "./lobby/Lobby";
 import Hand from './hand/hand';
-import { playerId } from '../../mocks/gameData'
-
 
 const Game = () => {
-    const {game_id} = useParams(); 
+    const params = useLocation();
+    const gameId = params.state.gameId
+    const playerId = params.state.playerId
     const [apiData, setApiData] = useState({});
     const [players, setPlayers] = useState([]);
     
     useEffect(() => {
         const fetchData = async () => {
             try {
+<<<<<<< HEAD
                 const apiData = await httpRequest({ method: 'GET', service: 'game/' + game_id });
-                setApiData(apiData);
+=======
+                const apiData = await httpRequest({ method: 'GET', service: 'game/' + gameId });
+>>>>>>> a50e5e4 (Agregar pasaje de variables globales entre componentes)
+                setApiData(apiData.json);
                 setPlayers(apiData.json.players);
             } catch (error) {
                 console.log(error);
@@ -44,7 +48,7 @@ const Game = () => {
         <div className={gameStyle}>
             <div>
                 {apiData.state === 0 ? (
-                    <Lobby apiData={apiData}></Lobby>
+                    <Lobby players={players}></Lobby>
                 ) : (
                     <>  
                        <div>
@@ -66,7 +70,7 @@ const Game = () => {
                         </div>
                         <div>
                           <Hand
-                            gameId={game_id}
+                            gameId={gameId}
                             playerId={playerId}
                         />
                       </div>

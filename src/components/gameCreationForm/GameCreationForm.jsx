@@ -7,7 +7,6 @@ import {
 import styles from "./gameCreationForm.module.css";
 import FunctionButton from "../FunctionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
-import Game from "../game/Game";
 
 const GameCreationForm = () => {
   const navigate = useNavigate();
@@ -25,13 +24,17 @@ const GameCreationForm = () => {
     },
   });
 
+  
   const onSubmit = async (data) => {
     const response = await createGame(data);
+    const responseData = {
+      gameId: response.json.game_id,
+      playerId: response.json.player_id
+    };
     if (response.status === 201) {
       setErrorData(false);
-      navigate(`/game/${response.json.game_id}`);
+      navigate(`/game/${response.json.game_id}`, { state: responseData });
     } else if (response.status === 422) {
-      console.log
       setMessage("Nombre existente");
       setErrorData(true);
     } else {
