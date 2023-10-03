@@ -16,11 +16,7 @@ const Game = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-<<<<<<< HEAD
-                const apiData = await httpRequest({ method: 'GET', service: 'game/' + game_id });
-=======
                 const apiData = await httpRequest({ method: 'GET', service: 'game/' + gameId });
->>>>>>> a50e5e4 (Agregar pasaje de variables globales entre componentes)
                 setApiData(apiData.json);
                 setPlayers(apiData.json.players);
             } catch (error) {

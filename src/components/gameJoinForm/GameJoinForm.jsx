@@ -19,8 +19,8 @@ const GameJoinForm = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      gameId: 1,      // tmp
-      playerName: "",
+      game_id: 1,
+      player_name: "",
     },
   });
 
@@ -32,12 +32,12 @@ const GameJoinForm = () => {
     }
     if (response.status === 200) {
       setErrorData(false);
-      navigate(`/game/${gameId}`, { state: responseData });
+      navigate(`/game/${responseData.gameId}`, { state: responseData });
     } else if (response.status === 404) {
       setMessage("Partida no encontrada");
       setErrorData(true);
     } else if (response.status === 422) {
-      setMessage('Nombre existente/Partida Completa');
+      setMessage('Partida Empezada/Partida Completa');
       setErrorData(true);
     } else {
       setMessage("Error al unirse a la partida");
@@ -56,7 +56,7 @@ const GameJoinForm = () => {
           type="text"
           id="playerName"
           className={styles.inputJoin}
-          {...register("playerName", {
+          {...register("player_name", {
             required: {
               value: true,
               message: "Nombre requerido",
@@ -68,7 +68,7 @@ const GameJoinForm = () => {
             },
           })}
         />
-        {errors?.playerName && <span className={styles.spanJoin}>{errors.playerName.message}</span>}
+        {errors?.player_name && <span className={styles.spanJoin}>{errors.player_name.message}</span>}
         {errorData && <span className={styles.spanJoin}>{message}</span>}
 
          <div className={styles.buttonJoin}>

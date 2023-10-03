@@ -1,7 +1,6 @@
 import FunctionButton from "../../FunctionButton/FunctionButton";
 import { httpRequest } from "../../../services/HttpService";
 
-
 const Lobby = ({ 
     players
  }) => {
@@ -21,8 +20,8 @@ const Lobby = ({
             service: "game/start",
             payload: data,
         });
-        
-        return response;
+        if (response.status === 200) {
+            window.location.reload();}
     } catch (error) {
         return error; 
         }
