@@ -17,7 +17,7 @@ const Game = () => {
         const fetchData = async () => {
             try {
                 const apiData = await httpRequest({ method: 'GET', service: 'game/' + game_id });
-                setApiData(apiData);
+                setApiData(apiData.json);
                 setPlayers(apiData.json.players);
             } catch (error) {
                 console.log(error);

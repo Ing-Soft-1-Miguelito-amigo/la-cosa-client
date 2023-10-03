@@ -1,5 +1,5 @@
 import FunctionButton from "../../FunctionButton/FunctionButton";
-
+import { httpRequest } from "../../../services/HttpService";
 
 
 const Lobby = ({ 
@@ -7,7 +7,6 @@ const Lobby = ({
  }) => {
     
     const hostName = apiData.players.filter((player) => player.table_position === 1)[0].name;
-
 
     const data = {
         game_id: 1,
@@ -22,16 +21,13 @@ const Lobby = ({
             service: "game/start",
             payload: data,
         });
-        console.log("Iniciando partida");
+        
         return response;
     } catch (error) {
-        console.log("Iniciando partida");
         return error; 
         }
     };
 
-    
-    
     return (
         <div>
             <FunctionButton text={"Iniciar Partida" } onClick={startGame}/>
