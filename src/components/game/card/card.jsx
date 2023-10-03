@@ -1,15 +1,16 @@
-import style from'../card/card.module.css'
-import lanzallamas from '../../../mocks/imgImports';
+import style from '../card/card.module.css'
 
 const Card = ({
-    card_id
+    card_id,
+    code
 }) => {
-    
+
     return (
         <div>
-            <img src={lanzallamas} alt='lanzallamasImg' className={style.card}/>
+            <img src={`../../src/img/${code}.jpg`} alt='img' className={style.card}/>
         </div>
-    )}
+    )
+}
 
- 
 export default Card;
+
