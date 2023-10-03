@@ -28,7 +28,7 @@ const GameJoinForm = () => {
     const response = await JoinGame(data);
     if (response.status === 200) {
       setErrorData(false);
-      navigate("/game");
+      navigate('/game/1');
     } else if (response.status === 404) {
       setMessage("Partida no encontrada");
       setErrorData(true);

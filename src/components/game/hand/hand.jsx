@@ -13,11 +13,11 @@ const Hand = ({
     useEffect(() => {
         const fetchStealCard = async () => {
             try {
-            const data = await httpRequest({ method: 'PUT', service: 'game/steal', body: {game_id: gameId, player_id: playerId}});
+            const data = await httpRequest({ method: 'PUT', service: 'game/steal', payload: {game_id: gameId, player_id: playerId}});
             setStealCard(data.steal_card);
-            } catch (error) {
+          } catch (error) {
             console.log(error);
-            }
+          }
         }
         fetchStealCard();
         }
@@ -29,7 +29,7 @@ const Hand = ({
         const fetchHand = async () => {
             try {
             const data = await httpRequest({ method: 'GET', service: 'game/' + gameId + '/player/'+ playerId});
-            setHand(data.my_cards);
+            setHand(data.json.hand);
             } catch (error) {
             console.log(error);
             }
@@ -37,27 +37,28 @@ const Hand = ({
         fetchHand();
         }, []);
     
+    {/* 
     const [cards,setCards] = useState([]);
-    
     useEffect(()=>{
         setCards(cardsFromBack)
     },[]);
-
-
-    const stolenCard = cards[4];
+    
+    const stolenCard = cards[4];  
+  */}
 
     return (
       <div className={style.container}>
         {/* Renderizar las primeras cuatro cartas */}
         <div className={style.cardGroup}>
-          {cards.slice(0, 4).map((card, i) => (
+          {hand.map((card, i) => (
             <Card key={i} card_id={card.card_id} />
           ))}
         </div>
-        {/* Renderizar la quinta carta */}
+        {/* Renderizar la quinta carta 
         <div className={style.cornerCard}>
           {stolenCard && <Card card_id={stolenCard.card_id} />}
         </div>
+        */}
       </div>
     );
   };
