@@ -2,10 +2,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import GameJoinForm from "../components/gameJoinForm/GameJoinForm";
+import { BrowserRouter } from "react-router-dom";
 
 describe("GameJoinForm", () => {
   test("should render", async () => {
-    render(<GameJoinForm />);
+    render(<BrowserRouter><GameJoinForm /></BrowserRouter>);
    
     expect(screen.getByText("Nombre Jugador")).toBeDefined();
    
@@ -13,7 +14,7 @@ describe("GameJoinForm", () => {
   });
 
   test("should get the data", async () => {
-    const utils = render(<GameJoinForm />);
+    const utils = render(<BrowserRouter><GameJoinForm /></BrowserRouter>);
     
     const gameName = screen.getByLabelText("Nombre Jugador");
 
@@ -23,7 +24,7 @@ describe("GameJoinForm", () => {
   });
 
   test("should display required error when value is invalid", async () => {
-    const utils = render(<GameJoinForm />);
+    const utils = render(<BrowserRouter><GameJoinForm /></BrowserRouter>);
     const playerName = screen.getByLabelText("Nombre Jugador");
 
     const button = screen.getByRole("button", { name: "Unirse" });
@@ -36,7 +37,7 @@ describe("GameJoinForm", () => {
   });
 
   test("should display error when value has quotation marks", async () => {
-    const utils = render(<GameJoinForm />);
+    const utils = render(<BrowserRouter><GameJoinForm /></BrowserRouter>);
     
     const playerName = screen.getByLabelText("Nombre Jugador");
    
@@ -53,7 +54,7 @@ describe("GameJoinForm", () => {
   });
 
   test("should not display error when value is valid", async () => {
-    const utils = render(<GameJoinForm />);
+    const utils = render(<BrowserRouter><GameJoinForm /></BrowserRouter>);
    
     const playerName = screen.getByLabelText("Nombre Jugador");
    
