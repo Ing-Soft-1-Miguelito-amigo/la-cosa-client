@@ -28,7 +28,7 @@ const Lobby = ({
     };
 
     return (
-        <div>
+        <div data-testid="boton">
             <FunctionButton text={"Iniciar Partida" } onClick={startGame}/>
         </div>
     )

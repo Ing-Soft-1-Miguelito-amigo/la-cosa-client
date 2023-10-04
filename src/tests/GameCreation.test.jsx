@@ -2,17 +2,18 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import GameCreationForm from "../components/gameCreationForm/GameCreationForm";
+import { BrowserRouter } from "react-router-dom";
 
 describe("GameCreationForm", () => {
   test("should render", async () => {
-    render(<GameCreationForm />);
+    render(<BrowserRouter><GameCreationForm /></BrowserRouter>);
     expect(screen.getByText("Nombre Partida")).toBeDefined();
     expect(screen.getByText("Nombre Host")).toBeDefined();
     expect(screen.getByRole("button", { name: "Crear Partida" })).toBeDefined();
   });
 
   test("should get the data", async () => {
-    const utils = render(<GameCreationForm />);
+    const utils = render(<BrowserRouter><GameCreationForm /></BrowserRouter>);
     const gameName = screen.getByLabelText("Nombre Partida");
     const hostName = screen.getByLabelText("Nombre Host");
 
@@ -24,7 +25,7 @@ describe("GameCreationForm", () => {
   });
 
   test("should display required error when value is invalid", async () => {
-    const utils = render(<GameCreationForm />);
+    const utils = render(<BrowserRouter><GameCreationForm /></BrowserRouter>);
     const gameName = screen.getByLabelText("Nombre Partida");
     const hostName = screen.getByLabelText("Nombre Host");
     const button = screen.getByRole("button", { name: "Crear Partida" });
@@ -39,7 +40,7 @@ describe("GameCreationForm", () => {
   });
 
   test("should display error when value has quotation marks", async () => {
-    const utils = render(<GameCreationForm />);
+    const utils = render(<BrowserRouter><GameCreationForm /></BrowserRouter>);
     const gameName = screen.getByLabelText("Nombre Partida");
     const hostName = screen.getByLabelText("Nombre Host");
     const button = screen.getByRole("button", { name: "Crear Partida" });
@@ -58,7 +59,7 @@ describe("GameCreationForm", () => {
   });
 
   test("should not display error when value is valid", async () => {
-    const utils = render(<GameCreationForm />);
+    const utils = render(<BrowserRouter><GameCreationForm /></BrowserRouter>);
     const gameName = screen.getByLabelText("Nombre Partida");
     const hostName = screen.getByLabelText("Nombre Host");
     const button = screen.getByRole("button", { name: "Crear Partida" });

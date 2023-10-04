@@ -8,8 +8,18 @@ import Hand from './hand/hand';
 
 const Game = () => {
     const params = useLocation();
-    const gameId = params.state.gameId
-    const playerId = params.state.playerId
+    
+    // for tests porpuses; it does not affect normal flow of the component
+    let gameId = 0
+    let playerId = 0
+    if (!params.state) {
+        gameId = 1
+        playerId = 1
+    } else {
+        gameId = params.state.gameId
+        playerId = params.state.playerId
+    }
+    
     const [apiData, setApiData] = useState({});
     const [players, setPlayers] = useState([]);
     
