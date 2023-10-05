@@ -1,4 +1,4 @@
-const FetchData = async ( onSetApiData, onSetPlayers) => {
+const FetchData = async ( onSetApiData, onSetPlayers, gameId) => {
     try {
         const apiData = await httpRequest({ method: 'GET', service: 'game/' + gameId });
         onSetApiData(apiData.json);

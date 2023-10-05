@@ -10,7 +10,9 @@ const Hand = ({
     
     const [hand, setHand] = useState([]);
     useEffect(() => {
-        FetchCards(onSetHand={setHand});
+        FetchCards(onSetHand={setHand},
+          gameId={gameId},
+          playerId={playerId});
         }, []);
 
     return (

@@ -1,5 +1,5 @@
 //Make the request to the server
-const FetchStartGame = async () => {
+const FetchStartGame = async (data) => {
     try {
     const response = await httpRequest({
         method: "POST",

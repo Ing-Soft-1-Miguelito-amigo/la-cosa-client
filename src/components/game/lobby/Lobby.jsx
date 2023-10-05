@@ -14,7 +14,7 @@ const Lobby = ({
 
     return (
         <div data-testid="boton">
-            <FunctionButton text={"Iniciar Partida" } onClick={FetchStartGame}/>
+            <FunctionButton text={"Iniciar Partida" } onClick={() => FetchStartGame(data)}/>
         </div>
     )
 }

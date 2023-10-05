@@ -26,8 +26,9 @@ const Game = () => {
     
     useEffect(() => {
         FetchData(
-            onSetApiData = setApiData,
-            onSetPlayers = setPlayers,
+            onSetApiData = {setApiData},
+            onSetPlayers = {setPlayers},
+            gameId = {gameId}
         );
     }, []);
 
