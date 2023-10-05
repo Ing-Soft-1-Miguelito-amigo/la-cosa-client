@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import FunctionButton from "../FunctionButton/FunctionButton"
+import FunctionButton from "../functionButton/FunctionButton"
 import style from "./Home.module.css"
 
 const Home = () => {

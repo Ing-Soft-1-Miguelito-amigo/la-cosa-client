@@ -1,4 +1,4 @@
-import Card from '../card/card';
+import Card from '../card/Card';
 import { useState, useEffect } from 'react';
 import style from '../hand/hand.module.css';
 import { httpRequest } from '../../../services/HttpService';
@@ -10,15 +10,7 @@ const Hand = ({
     
     const [hand, setHand] = useState([]);
     useEffect(() => {
-        const fetchHand = async () => {
-            try {
-            const data = await httpRequest({ method: 'GET', service: 'game/' + gameId + '/player/'+ playerId});
-            setHand(data.json.hand);
-            } catch (error) {
-            console.log(error);
-            }
-        }
-        fetchHand();
+        FetchCards(onSetHand={setHand});
         }, []);
 
     return (

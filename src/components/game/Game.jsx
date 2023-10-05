@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styles from "./game.module.css";
-import Player from "./players/Player";
-import { httpRequest } from "../../services/HttpService";
 import Lobby from "./lobby/Lobby";
-import Hand from './hand/hand';
+import Hand from './hand/Hand';
+import Table from "./table/Table";
+import FetchData from "../../containers/FetchGame";
+
 
 const Game = () => {
     const params = useLocation();
@@ -24,16 +25,10 @@ const Game = () => {
     const [players, setPlayers] = useState([]);
     
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const apiData = await httpRequest({ method: 'GET', service: 'game/' + gameId });
-                setApiData(apiData.json);
-                setPlayers(apiData.json.players);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        fetchData();
+        FetchData(
+            onSetApiData = setApiData,
+            onSetPlayers = setPlayers,
+        );
     }, []);
 
     const gameStyle = `
@@ -47,8 +42,6 @@ const Game = () => {
         }
     }, [apiData]);
 
-    // sorts players array by table_position in increasing order
-    players.sort((a, b) => a.table_position - b.table_position);        
 
     return (
         <div className={gameStyle}>
@@ -63,22 +56,15 @@ const Game = () => {
                         <div>
                             <span>Jugando en {apiData.name}</span>
                         </div>
-                        <div className={styles.playersContainer}>
-                            {players.map((player, index) => {
-                                return (
-                                        <Player
-                                            key={index} 
-                                            name={player.name}
-                                            apiData={apiData}
-                                        />
-                                )
-                            })}
-                        </div>
+                            <Table 
+                                players = {players} 
+                                apiData={apiData}
+                            />
                         <div>
-                          <Hand
-                            gameId={gameId}
-                            playerId={playerId}
-                        />
+                            <Hand
+                                gameId={gameId}
+                                playerId={playerId}
+                            />
                       </div>
                     </>
                 )}
