@@ -1,4 +1,4 @@
-import style from './FunctionButton.module.css'
+import style from './functionButton.module.css'
 
 const FunctionButton = ({
     text,
