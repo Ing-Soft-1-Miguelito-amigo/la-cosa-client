@@ -5,7 +5,7 @@ import {
   createGame,
 } from "../../containers/FormValidation.js";
 import styles from "./gameCreationForm.module.css";
-import FunctionButton from "../FunctionButton/FunctionButton";
+import FunctionButton from "../functionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
 
 const GameCreationForm = () => {
@@ -24,7 +24,6 @@ const GameCreationForm = () => {
     },
   });
 
-  
   const onSubmit = async (data) => {
     const response = await createGame(data);
     const responseData = {

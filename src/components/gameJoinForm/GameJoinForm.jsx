@@ -5,7 +5,7 @@ import {
   JoinGame,
 } from "../../containers/FormValidation.js";
 import styles from "./gameJoinForm.module.css";
-import FunctionButton from "../FunctionButton/FunctionButton";
+import FunctionButton from "../functionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
 
 const GameJoinForm = () => {
