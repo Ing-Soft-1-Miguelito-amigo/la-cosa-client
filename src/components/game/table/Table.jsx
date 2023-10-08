@@ -3,12 +3,12 @@ import styles from "./table.module.css";
 
 const Table = ({
     players, 
-    apiData
+    apiData,
+    selectPlayer
     }) => {
 
     // sorts players array by table_position in increasing order
     players.sort((a, b) => a.table_position - b.table_position);        
-
     return (
         <div className={styles.container}>
             {players.map((player, index) => {
@@ -17,6 +17,7 @@ const Table = ({
                             key={index} 
                             name={player.name}
                             apiData={apiData}
+                            selectPlayer={selectPlayer}
                         />
                 )
             })}

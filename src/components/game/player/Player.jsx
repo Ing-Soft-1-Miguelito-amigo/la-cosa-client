@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import styles from "./player.module.css";
 
-const Player = ({ name, apiData }) => {
+const Player = ({ name, apiData, selectPlayer }) => {
     const playerData = apiData.players.find((player) => player.name === name);
     const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
     const hasTurn = useMemo(() => apiData.turn_owner === playerData.table_position, [apiData]);
@@ -12,8 +12,8 @@ const Player = ({ name, apiData }) => {
     };
 
     return (
-        <div className={styles.playerStyle} style={style}>
-            <span className={styles.playerText}>{name}</span>
+        <div className={styles.playerStyle} style={style} onClick={() => selectPlayer(name)}>
+            <span className={styles.playerText}>{playerData.name}</span>
         </div>
     )
 }

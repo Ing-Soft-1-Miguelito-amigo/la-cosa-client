@@ -1,10 +1,9 @@
 import Card from "../card/Card";
 import { useState, useEffect } from "react";
 import style from "../hand/hand.module.css";
-import { httpRequest } from "../../../services/HttpService";
 import FetchCards from "../../../containers/FetchCards";
 
-const Hand = ({ gameId, playerId }) => {
+const Hand = ({ gameId, playerId, selectCard, cardSelected }) => {
   const [hand, setHand] = useState([]);
   useEffect(() => {
     FetchCards({
@@ -17,11 +16,13 @@ const Hand = ({ gameId, playerId }) => {
   return (
     <div className={style.container} data-testid="cards">
       {/* Renderizar las primeras cuatro cartas */}
-      <div className={style.cardGroup}>
         {hand.map((card, i) => (
-          <Card key={i} card_id={card.id} code={card.code} />
+          <Card key={i}
+            cardId={card.id}
+            code={card.code} 
+            selectCard={selectCard}
+            cardSelected={cardSelected}/>
         ))}
-      </div>
     </div>
   );
 };
