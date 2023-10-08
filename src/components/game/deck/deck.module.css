@@ -1,0 +1,16 @@
+.deck {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    padding: 5%;
+}
+
+.cardDeck {
+    margin-right: 10px;
+}
+
+.img {
+    width: 150px;
+    height: 200px;
+    margin: 10px;
+}
