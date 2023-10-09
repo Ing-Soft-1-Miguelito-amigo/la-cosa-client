@@ -29,12 +29,12 @@ const Deck = ({ gameId, playerId }) => {
 
     return (
         <div className={style.deck}>
-            <div className={style.cardDeck}>
-                <img src={`../../../src/img/default.jpg`} className={style.img} />
-            </div>
             <div className={style.cardDeck} onClick={liftCard}>
                 <img src={`../../../src/img/default.jpg`} className={style.img} />
             </div>
+            <div className={style.cardDeck}>
+                <img src={`../../../src/img/default.jpg`} className={style.img} />
+            </div>            
             <span className = {style.span}> {message} </span>
         </div>
     );
