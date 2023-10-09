@@ -25,7 +25,7 @@ const Deck = () => {
                 setMessage(response.detail)
             }
         }
-        else if (player.table_position == turnPlayer && clicked) {
+        else if (player.table_position == turnPlayer) {
             setMessage('Ya jugaste tu turno')
         }
         else {
