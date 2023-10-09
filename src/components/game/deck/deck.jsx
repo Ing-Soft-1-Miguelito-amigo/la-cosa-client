@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import style from '../deck/deck.module.css';
+import { useState, useEffect, useContext } from 'react';
+import { GameContext, PlayersContext , PlayerContext } from "../Game"
 import FetchStealCard from '../../../containers/FetchStealCard';
+import style from '../deck/deck.module.css';
 
-const Deck = ({ gameId, playerId }) => {
+const Deck = () => {
+    
+    const gameCtx = useContext(GameContext);
+    const players = useContext(PlayersContext);
+    const player = useContext(PlayerContext);
 
+    const gameId = gameCtx.id;
+    const turnPlayer = gameCtx.turn_owner;
+    
     const [message, setMessage] = useState('');
 	const [clicked, setClicked] = useState(false);
-
-    const liftCard = () => {
-        //if (playerId == 1) { //corregir
-        if(!clicked) {
-            const data = {game_id:gameId, player_id:playerId}
-            const response = FetchStealCard(data)
-            console.log(response.status)
-            if(response.status == 200) {
+    
+    const liftCard = async () => {
+        if (player.table_position == turnPlayer && !clicked) {
+            const data = {game_id: gameId, player_id: player.id}
+            const response = await FetchStealCard(data)
+            if(response.status === 200) {
                 setMessage('Robaste una carta')
                 setClicked(true);
             }
@@ -21,10 +27,12 @@ const Deck = ({ gameId, playerId }) => {
                 setMessage(response.detail)
             }
         }
-        /*}
+        else if (player.table_position == turnPlayer && clicked) {
+            setMessage('Ya jugaste tu turno')
+        }
         else {
             setMessage('No es tu turno')
-        }*/
+        }
     }
 
     return (

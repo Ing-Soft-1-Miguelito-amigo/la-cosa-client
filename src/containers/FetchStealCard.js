@@ -6,7 +6,7 @@ const FetchStealCard = async ( data ) => {
             method: 'PUT', 
             service: 'game/steal', 
             payload: data
-    });
+        });
         return response;
     } catch (error) {
         console.log(error);

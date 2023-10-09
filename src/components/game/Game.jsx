@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { httpRequest } from "../../services/HttpService";
 import styles from "./game.module.css";
 import Player from "./players/Player";
-import { httpRequest } from "../../services/HttpService";
 import Lobby from "./lobby/Lobby";
 import Hand from './hand/hand';
 import Deck from './deck/deck';
+
+export const GameContext = createContext({})
+export const PlayersContext = createContext({})
+export const PlayerContext = createContext({})
 
 const Game = () => {
     const params = useLocation();
@@ -23,6 +27,7 @@ const Game = () => {
     
     const [apiData, setApiData] = useState({});
     const [players, setPlayers] = useState([]);
+    const [player, setPlayer] = useState({});
     
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +41,19 @@ const Game = () => {
         }
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const fetchPlayer = async () => {
+            try {
+                const player = await httpRequest({ method: 'GET', service:  'game/' + gameId + '/player/'+ playerId});
+                setPlayer(player.json);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchPlayer();
+    }, []);
+
 
     const gameStyle = `
         ${apiData.state === 0 ? "lobby" : "game"}
@@ -82,10 +100,13 @@ const Game = () => {
                         />
                       </div>
                       <div> 
-                        <Deck 
-                            gameId={gameId}
-                            playerId={playerId}
-                        />
+                        <GameContext.Provider value={apiData}>
+                        <PlayersContext.Provider value={players}>    
+                        <PlayerContext.Provider value={player}>
+                        <Deck/>
+                        </PlayerContext.Provider>
+                        </PlayersContext.Provider>
+                        </GameContext.Provider>
                       </div>
                     </>
                 )}
