@@ -5,6 +5,7 @@ import Player from "./players/Player";
 import { httpRequest } from "../../services/HttpService";
 import Lobby from "./lobby/Lobby";
 import Hand from './hand/hand';
+import Deck from './deck/deck';
 
 const Game = () => {
     const params = useLocation();
@@ -76,6 +77,12 @@ const Game = () => {
                         </div>
                         <div>
                           <Hand
+                            gameId={gameId}
+                            playerId={playerId}
+                        />
+                      </div>
+                      <div> 
+                        <Deck 
                             gameId={gameId}
                             playerId={playerId}
                         />

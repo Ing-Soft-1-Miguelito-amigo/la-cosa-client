@@ -8,9 +8,11 @@ const Deck = ({ gameId, playerId }) => {
 	const [clicked, setClicked] = useState(false);
 
     const liftCard = () => {
-        console.log(gameId)
-        if (playerId == 1) { //corregir
-            const response = FetchStealCard(gameId, playerId, clicked)
+        //if (playerId == 1) { //corregir
+        if(!clicked) {
+            const data = {game_id:gameId, player_id:playerId}
+            const response = FetchStealCard(data)
+            console.log(response.status)
             if(response.status == 200) {
                 setMessage('Robaste una carta')
                 setClicked(true);
@@ -19,9 +21,10 @@ const Deck = ({ gameId, playerId }) => {
                 setMessage(response.detail)
             }
         }
+        /*}
         else {
             setMessage('No es tu turno')
-        }
+        }*/
     }
 
     return (
