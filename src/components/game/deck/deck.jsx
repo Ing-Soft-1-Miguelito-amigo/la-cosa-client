@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { GameContext, PlayersContext , PlayerContext } from "../Game"
 import FetchStealCard from '../../../containers/FetchStealCard';
 import style from '../deck/deck.module.css';
