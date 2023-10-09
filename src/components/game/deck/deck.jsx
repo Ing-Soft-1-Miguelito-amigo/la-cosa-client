@@ -13,15 +13,13 @@ const Deck = () => {
     const turnPlayer = gameCtx.turn_owner;
     
     const [message, setMessage] = useState('');
-	const [clicked, setClicked] = useState(false);
     
     const liftCard = async () => {
-        if (player.table_position == turnPlayer && !clicked) {
+        if (player.table_position == turnPlayer) {
             const data = {game_id: gameId, player_id: player.id}
             const response = await FetchStealCard(data)
             if(response.status === 200) {
                 setMessage('Robaste una carta')
-                setClicked(true);
             }
             else {
                 setMessage(response.detail)
