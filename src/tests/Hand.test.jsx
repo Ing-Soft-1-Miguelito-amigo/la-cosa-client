@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor } from '@testing-library/react';
-import Hand from "../components/game/hand/hand";
+import Hand from "../components/game/hand/Hand";
 
 describe('PlayerHand', () => {
 

@@ -4,7 +4,8 @@ import styles from "./table.module.css";
 const Table = ({
     players, 
     apiData,
-    selectPlayer
+    selectPlayer,
+    namePlayerSelected
     }) => {
 
     // sorts players array by table_position in increasing order
@@ -18,6 +19,7 @@ const Table = ({
                             name={player.name}
                             apiData={apiData}
                             selectPlayer={selectPlayer}
+                            namePlayerSelected={namePlayerSelected}
                         />
                 )
             })}

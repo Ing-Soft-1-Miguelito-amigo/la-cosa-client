@@ -1,12 +1,13 @@
 import { httpRequest } from "../services/HttpService";
 
-const FetchCards = async ({ onSetHand, gameId, playerId }) => {
+const FetchCards = async ({ onSetHand, gameId, playerId, onSetTablePosition }) => {
   try {
-    const apiData = await httpRequest({
+    const statusPlayer = await httpRequest({
       method: "GET",
       service: "game/" + gameId + "/player/" + playerId,
     });
-    onSetHand(apiData.json.hand);
+    onSetHand(statusPlayer.json.hand);
+    onSetTablePosition(statusPlayer.json["table_position"]);
   } catch (error) {
     console.log(error);
   }

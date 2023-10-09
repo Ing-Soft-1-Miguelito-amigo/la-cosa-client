@@ -1,13 +1,12 @@
 .container {
     display: flex;
     justify-content: center; 
-    position: fixed;
+    position: absolute;
     left: 50%;
     top: 85%;
     transform: translate(-50%, -50%);
-    height: 200px;
+    height:300px;
     width: 600px;
-    background-color: brown;
 }
 
 .cornerCard {

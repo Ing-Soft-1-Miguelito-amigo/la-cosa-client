@@ -25,15 +25,16 @@ const Game = () => {
   const [apiData, setApiData] = useState({});
   const [players, setPlayers] = useState([]);
 
- //inicio de jugar carta (implementacion)
+  //inicio de jugar carta (implementacion)
 
   const [cardSelected, setCardSelected] = useState({});
   const [playerSelected, setPlayerSelected] = useState({});
   const [canPlayCard, setCanPlayCard] = useState(false);
+  const [playersToSelect, setPlayersToSelect] = useState([]);
+  
 
- 
-  const selectCard = (cardId) => {
-    if (cardId !== cardSelected.cardId) {
+  const selectCard = (cardId,tablePosition) => {
+    if (cardId !== cardSelected.cardId && apiData.turn_owner === tablePosition) {
       setCardSelected({ cardId });
     }
     else {
@@ -42,37 +43,48 @@ const Game = () => {
     return 1;
   };
 
-  const selectPlayer = (playerName) => {
-    // recorro el areglo de jugadores verificando a quienes puedo jugarle una carta (izq y der vivos)
+  useEffect(() => {
+    // obtain the player alives to the right and left of the turn owner
     const pTS = () => {
       let playersAlive = players.filter(player => player.alive === true);
-      const turnOwnerIndex = players.findIndex(player => player.table_position === apiData.turn_owner);
+      const turnOwnerIndex = playersAlive.findIndex(player => player.table_position === apiData.turn_owner);
       const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
-      const player_on_left = playersAlive[(((turnOwnerIndex - 1)+playersAlive.length) % playersAlive.length)];
+      const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
       return [player_on_left, player_on_right];
     };
-    const playersToSelect = pTS();
-    if (cardSelected.cardId !== undefined && playerName!==playerSelected.name &&(playerName == playersToSelect[0].name || playerName == playersToSelect[1].name)) {
-      setPlayerSelected({name: playerName});
-      console.log("Eligiendo a: " + playerName);
+    setPlayersToSelect(pTS());
+  }, [apiData.turn_owner, cardSelected,playerSelected]);
+
+  const selectPlayer = (playerName) => {
+
+    // verify if the player selected is one of the players alives to the right and left of the turn owner
+    // and if the player selected is not the player who is playing
+    // and if the card was selected
+    if (cardSelected.cardId !== undefined
+      && playerName !== playerSelected.name
+      && (playerName == playersToSelect[0].name
+        || playerName == playersToSelect[1].name)) {
+      setPlayerSelected({ name: playerName });
     }
     else {
       return 0;
     }
     return 1;
   };
- 
+
   useEffect(() => {
     setCanPlayCard(playerSelected.name !== undefined && cardSelected.cardId !== undefined);
   }, [playerSelected]);
 
   const playCard = () => {
-    FetchPlayCard(gameId, playerId, cardSelected.cardId, playerSelected.name);
-    console.log("Jugando carta");
+    FetchPlayCard({ game_id: gameId,
+                    player_id: playerId, 
+                    card_id: cardSelected.cardId, 
+                    destination_name: playerSelected.name});
   };
 
 
- // finalizacion de jugar carta (implementacion)
+  // finalizacion de jugar carta (implementacion)
 
   useEffect(() => {
     FetchData({
@@ -94,7 +106,7 @@ const Game = () => {
   }, [apiData]);
 
   return (
-    <div className={gameStyle}>
+    <div className={gameStyle}> 
       <div>
         {apiData.state === 0 ? (
           <Lobby players={players}></Lobby>
@@ -105,12 +117,11 @@ const Game = () => {
             </div>
             <div>
               <span>Jugando en {apiData.name}</span>
-              {}
             </div>
-              <Table players={players} apiData={apiData} selectPlayer={selectPlayer}/>
-              {canPlayCard && <FunctionButton text={"Jugar carta"} onClick={playCard}/>}
+            <Table players={players} apiData={apiData} selectPlayer={selectPlayer} namePlayerSelected={playerSelected.name}/>
+            {canPlayCard && <FunctionButton text={"Jugar carta"} onClick={playCard} />}
             <div>
-              <Hand gameId={gameId} playerId={playerId} selectCard={selectCard} cardSelected={cardSelected}/>
+              <Hand gameId={gameId} playerId={playerId} selectCard={selectCard} cardSelected={cardSelected} />
             </div>
           </>
         )}
