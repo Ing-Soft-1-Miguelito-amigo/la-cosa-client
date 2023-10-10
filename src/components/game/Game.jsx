@@ -12,6 +12,7 @@ import Deck from './deck/Deck';
 export const GameContext = createContext({})
 export const PlayerContext = createContext({})
 
+
 const Game = () => {
   const params = useLocation();
 
@@ -28,20 +29,8 @@ const Game = () => {
 
   const [apiData, setApiData] = useState({});
   const [players, setPlayers] = useState([]);
-  const [player, setPlayer] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const apiData = await httpRequest({ method: 'GET', service: 'game/' + gameId });
-                setApiData(apiData.json);
-                setPlayers(apiData.json.players);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        fetchData();
-    }, []);
+  const [player, setPlayer] = useState([]);
 
     useEffect(() => {
         const fetchPlayer = async () => {
@@ -62,6 +51,7 @@ const Game = () => {
       gameId: gameId,
     });
   });
+
 
   const gameStyle = `
         ${apiData.state === 0 ? "lobby" : "game"}
@@ -97,6 +87,7 @@ const Game = () => {
               <Deck/>
               </PlayerContext.Provider>
               </GameContext.Provider>
+
             </div>
           </>
         )}
