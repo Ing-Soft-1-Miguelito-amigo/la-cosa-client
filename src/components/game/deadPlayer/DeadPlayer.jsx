@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./deadPlayer.module.css";
-import FunctionButton from "../../FunctionButton/FunctionButton";
+import FunctionButton from "../../functionButton/FunctionButton";
 
 const DeadPlayer = () => {
     const navigate = useNavigate();

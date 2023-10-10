@@ -61,7 +61,7 @@ const Game = () => {
       onSetPlayers: setPlayers,
       gameId: gameId,
     });
-  }, []);
+  });
 
   const gameStyle = `
         ${apiData.state === 0 ? "lobby" : "game"}

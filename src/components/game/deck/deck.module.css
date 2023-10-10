@@ -1,8 +1,14 @@
-.deck {
+.deckContainer {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
+    flex-direction: column;
     padding: 5%;
+}
+
+.cardDeckContainer {
+    display: flex;
+    margin-bottom: 20px;
 }
 
 .cardDeck {
@@ -13,6 +19,12 @@
     width: 150px;
     height: 200px;
     margin: 10px;
+}
+
+.messageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .span {

@@ -12,35 +12,43 @@ const Deck = () => {
     const turnPlayer = gameCtx.turn_owner;
     
     const [message, setMessage] = useState('');
+    const [clicked, setClicked] = useState(false);
     
     const liftCard = async () => {
-        if (player.table_position == turnPlayer) {
+        if (player.table_position == turnPlayer && !clicked) {
             const data = {game_id: gameId, player_id: player.id}
             const response = await FetchStealCard(data)
             if(response.status === 200) {
                 setMessage('Robaste una carta')
+                setClicked(true);
             }
             else {
                 setMessage(response.detail)
             }
         }
-        /* Implement case in which player has already picked a card using sockets (sprint2) */
+        else if (player.table_position == turnPlayer && clicked) {
+            setMessage('Ya robaste una carta')
+        }
         else {
             setMessage('No es tu turno')
         }
     }
 
     return (
-        <div className={style.deck}>
-            <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
-                <img src={`../../../src/img/default.png`} className={style.img} />
+        <div className={style.deckContainer}>
+            <div className={style.cardDeckContainer}>
+                <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
+                    <img src={`../../../src/img/default.png`} className={style.img} />
+                </div>
+                <div className={style.cardDeck}>
+                    <img src={`../../../src/img/default.png`} className={style.img} />
+                </div>
             </div>
-            <div className={style.cardDeck}>
-                <img src={`../../../src/img/default.png`} className={style.img} />
+            <div className={style.messageContainer}>
+                <span className={style.span} data-testid="message">
+                    {message}
+                </span>
             </div>
-            <span className = {style.span} data-testid="message"> 
-                {message} 
-            </span>
         </div>
     );
 };
