@@ -19,7 +19,7 @@ const Hand = ({ gameId, playerId }) => {
       {/* Renderizar las primeras cuatro cartas */}
       <div className={style.cardGroup}>
         {hand.map((card, i) => (
-          <Card key={i} card_id={card.id} code={card.code} />
+          <Card key={i} card_id={card.id} code={card.code} number_in_card={card.number_in_card}/>
         ))}
       </div>
     </div>
