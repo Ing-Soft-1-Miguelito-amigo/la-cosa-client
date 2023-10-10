@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import style from "../hand/hand.module.css";
 import FetchCards from "../../../containers/FetchCards";
 
-const Hand = ({ gameId, playerId, selectCard, cardSelected }) => {
+const Hand = ({ gameId, playerId }) => {
   const [hand, setHand] = useState([]);
   const [tablePosition, setTablePosition] = useState();
   
@@ -22,8 +22,6 @@ const Hand = ({ gameId, playerId, selectCard, cardSelected }) => {
           <Card key={i}
             cardId={card.id}
             code={card.code} 
-            selectCard={selectCard}
-            cardSelected={cardSelected}
             tablePosition = {tablePosition}/>
         ))}
     </div>
