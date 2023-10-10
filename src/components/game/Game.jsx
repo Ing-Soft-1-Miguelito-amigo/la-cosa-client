@@ -8,7 +8,6 @@ import Hand from './hand/hand';
 import Deck from './deck/deck';
 
 export const GameContext = createContext({})
-export const PlayersContext = createContext({})
 export const PlayerContext = createContext({})
 
 const Game = () => {
@@ -101,11 +100,9 @@ const Game = () => {
                       </div>
                       <div> 
                         <GameContext.Provider value={apiData}>
-                        <PlayersContext.Provider value={players}>    
                         <PlayerContext.Provider value={player}>
                         <Deck/>
                         </PlayerContext.Provider>
-                        </PlayersContext.Provider>
                         </GameContext.Provider>
                       </div>
                     </>

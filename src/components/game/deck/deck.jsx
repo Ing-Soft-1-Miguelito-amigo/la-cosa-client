@@ -1,12 +1,11 @@
 import { useState, useContext } from 'react';
-import { GameContext, PlayersContext , PlayerContext } from "../Game"
+import { GameContext, PlayerContext } from "../Game"
 import FetchStealCard from '../../../containers/FetchStealCard';
 import style from '../deck/deck.module.css';
 
 const Deck = () => {
     
     const gameCtx = useContext(GameContext);
-    const players = useContext(PlayersContext);
     const player = useContext(PlayerContext);
 
     const gameId = gameCtx.id;
@@ -25,9 +24,7 @@ const Deck = () => {
                 setMessage(response.detail)
             }
         }
-        else if (player.table_position == turnPlayer) {
-            setMessage('Ya jugaste tu turno')
-        }
+        /*Chequear caso en que es el turno del jugador pero ya robo una carta*/
         else {
             setMessage('No es tu turno')
         }
@@ -35,13 +32,15 @@ const Deck = () => {
 
     return (
         <div className={style.deck}>
-            <div className={style.cardDeck} onClick={liftCard}>
+            <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
                 <img src={`../../../src/img/default.jpg`} className={style.img} />
             </div>
             <div className={style.cardDeck}>
                 <img src={`../../../src/img/default.jpg`} className={style.img} />
-            </div>            
-            <span className = {style.span}> {message} </span>
+            </div>
+            <span className = {style.span} data-testid="message"> 
+                {message} 
+            </span>
         </div>
     );
 };
