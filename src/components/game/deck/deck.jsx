@@ -24,7 +24,7 @@ const Deck = () => {
                 setMessage(response.detail)
             }
         }
-        /*Chequear caso en que es el turno del jugador pero ya robo una carta*/
+        /* Implement case in which player has already picked a card using sockets (sprint2) */
         else {
             setMessage('No es tu turno')
         }
