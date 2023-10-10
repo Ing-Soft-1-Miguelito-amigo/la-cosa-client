@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { set, useForm } from "react-hook-form";
-import {
-  valueHasQuotationMarks,
-  createGame,
-} from "../../containers/FormValidation.js";
+import { valueHasQuotationMarks } from "../../containers/FormValidation.js";
 import styles from "./gameCreationForm.module.css";
-import FunctionButton from "../FunctionButton/FunctionButton";
+import FunctionButton from "../functionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
+import { FetchCreateGame } from "../../containers/FetchGameCreate.js";
 
 const GameCreationForm = () => {
   const navigate = useNavigate();
@@ -24,21 +22,17 @@ const GameCreationForm = () => {
     },
   });
 
-  
   const onSubmit = async (data) => {
-    const response = await createGame(data);
+    const response = await FetchCreateGame(data);
     const responseData = {
       gameId: response.json.game_id,
-      playerId: response.json.player_id
+      playerId: response.json.player_id,
     };
     if (response.status === 201) {
       setErrorData(false);
       navigate(`/game/${response.json.game_id}`, { state: responseData });
-    } else if (response.status === 422) {
-      setMessage("Nombre existente");
-      setErrorData(true);
     } else {
-      setMessage("Error al crear la partida");
+      setMessage(response.json.detail);
       setErrorData(true);
     }
   };

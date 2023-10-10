@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  valueHasQuotationMarks,
-  JoinGame,
-} from "../../containers/FormValidation.js";
+import {valueHasQuotationMarks} from "../../containers/FormValidation.js";
+import { FetchJoinGame } from "../../containers/FetchJoinCards.js";
 import styles from "./gameJoinForm.module.css";
-import FunctionButton from "../FunctionButton/FunctionButton";
+import FunctionButton from "../functionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
 
 const GameJoinForm = () => {
@@ -25,7 +23,7 @@ const GameJoinForm = () => {
   });
 
   const onSubmit = async (data) => {
-    const response = await JoinGame(data);
+    const response = await FetchJoinGame(data);
     const responseData = {
       playerId: response.json.player_id,
       gameId: response.json.game_id,      
@@ -33,11 +31,8 @@ const GameJoinForm = () => {
     if (response.status === 200) {
       setErrorData(false);
       navigate(`/game/${responseData.gameId}`, { state: responseData });
-    } else if (response.status === 404) {
-      setMessage("Partida no encontrada");
-      setErrorData(true);
-    } else if (response.status === 422) {
-      setMessage('Partida Empezada/Partida Completa');
+    } else if (response.status === 404 || response.status === 422) {
+      setMessage(response.json.detail);
       setErrorData(true);
     } else {
       setMessage("Error al unirse a la partida");

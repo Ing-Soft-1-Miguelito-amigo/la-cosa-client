@@ -33,10 +33,10 @@ const Deck = () => {
     return (
         <div className={style.deck}>
             <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
-                <img src={`../../../src/img/default.jpg`} className={style.img} />
+                <img src={`../../../src/img/default.png`} className={style.img} />
             </div>
             <div className={style.cardDeck}>
-                <img src={`../../../src/img/default.jpg`} className={style.img} />
+                <img src={`../../../src/img/default.png`} className={style.img} />
             </div>
             <span className = {style.span} data-testid="message"> 
                 {message} 
