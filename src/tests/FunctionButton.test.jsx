@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from "vitest";
-import FunctionButton from "../components/FunctionButton/FunctionButton";
+import FunctionButton from "../components/functionButton/FunctionButton";
 import {fireEvent, render, screen} from '@testing-library/react';
 
 describe("FunctionButton", () => {

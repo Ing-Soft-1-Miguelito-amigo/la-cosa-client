@@ -12,7 +12,10 @@ const Hand = ({ gameId, playerId }) => {
       gameId: gameId,
       playerId: playerId,
     });
-  }, []);
+  });
+  
+  hand.sort((a, b) => a.id - b.id)
+
 
   return (
     <div className={style.container} data-testid="cards">
@@ -26,4 +29,6 @@ const Hand = ({ gameId, playerId }) => {
   );
 };
 
+
 export default Hand;
+

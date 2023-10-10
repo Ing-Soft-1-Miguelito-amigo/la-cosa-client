@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, test  } from "vitest";
-import Player from "../components/game/players/Player";
+import Player from "../components/game/player/Player";
 
 describe("Player component", () => {
     test("should render the player", async () => {
