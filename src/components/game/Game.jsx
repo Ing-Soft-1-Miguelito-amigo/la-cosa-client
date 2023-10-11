@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext } from "react";
 import { useLocation, useNavigate} from "react-router-dom";
-import "./game.module.css";
+import style from "./game.module.css";
 import Lobby from "./lobby/Lobby";
 import Hand from "./hand/Hand";
 import Player from "./player/Player";
@@ -25,6 +25,11 @@ const Game = () => {
   const params = useLocation();
   const navigate = useNavigate();
   const [player, setPlayer] = useState([]);
+  const [gameData, setGameData] = useState({});
+  const [players, setPlayers] = useState([]);
+  const [cardSelected, setCardSelected] = useState({});
+  const [playerSelected, setPlayerSelected] = useState({});
+  const [canPlayCard, setCanPlayCard] = useState(false);
  
 
   let gameId = 0;
@@ -37,11 +42,6 @@ const Game = () => {
     playerId = params.state.playerId;
   }
 
-  const [gameData, setGameData] = useState({});
-  const [players, setPlayers] = useState([]);
-  const [cardSelected, setCardSelected] = useState({});
-  const [playerSelected, setPlayerSelected] = useState({});
-  const [canPlayCard, setCanPlayCard] = useState(false);
 
   useEffect(() => {
     setCanPlayCard(playerSelected.name !== undefined && cardSelected.cardId !== undefined);
@@ -75,6 +75,7 @@ const Game = () => {
   },[gameData.turn_owner]);
 
   
+  
   //This function should be changed for sprint 2. Is not doing polling. 
   // useEffect(() => {
   //     FetchPlayer({setPlayer, gameId, playerId});
@@ -86,7 +87,7 @@ const Game = () => {
  
   useEffect(() => {
     if (gameData.state === 2) {
-      navigate("/end-of-game");
+      navigate("/end-of-game",{state: {gameId, players}});
      }
   }, [gameData]);
  
@@ -101,8 +102,9 @@ const Game = () => {
               </GameContext.Provider>
             </PlayerContext.Provider>
          ) : (
-           <>
-              <span>Jugando en {gameData.name}</span>
+           <>            
+             <span className={style.title} data-testid="La Cosa">La Cosa</span>
+              <span className={style.span}>Jugando en {gameData.name}</span>
             <CardSelectedContext.Provider value={cardSelected}>
               <TurnOwnerContext.Provider value={gameData.turn_owner}>
                 <PlayersAliveContext.Provider value={players.filter(player => player.alive === true)}>
