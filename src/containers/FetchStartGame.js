@@ -8,9 +8,7 @@ const FetchStartGame = async (data) => {
       service: "game/start",
       payload: data,
     });
-    if (response.status === 200) {
-      window.location.reload();
-    }
+    return response;
   } catch (error) {
     return error;
   }

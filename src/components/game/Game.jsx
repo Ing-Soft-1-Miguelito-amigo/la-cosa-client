@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import { httpRequest } from "../../services/HttpService";
 import styles from "./game.module.css";
 import Lobby from "./lobby/Lobby";
@@ -15,6 +15,10 @@ export const PlayerContext = createContext({})
 
 const Game = () => {
   const params = useLocation();
+  const navigate = useNavigate();
+  const [apiData, setApiData] = useState({});
+  const [players, setPlayers] = useState([]);
+  const [player, setPlayer] = useState([]);
 
   // for tests porpuses; it does not affect normal flow of the component
   let gameId = 0;
@@ -27,23 +31,7 @@ const Game = () => {
     playerId = params.state.playerId;
   }
 
-  const [apiData, setApiData] = useState({});
-  const [players, setPlayers] = useState([]);
-
-  const [player, setPlayer] = useState([]);
-
-    useEffect(() => {
-        const fetchPlayer = async () => {
-            try {
-                const player = await httpRequest({ method: 'GET', service:  'game/' + gameId + '/player/'+ playerId});
-                setPlayer(player.json);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        fetchPlayer();
-    }, []);
-
+  //Polling for game state and player list.
   useEffect(() => {
     FetchData({
       onSetApiData: setApiData,
@@ -53,13 +41,24 @@ const Game = () => {
   });
 
 
+  useEffect(() => {
+      const fetchPlayer = async () => {
+          try {
+              const player = await httpRequest({ method: 'GET', service:  'game/' + gameId + '/player/'+ playerId});
+              setPlayer(player.json);
+          } catch (error) {
+              console.log(error);
+          }
+      }
+      fetchPlayer();
+  }, []);
+
   const gameStyle = `
         ${apiData.state === 0 ? "lobby" : "game"}
     `;
 
   useEffect(() => {
     if (apiData.state === 2) {
-      const navigate = useNavigate();
       navigate("/end-of-game");
     }
   }, [apiData]);
@@ -68,7 +67,11 @@ const Game = () => {
     <div className={gameStyle}>
       <div>
         {apiData.state === 0 ? (
-          <Lobby players={players}></Lobby>
+            <PlayerContext.Provider value={player}>
+              <GameContext.Provider value={apiData}>
+                <Lobby players={players}></Lobby>
+              </GameContext.Provider>
+            </PlayerContext.Provider>
         ) : (
           <>
             <div>
@@ -83,11 +86,10 @@ const Game = () => {
             </div>
             <div> 
               <GameContext.Provider value={apiData}>
-              <PlayerContext.Provider value={player}>
-              <Deck/>
-              </PlayerContext.Provider>
+                <PlayerContext.Provider value={player}>
+                  <Deck/>
+                </PlayerContext.Provider>
               </GameContext.Provider>
-
             </div>
           </>
         )}
