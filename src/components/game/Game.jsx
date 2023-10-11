@@ -7,6 +7,7 @@ import Hand from "./hand/Hand";
 import Player from "./player/Player";
 import Table from "./table/Table";
 import FetchData from "../../containers/FetchGame";
+import FetchPlayer from "../../containers/FetchPlayer";
 import Deck from './deck/Deck';
 
 export const GameContext = createContext({})
@@ -20,7 +21,7 @@ const Game = () => {
   const [players, setPlayers] = useState([]);
   const [player, setPlayer] = useState([]);
 
-  // for tests porpuses; it does not affect normal flow of the component
+  //For tests porpuses; it does not affect normal flow of the component
   let gameId = 0;
   let playerId = 0;
   if (!params.state) {
@@ -31,7 +32,7 @@ const Game = () => {
     playerId = params.state.playerId;
   }
 
-  //Polling for game state and player list.
+  //Polling for game state and players list.
   useEffect(() => {
     FetchData({
       onSetApiData: setApiData,
@@ -40,18 +41,10 @@ const Game = () => {
     });
   });
 
-
+  //This function should be changed for sprint 2. Is not doing polling. 
   useEffect(() => {
-      const fetchPlayer = async () => {
-          try {
-              const player = await httpRequest({ method: 'GET', service:  'game/' + gameId + '/player/'+ playerId});
-              setPlayer(player.json);
-          } catch (error) {
-              console.log(error);
-          }
-      }
-      fetchPlayer();
-  }, []);
+     FetchPlayer({setPlayer, gameId, playerId});
+  },[apiData.state]);
 
   const gameStyle = `
         ${apiData.state === 0 ? "lobby" : "game"}
@@ -75,10 +68,10 @@ const Game = () => {
         ) : (
           <>
             <div>
-              <span>La Cosa</span>
+              <span className={styles.title}>La Cosa</span>
             </div>
             <div>
-              <span>Jugando en {apiData.name}</span>
+              <span className={styles.span}>Jugando en {apiData.name}</span>
             </div>
             <Table players={players} apiData={apiData} />
             <div>
