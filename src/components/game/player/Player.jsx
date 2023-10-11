@@ -52,7 +52,7 @@ const Player = ({
   };
 
   return (
-    <div className={playerStyle} style={style} onClick={selectPlayer}>
+    <div className={playerStyle} style={style} onClick={selectPlayer} data-testid={"player-"+name}>
       <span className={styles.playerText}>{playerData.name}</span>
 
     </div>
