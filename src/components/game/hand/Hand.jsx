@@ -12,11 +12,7 @@ const Hand = ({ gameId, playerId }) => {
       onSetHand: setHand,
       gameId: gameId,
       playerId: playerId,
-
       onSetTablePosition: setTablePosition});
-    
-
-    });
   });
   
   hand.sort((a, b) => a.id - b.id)
@@ -30,8 +26,9 @@ const Hand = ({ gameId, playerId }) => {
           <Card key={i}
             cardId={card.id}
             code={card.code} 
-            tablePosition = {tablePosition}/>
-
+            tablePosition = {tablePosition}
+            number_in_card={card.number_in_card}
+            />
         ))}
     </div>
   );
