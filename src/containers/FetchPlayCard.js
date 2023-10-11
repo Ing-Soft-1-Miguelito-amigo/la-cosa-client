@@ -1,18 +1,18 @@
 import {httpRequest} from "../services/HttpService";
 
 const FetchPlayCard = async ({
-    game_id,
-    player_id,
-    card_id,
+    gameId,
+    playerId,
+    cardId,
     destination_name
 }) => {
     const response = await httpRequest({
         method: "PUT",
         service: "game/play",
         payload: {
-            game_id: game_id,
-            player_id: player_id,
-            card_id: card_id,
+            game_id: gameId,
+            player_id: playerId,
+            card_id: cardId,
             destination_name: destination_name
         },
     });
