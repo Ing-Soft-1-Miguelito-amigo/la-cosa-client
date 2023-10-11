@@ -7,8 +7,8 @@ const Player = ({ name, apiData }) => {
     const hasTurn = useMemo(() => apiData.turn_owner === playerData.table_position, [apiData]);
 
     const style = {
-        backgroundColor: isAlive ? "rgb(68, 204, 159)": "rgb(100, 100, 100)",
-        borderColor: hasTurn ? "rgb(255, 127, 80)" : "rgb(0, 0, 0)",
+        backgroundColor: isAlive ? "rgb(98, 173, 35)": "rgb(100, 100, 100)",
+        borderColor: hasTurn ? "rgb(181, 35, 35)" : "rgb(80,80,80)",
     };
 
     return (
