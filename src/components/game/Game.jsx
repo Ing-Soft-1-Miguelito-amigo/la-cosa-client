@@ -1,7 +1,6 @@
 import { useState, useEffect, createContext } from "react";
 import { useLocation, useNavigate} from "react-router-dom";
-import { httpRequest } from "../../services/HttpService";
-import styles from "./game.module.css";
+import "./game.module.css";
 import Lobby from "./lobby/Lobby";
 import Hand from "./hand/Hand";
 import Player from "./player/Player";
@@ -9,19 +8,24 @@ import Table from "./table/Table";
 import FetchData from "../../containers/FetchGame";
 import FetchPlayer from "../../containers/FetchPlayer";
 import Deck from './deck/Deck';
+import FunctionButton from "../functionButton/FunctionButton";
+import FetchPlayCard from "../../containers/FetchPlayCard";
 
 export const GameContext = createContext({})
 export const PlayerContext = createContext({})
-
-
+export const CardSelectedContext = createContext();
+export const PlayerSelectedContext = createContext();
+export const PlayersContext = createContext();
+export const SetPlayerSelectedContext = createContext();
+export const SetCardSelectedContext = createContext();
+export const TurnOwnerContext = createContext();
+export const PlayersAliveContext = createContext([]);
+ 
 const Game = () => {
   const params = useLocation();
-  const navigate = useNavigate();
-  const [apiData, setApiData] = useState({});
-  const [players, setPlayers] = useState([]);
   const [player, setPlayer] = useState([]);
+ 
 
-  //For tests porpuses; it does not affect normal flow of the component
   let gameId = 0;
   let playerId = 0;
   if (!params.state) {
@@ -32,10 +36,30 @@ const Game = () => {
     playerId = params.state.playerId;
   }
 
+  const [gameData, setGameData] = useState({});
+  const [players, setPlayers] = useState([]);
+  const [cardSelected, setCardSelected] = useState({});
+  const [playerSelected, setPlayerSelected] = useState({});
+  const [canPlayCard, setCanPlayCard] = useState(false);
+
+  useEffect(() => {
+      setCanPlayCard(playerSelected.name !== undefined && cardSelected.cardId !== undefined);
+  }, [playerSelected]);
+
+  const playCard = () => {
+  FetchPlayCard({
+    gameId: gameId,
+    playerId: playerId,
+    cardId: cardSelected.cardId,
+    destination_name: playerSelected.name
+    });
+    };
+
+
   //Polling for game state and players list.
   useEffect(() => {
     FetchData({
-      onSetApiData: setApiData,
+      onSetGameData: setGameData,
       onSetPlayers: setPlayers,
       gameId: gameId,
     });
@@ -46,49 +70,64 @@ const Game = () => {
      FetchPlayer({setPlayer, gameId, playerId});
   },[apiData.state]);
 
+  
+  //This function should be changed for sprint 2. Is not doing polling. 
+  // useEffect(() => {
+  //     FetchPlayer({setPlayer, gameId, playerId});
+  // },[gameData.state]);
+ 
   const gameStyle = `
-        ${apiData.state === 0 ? "lobby" : "game"}
-    `;
-
+    ${gameData.state === 0 ? "lobby" : "game"}
+  `;
+ 
   useEffect(() => {
-    if (apiData.state === 2) {
+    if (gameData.state === 2) {
+      const navigate = useNavigate();
       navigate("/end-of-game");
-    }
-  }, [apiData]);
-
+     }
+  }, [gameData]);
+ 
   return (
-    <div className={gameStyle}>
-      <div>
-        {apiData.state === 0 ? (
+
+     <div className={gameStyle}>
+       <div>
+        {gameData.state === 0 ? (
             <PlayerContext.Provider value={player}>
-              <GameContext.Provider value={apiData}>
+              <GameContext.Provider value={gameData}>
                 <Lobby players={players}></Lobby>
               </GameContext.Provider>
             </PlayerContext.Provider>
-        ) : (
-          <>
-            <div>
-              <span className={styles.title}>La Cosa</span>
-            </div>
-            <div>
-              <span className={styles.span}>Jugando en {apiData.name}</span>
-            </div>
-            <Table players={players} apiData={apiData} />
-            <div>
-              <Hand gameId={gameId} playerId={playerId} />
-            </div>
-            <div> 
-              <GameContext.Provider value={apiData}>
+         ) : (
+           <>
+              <span>Jugando en {gameData.name}</span>
+            <CardSelectedContext.Provider value={cardSelected}>
+              <TurnOwnerContext.Provider value={gameData.turn_owner}>
+                <PlayersAliveContext.Provider value={players.filter(player => player.alive === true)}>
+                  <SetPlayerSelectedContext.Provider value={setPlayerSelected}>
+                    <PlayerSelectedContext.Provider value={playerSelected.name}>
+                      <Table players={players} />
+                    </PlayerSelectedContext.Provider>
+                  </SetPlayerSelectedContext.Provider>
+                </PlayersAliveContext.Provider>
+
+                {canPlayCard && <FunctionButton text={"Jugar carta"} onClick={playCard} />}
+              <GameContext.Provider value={gameData}>
                 <PlayerContext.Provider value={player}>
                   <Deck/>
                 </PlayerContext.Provider>
               </GameContext.Provider>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
+                <div>
+                  <SetCardSelectedContext.Provider value={setCardSelected}>
+                    <Hand gameId={gameId} playerId={playerId} />
+                  </SetCardSelectedContext.Provider>
+                </div>
+              </TurnOwnerContext.Provider>
+            </CardSelectedContext.Provider>
+           </>
+         )}
+       </div>
+      </div>);
+
 };
 
 export default Game;
