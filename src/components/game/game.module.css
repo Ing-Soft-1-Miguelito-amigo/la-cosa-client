@@ -6,4 +6,18 @@
     height: 55vh;
     position: relative;
 }
-
+.title{
+    display: flex;
+    display: block;
+    color: rgb(255, 255, 255);
+    font-size: 5vh;
+    font-weight: bold;
+    margin-left: 47%; 
+}
+.span{
+    display: flex;
+    display: block;
+    color: rgb(255, 255, 255);
+    font-size: 3vh;
+    margin-left: 46.5%;
+}

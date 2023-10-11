@@ -1,3 +1,4 @@
+
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, should, test  } from "vitest";
 import Player from "../components/game/player/Player";
@@ -40,6 +41,7 @@ const mockContext = {
                     {name: "a3", alive: true, table_position: 3}],
     turnOwner: 1
 };
+
 
 
 describe("Player component", () => {

@@ -12,20 +12,31 @@ const Hand = ({ gameId, playerId }) => {
       onSetHand: setHand,
       gameId: gameId,
       playerId: playerId,
+
       onSetTablePosition: setTablePosition});
-    },[]);
+    
+
+    });
+  });
+  
+  hand.sort((a, b) => a.id - b.id)
+
 
   return (
     <div className={style.container} data-testid="cards">
       {/* Renderizar las primeras cuatro cartas */}
         {hand.map((card, i) => (
+
           <Card key={i}
             cardId={card.id}
             code={card.code} 
             tablePosition = {tablePosition}/>
+
         ))}
     </div>
   );
 };
 
+
 export default Hand;
+

@@ -3,11 +3,11 @@ import { useLocation, useNavigate} from "react-router-dom";
 import "./game.module.css";
 import Lobby from "./lobby/Lobby";
 import Hand from "./hand/Hand";
+import Player from "./player/Player";
 import Table from "./table/Table";
 import FetchData from "../../containers/FetchGame";
-// import FetchPlayer from "../../containers/FetchPlayer";
-// import Deck from './deck/Deck';
-
+import FetchPlayer from "../../containers/FetchPlayer";
+import Deck from './deck/Deck';
 import FunctionButton from "../functionButton/FunctionButton";
 import FetchPlayCard from "../../containers/FetchPlayCard";
 
@@ -25,6 +25,7 @@ const Game = () => {
   const params = useLocation();
   const [player, setPlayer] = useState([]);
  
+
   let gameId = 0;
   let playerId = 0;
   if (!params.state) {
@@ -34,7 +35,7 @@ const Game = () => {
     gameId = params.state.gameId;
     playerId = params.state.playerId;
   }
-//Polling for game state and players list.
+
   const [gameData, setGameData] = useState({});
   const [players, setPlayers] = useState([]);
   const [cardSelected, setCardSelected] = useState({});
@@ -54,13 +55,20 @@ const Game = () => {
     });
     };
 
+
+  //Polling for game state and players list.
   useEffect(() => {
     FetchData({
       onSetGameData: setGameData,
       onSetPlayers: setPlayers,
       gameId: gameId,
     });
-  }, []);
+  });
+
+  //This function should be changed for sprint 2. Is not doing polling. 
+  useEffect(() => {
+     FetchPlayer({setPlayer, gameId, playerId});
+  },[apiData.state]);
 
   
   //This function should be changed for sprint 2. Is not doing polling. 
@@ -80,6 +88,7 @@ const Game = () => {
   }, [gameData]);
  
   return (
+
      <div className={gameStyle}>
        <div>
         {gameData.state === 0 ? (
@@ -102,11 +111,11 @@ const Game = () => {
                 </PlayersAliveContext.Provider>
 
                 {canPlayCard && <FunctionButton text={"Jugar carta"} onClick={playCard} />}
-              {/* <GameContext.Provider value={gameData}>
+              <GameContext.Provider value={gameData}>
                 <PlayerContext.Provider value={player}>
                   <Deck/>
                 </PlayerContext.Provider>
-              </GameContext.Provider> */}
+              </GameContext.Provider>
                 <div>
                   <SetCardSelectedContext.Provider value={setCardSelected}>
                     <Hand gameId={gameId} playerId={playerId} />
@@ -118,6 +127,7 @@ const Game = () => {
          )}
        </div>
       </div>);
+
 };
 
 export default Game;

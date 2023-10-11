@@ -1,0 +1,31 @@
+.deckContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cardDeckContainer {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.cardDeck {
+    margin-right: 10px;
+}
+
+.img {
+    width: 150px;
+    height: 200px;
+    margin: 10px;
+}
+
+.messageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.span {
+    color: white;
+}

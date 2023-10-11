@@ -26,9 +26,9 @@ const Card = ({
     return (
         <div onClick={selectCard} className={cardStyle} data-testid={"card-" + cardId}>
             <img src={`../../src/img/${code}.jpg`} alt='img' role='imgs' />
+
         </div>
     )
 }
 
 export default Card;
-

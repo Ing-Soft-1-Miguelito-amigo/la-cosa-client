@@ -3,6 +3,7 @@ import styles from "./player.module.css";
 import { CardSelectedContext, PlayerSelectedContext, SetPlayerSelectedContext, PlayersAliveContext, TurnOwnerContext } from "../Game";
 
 
+
 const Player = ({
   name,
   playerData
@@ -31,6 +32,7 @@ const Player = ({
       const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
       const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
       return [player_on_left, player_on_right];
+
     };
     setPlayersToSelect(pTS());
   }, [turnOwner, cardSelected, namePlayerSelected]);
