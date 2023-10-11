@@ -20,9 +20,10 @@ export const SetPlayerSelectedContext = createContext();
 export const SetCardSelectedContext = createContext();
 export const TurnOwnerContext = createContext();
 export const PlayersAliveContext = createContext([]);
- 
+
 const Game = () => {
   const params = useLocation();
+  const navigate = useNavigate();
   const [player, setPlayer] = useState([]);
  
 
@@ -43,7 +44,7 @@ const Game = () => {
   const [canPlayCard, setCanPlayCard] = useState(false);
 
   useEffect(() => {
-      setCanPlayCard(playerSelected.name !== undefined && cardSelected.cardId !== undefined);
+    setCanPlayCard(playerSelected.name !== undefined && cardSelected.cardId !== undefined);
   }, [playerSelected]);
 
   const playCard = () => {
@@ -53,7 +54,10 @@ const Game = () => {
     cardId: cardSelected.cardId,
     destination_name: playerSelected.name
     });
-    };
+  setPlayerSelected({});
+  setCardSelected({});
+  setCanPlayCard({});
+  };
 
 
   //Polling for game state and players list.
@@ -68,7 +72,7 @@ const Game = () => {
   //This function should be changed for sprint 2. Is not doing polling. 
   useEffect(() => {
      FetchPlayer({setPlayer, gameId, playerId});
-  },[apiData.state]);
+  },[gameData.turn_owner]);
 
   
   //This function should be changed for sprint 2. Is not doing polling. 
@@ -82,7 +86,6 @@ const Game = () => {
  
   useEffect(() => {
     if (gameData.state === 2) {
-      const navigate = useNavigate();
       navigate("/end-of-game");
      }
   }, [gameData]);

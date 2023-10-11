@@ -5,7 +5,8 @@ import { CardSelectedContext, SetCardSelectedContext, TurnOwnerContext } from ".
 const Card = ({
     cardId,
     code,
-    tablePosition
+    tablePosition,
+    number_in_card
 }) => {
     const setCardSelected = useContext(SetCardSelectedContext);
     const cardSelected = useContext(CardSelectedContext);
@@ -15,7 +16,7 @@ const Card = ({
 
     const selectCard = () => {
         if (cardId !== cardSelected.cardId && turnOwner === tablePosition) {
-          setCardSelected({ cardId });
+          setCardSelected({ cardId:cardId, code:code,number_in_card:number_in_card });
         }
         else {
           return 0;
@@ -25,8 +26,7 @@ const Card = ({
 
     return (
         <div onClick={selectCard} className={cardStyle} data-testid={"card-" + cardId}>
-            <img src={`../../src/img/${code}.jpg`} alt='img' role='imgs' />
-
+            <img src={`../../src/img/${code}${number_in_card}.png`} alt='img' role='imgs'/>
         </div>
     )
 }
