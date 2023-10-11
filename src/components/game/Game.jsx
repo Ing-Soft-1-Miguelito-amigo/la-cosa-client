@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { httpRequest } from "../../services/HttpService";
 import styles from "./game.module.css";
 import Lobby from "./lobby/Lobby";
 import Hand from "./hand/Hand";
+import Player from "./player/Player";
 import Table from "./table/Table";
 import FetchData from "../../containers/FetchGame";
+import Deck from './deck/Deck';
+
+export const GameContext = createContext({})
+export const PlayerContext = createContext({})
+
 
 const Game = () => {
   const params = useLocation();
@@ -23,13 +30,28 @@ const Game = () => {
   const [apiData, setApiData] = useState({});
   const [players, setPlayers] = useState([]);
 
+  const [player, setPlayer] = useState([]);
+
+    useEffect(() => {
+        const fetchPlayer = async () => {
+            try {
+                const player = await httpRequest({ method: 'GET', service:  'game/' + gameId + '/player/'+ playerId});
+                setPlayer(player.json);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchPlayer();
+    }, []);
+
   useEffect(() => {
     FetchData({
       onSetApiData: setApiData,
       onSetPlayers: setPlayers,
       gameId: gameId,
     });
-  }, []);
+  });
+
 
   const gameStyle = `
         ${apiData.state === 0 ? "lobby" : "game"}
@@ -58,6 +80,14 @@ const Game = () => {
             <Table players={players} apiData={apiData} />
             <div>
               <Hand gameId={gameId} playerId={playerId} />
+            </div>
+            <div> 
+              <GameContext.Provider value={apiData}>
+              <PlayerContext.Provider value={player}>
+              <Deck/>
+              </PlayerContext.Provider>
+              </GameContext.Provider>
+
             </div>
           </>
         )}

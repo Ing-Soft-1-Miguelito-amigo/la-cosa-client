@@ -12,18 +12,23 @@ const Hand = ({ gameId, playerId }) => {
       gameId: gameId,
       playerId: playerId,
     });
-  }, []);
+  });
+  
+  hand.sort((a, b) => a.id - b.id)
+
 
   return (
     <div className={style.container} data-testid="cards">
       {/* Renderizar las primeras cuatro cartas */}
       <div className={style.cardGroup}>
         {hand.map((card, i) => (
-          <Card key={i} card_id={card.id} code={card.code} />
+          <Card key={i} card_id={card.id} code={card.code} number_in_card={card.number_in_card}/>
         ))}
       </div>
     </div>
   );
 };
 
+
 export default Hand;
+
