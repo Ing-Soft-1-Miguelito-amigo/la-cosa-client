@@ -26,7 +26,8 @@ const Deck = (
         if (player.hand.length >= 5){
             setMessage('Tienes el maximo de cartas ya!')
         }
-        else if (player.table_position == turnPlayer && !clicked) {
+        else
+         if (player.table_position == turnPlayer && !clicked) {
             const data = {game_id: gameId, player_id: player.id}
             const response = await FetchStealCard(data)
             if(response.status === 200) {

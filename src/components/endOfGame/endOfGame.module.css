@@ -1,0 +1,37 @@
+.body {
+    display: flex;
+    display:block;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.endOfGame {
+    background-color: #942d29;
+    display: flex;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    border: 1.5vh solid  #5f1d1b;
+    height: 50vh;
+    line-height: 15vh;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 10%;
+    animation: fadeIn 0.7s ease-in-out;
+}
+
+.button{
+    margin-left: 40%;
+    margin-right: 40%;
+}
+
+.text{
+    color:aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    font-size: 4vh;
+    margin-top: 20%;
+}
