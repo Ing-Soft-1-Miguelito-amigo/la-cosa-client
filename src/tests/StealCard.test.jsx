@@ -1,64 +1,58 @@
-import { describe, expect, test, vi } from "vitest";
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { GameContext, PlayerContext } from "../components/game/Game";
-import Deck from "../components/game/deck/Deck";
+import { describe, test, expect } from 'vitest';
+import { render, screen, fireEvent} from "@testing-library/react";
+import Deck from '../components/game/deck/Deck';
+import { GameContext, PlayerContext } from '../components/game/Game';
 
-describe('Deck', () => {
-    /*test('should display message when clicking the card deck', async () => {
-        const gameCtxValue = { id: 'gameId', turn_owner: 'playerId' };
-        const playerValue = { table_position: 'playerId', id: 'playerId' };
-        
+describe('Deck component', () => {
+    test('should display appropriate message when lifting a card', async () => {
+        const gameContextValue = {
+            id: 1,
+            turn_owner: 2,
+        };
+
+        const playerContextValue = {
+            table_position: 2,
+            id: 3,
+            hand: ['card1', 'card2', 'card3', 'card4', 'card5'],
+        };
+
         render(
-            <GameContext.Provider value={gameCtxValue}>
-                <PlayerContext.Provider value={playerValue}>
+            <GameContext.Provider value={gameContextValue}>
+                <PlayerContext.Provider value={playerContextValue}>
                     <Deck />
                 </PlayerContext.Provider>
             </GameContext.Provider>
         );
-    
-        const cardDeck = screen.getByTestId('card-deck');
+
+        const cardDeck = screen.getByTestId("card-deck");
         fireEvent.click(cardDeck);
-        await screen.findByText('Robaste una carta');
-        expect(screen.getByText('Robaste una carta')).toBeDefined();
+        const message = await screen.findByTestId("message");
+        expect(message.textContent).toBe('Tienes el maximo de cartas ya!');
     });
 
-        test('should display "Ya robaste una carta" when player clicks after already stealing a card', async () => {
-        const gameCtxValue = { id: 'gameId', turn_owner: 'playerId' };
-        const playerValue = { table_position: 'playerId', id: 'playerId' };
+    test('should display "No es tu turno" message when it is not the players turn', async () => {
+        const gameContextValue = {
+            id: 1,
+            turn_owner: 2, // Not the player's turn (playerContextValue's table_position is 2)
+        };
+
+        const playerContextValue = {
+            table_position: 1, // Player's table_position is different from turn_owner
+            id: 3,
+            hand: ['card1', 'card2', 'card3', 'card4'],
+        };
 
         render(
-            <GameContext.Provider value={gameCtxValue}>
-                <PlayerContext.Provider value={playerValue}>
+            <GameContext.Provider value={gameContextValue}>
+                <PlayerContext.Provider value={playerContextValue}>
                     <Deck />
                 </PlayerContext.Provider>
             </GameContext.Provider>
         );
 
-        const cardDeck = screen.getByTestId('card-deck');
+        const cardDeck = screen.getByTestId("card-deck");
         fireEvent.click(cardDeck);
-        await screen.findByText('Robaste una carta');
-        fireEvent.click(cardDeck);
-        await screen.findByText('Ya robaste una carta');
-        expect(screen.getByText('Ya robaste una carta')).toBeDefined();
-    });
-    */
-
-    test('should display "No es tu turno" when player clicks when it is not their turn', async () => {
-        const gameCtxValue = { id: 'gameId', turn_owner: 'otherPlayerId' };
-        const playerValue = { table_position: 'playerId', id: 'playerId' };
-
-        render(
-            <GameContext.Provider value={gameCtxValue}>
-                <PlayerContext.Provider value={playerValue}>
-                    <Deck />
-                </PlayerContext.Provider>
-            </GameContext.Provider>
-        );
-
-        const cardDeck = screen.getByTestId('card-deck');
-        expect(screen.queryByText('No es tu turno')).toBeNull();
-        fireEvent.click(cardDeck);
-        await screen.findByText('No es tu turno');
-        expect(screen.getByText('No es tu turno')).toBeDefined();
+        const message = await screen.findByTestId("message");
+        expect(message.textContent).toBe('No es tu turno');
     });
 });
