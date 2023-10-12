@@ -7,7 +7,7 @@ import FunctionButton from "../../functionButton/FunctionButton";
 const DeadPlayer = () => {
     const navigate = useNavigate();
     const goToHome = () => {
-        navigate("/home");
+        navigate("/");
     };
 
   return (
