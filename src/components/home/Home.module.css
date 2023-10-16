@@ -1,5 +1,6 @@
 :root{
     background-color: rgb(13, 22, 18);
+    background-image: url("../../img/background.jpg");
     font-family: 'Creepster', cursive;
     color: white;
 }
