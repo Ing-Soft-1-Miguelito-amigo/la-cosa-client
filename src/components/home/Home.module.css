@@ -1,0 +1,18 @@
+:root{
+    background-color: rgb(13, 22, 18);
+    background-image: url("../../img/background.jpg");
+    font-family: 'Creepster', cursive;
+    color: white;
+}
+
+.home{
+    width: 30%;
+    height: 50%;
+    margin: 200px auto;
+}
+h1{
+    text-align: center;
+    font-size: 90px;
+    font-weight: 80;
+    color: #ffffff;
+}

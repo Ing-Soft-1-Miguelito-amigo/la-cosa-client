@@ -1,0 +1,23 @@
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 55vh;
+    position: relative;
+}
+.title{
+    display: flex;
+    display: block;
+    color: rgb(255, 255, 255);
+    font-size: 3vh;
+    font-weight: bold;
+    margin-left: 47%; 
+}
+.span{
+    display: flex;
+    display: block;
+    color: rgb(255, 255, 255);
+    font-size: 1.5vh;
+    margin-left: 46.5%;
+}

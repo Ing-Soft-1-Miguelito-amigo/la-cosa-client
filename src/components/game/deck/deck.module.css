@@ -1,0 +1,47 @@
+.deckContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cardDeckContainer {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.cardDeck {
+    margin-right: 10px;
+}
+
+.img {
+    width: 150px;
+    height: 200px;
+    margin: 10px;
+    transition: 0.4s;
+}
+
+.img:hover{
+    transform: scale(0.9);
+}
+
+.img:active{
+    box-shadow: -0.1rem 0 1rem #48ff1b;
+}
+
+.img2 {
+    width: 150px;
+    height: 200px;
+    margin: 10px;
+    transition: 0.4s;
+}
+
+.messageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.span {
+    color: white;
+}
