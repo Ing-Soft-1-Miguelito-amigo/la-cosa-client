@@ -15,12 +15,11 @@ const Lobby = () => {
     const [error, setError] = useState(false);
     const [text, setText] = useState("");
     const [data , setData] = useState({}); 
-    //const [hostHasLeft, setHostHasLeft] = useState(false);
+    const [hostHasLeft, setHostHasLeft] = useState(false);
     
-    /*This statement will be useful to implement in sprint 2
     if (gameContext.state === 3) {
         setHostHasLeft(true);
-    } */
+    }
 
     useEffect(() => {
         const dt = {
@@ -48,7 +47,6 @@ const Lobby = () => {
         } 
     }
 
-    /* Made for sprint 2
     const goOutGame = async () => {      
         const data = {
             game_id: gameContext.id,
@@ -62,7 +60,7 @@ const Lobby = () => {
             setError(true);
         } 
         navigate("/");
-    }*/
+    }
 
     return (    
         <div className={styles.body}>
@@ -72,9 +70,8 @@ const Lobby = () => {
                 {error && <p className={styles.error}>{message}</p>}
             <div className={styles.button}>
                 {host && <FunctionButton text={"Iniciar Partida" } onClick={() => startGame(data)}/>}
-               {/* sprint 2
                {!hostHasLeft && <FunctionButton text={"Abandonar Partida"} onClick={goOutGame}/>}
-                {hostHasLeft && <FunctionButton text={"Volver a inicio"} onClick={navigate("/")}/>}*/}
+                {hostHasLeft && <FunctionButton text={"Volver a inicio"} onClick={navigate("/")}/>} 
             </div>
         </div>   
     )

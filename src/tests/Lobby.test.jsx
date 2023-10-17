@@ -6,11 +6,10 @@ import { GameContext, PlayerContext } from "../components/game/Game";
 
 describe("Lobby component", () => {
     
-    //Test for sprint 2
-    // test("should render the go out game button", async () => {
-        //     render(<BrowserRouter><Lobby /></BrowserRouter>);
-        //     expect(screen.getByRole("button", { name: "Abandonar Partida" })).toBeDefined();
-        // })
+    test("should render the go out game button", async () => {
+        render(<BrowserRouter><Lobby /></BrowserRouter>);
+        expect(screen.getByRole("button", { name: "Abandonar Partida" })).toBeDefined();
+    })
         
     //test for players 
     test("should render the waiting for host message", async () => {
