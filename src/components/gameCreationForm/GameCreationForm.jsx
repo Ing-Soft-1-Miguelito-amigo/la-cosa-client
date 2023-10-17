@@ -93,6 +93,58 @@ const GameCreationForm = () => {
           </span>
         )}
 
+      {/*Min Players*/}
+      <label className={styles.labelCreation} htmlFor="minPlayers">
+             Mínimo Jugadores
+            </label>
+            <input
+              type="number"
+              id="minPlayers"
+              className={styles.inputCreation}
+              {...register("game.min_players", {
+                required: {
+                  value: true,
+                  message: "Ingrese valor numérico",
+                },
+                validate: (value) => {
+                if ( value < 4 || value > 12)
+                    return "Ingrese valor entre 4 y 12";
+                  else return true;
+                },
+              })}
+            />
+            {errors?.game?.min_players && (
+              <span className={styles.spanCreation}>
+                {errors.game.min_players.message}
+              </span>
+            )}
+
+      {/*Max Players*/}
+    <label className={styles.labelCreation} htmlFor="maxPlayers">
+             Máximo Jugadores
+            </label>
+            <input
+              type="number"
+              id="maxPlayers"
+              className={styles.inputCreation}
+              {...register("game.max_players", {
+                required: {
+                  value: true,
+                  message: "Ingrese valor numérico",
+                },
+                validate: (value) => {
+                  if ( value < 4 || value > 12)
+                    return "Ingrese valor entre 4 y 12";
+                  else return true;
+                },
+              })}
+            />
+            {errors?.game?.max_players && (
+              <span className={styles.spanCreation}>
+                {errors.game.max_players.message}
+              </span>
+            )}
+
         {errorData && (
           <span className={styles.spanCreation} role="alert">
             {message}
