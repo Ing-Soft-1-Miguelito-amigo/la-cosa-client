@@ -1,14 +1,17 @@
 import { useState, useContext, useEffect } from 'react';
-import { GameContext, PlayerContext } from "../Game"
+import { GameContext, PlayerContext, CardSelectedContext, SetDiscardContext, SetPlayerSelectedContext } from "../Game"
 import FetchStealCard from '../../../containers/FetchStealCard';
 import style from '../deck/deck.module.css';
 
 const Deck = (
-
+    
 ) => {
     
     const gameCtx = useContext(GameContext);
     const player = useContext(PlayerContext);
+    const cardSelected = useContext(CardSelectedContext); //Discard Card
+    const setDiscard = useContext(SetDiscardContext);
+    const setPlayerSelected = useContext(SetPlayerSelectedContext);
 
     const gameId = gameCtx.id;
     const turnPlayer = gameCtx.turn_owner;
@@ -16,6 +19,9 @@ const Deck = (
     const [message, setMessage] = useState('');
     const [clicked, setClicked] = useState(false);
     
+    const styleDeck = player.table_position == turnPlayer ? style.img : style.img2;
+
+
     useEffect(()=>{
         setMessage('');
         setClicked(false)
@@ -46,18 +52,26 @@ const Deck = (
         }
     }
 
+    const discardCard = async () => {
+        if (player.table_position == turnPlayer && cardSelected.cardId !== undefined) {     
+            setDiscard.setDiscard(true);    
+            setPlayerSelected({});
+        }
+    }
+
+
     return (
         <div className={style.deckContainer}>
             <div className={style.cardDeckContainer}>
                 <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
-                    <img src={`../../../src/img/atk.png`} className={style.img} />
+                    <img src={`../../../src/img/atk.png`} className={styleDeck} />
                 </div>
-                <div className={style.cardDeck}>
-                    <img src={`../../../src/img/default.png`} className={style.img2} />
+                <div className={style.cardDeck} onClick={discardCard} data-testid="discard">
+                    <img src={`../../../src/img/tachoBasura.png`}  className={style.trash} />
                 </div>
             </div>
             <div className={style.messageContainer}>
-                <span className={style.span} data-testid="message">
+                <span className={style.span} data-testid="message" >
                     {message}
                 </span>
             </div>

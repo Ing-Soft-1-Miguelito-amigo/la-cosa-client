@@ -1,6 +1,12 @@
 import { useContext, useMemo, useState, useEffect } from "react";
 import styles from "./player.module.css";
-import { CardSelectedContext, PlayerSelectedContext, SetPlayerSelectedContext, PlayersAliveContext, TurnOwnerContext } from "../Game";
+import { CardSelectedContext, 
+  PlayerSelectedContext, 
+  SetPlayerSelectedContext, 
+  PlayersAliveContext, 
+  TurnOwnerContext, 
+  SetDiscardContext 
+} from "../Game";
 
 
 
@@ -13,6 +19,7 @@ const Player = ({
   const cardSelected = useContext(CardSelectedContext)
   const playersAlive = useContext(PlayersAliveContext);
   const turnOwner = useContext(TurnOwnerContext);
+  const setDiscard = useContext(SetDiscardContext);
 
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
@@ -46,6 +53,7 @@ const Player = ({
       && (name == playersToSelect[0].name
         || name == playersToSelect[1].name)) {
       setPlayerSelected({ name: name });
+      setDiscard.setDiscard(false);
     }
     else {
       return 0;
