@@ -8,8 +8,6 @@ import { CardSelectedContext,
   SetDiscardContext 
 } from "../Game";
 
-
-
 const Player = ({
   name,
   playerData
@@ -33,6 +31,12 @@ const Player = ({
   };
 
   useEffect(() => {
+    if (cardSelected.cardId == undefined) {
+      setPlayerSelected({});
+    }
+  },[cardSelected])
+
+  useEffect(() => {
     // obtain the player alives next to the turnOwner
     const pTS = () => {
       const turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
@@ -48,15 +52,15 @@ const Player = ({
     // verify if the player selected is one of the players alives next to the turnOwner
     // and if the player selected is not the player who is playing
     // and if the card was selected
-    if (cardSelected.cardId !== undefined
+    if (namePlayerSelected === name) {
+      setPlayerSelected({});
+    }
+    else if (cardSelected.cardId !== undefined
       && name !== namePlayerSelected
       && (name == playersToSelect[0].name
         || name == playersToSelect[1].name)) {
       setPlayerSelected({ name: name });
       setDiscard.setDiscard(false);
-    }
-    else {
-      return 0;
     }
     return 1;
   };
