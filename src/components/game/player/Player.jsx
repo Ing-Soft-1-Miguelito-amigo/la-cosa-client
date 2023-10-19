@@ -1,8 +1,12 @@
 import { useContext, useMemo, useState, useEffect } from "react";
 import styles from "./player.module.css";
-import { CardSelectedContext, PlayerSelectedContext, SetPlayerSelectedContext, PlayersAliveContext, TurnOwnerContext } from "../Game";
-
-
+import { CardSelectedContext, 
+  PlayerSelectedContext, 
+  SetPlayerSelectedContext, 
+  PlayersAliveContext, 
+  TurnOwnerContext, 
+  SetDiscardContext 
+} from "../Game";
 
 const Player = ({
   name,
@@ -13,6 +17,7 @@ const Player = ({
   const cardSelected = useContext(CardSelectedContext)
   const playersAlive = useContext(PlayersAliveContext);
   const turnOwner = useContext(TurnOwnerContext);
+  const setDiscard = useContext(SetDiscardContext);
 
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
@@ -24,6 +29,12 @@ const Player = ({
     backgroundColor: isAlive ? (namePlayerSelected === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)",
     borderColor: hasTurn ? "rgb(255, 127, 80)" : (namePlayerSelected === name ? "rgb(250, 250, 250)" : "rgb(0, 0, 0)"),
   };
+
+  useEffect(() => {
+    if (cardSelected.cardId == undefined) {
+      setPlayerSelected({});
+    }
+  },[cardSelected])
 
   useEffect(() => {
     // obtain the player alives next to the turnOwner
@@ -41,14 +52,15 @@ const Player = ({
     // verify if the player selected is one of the players alives next to the turnOwner
     // and if the player selected is not the player who is playing
     // and if the card was selected
-    if (cardSelected.cardId !== undefined
+    if (namePlayerSelected === name) {
+      setPlayerSelected({});
+    }
+    else if (cardSelected.cardId !== undefined
       && name !== namePlayerSelected
       && (name == playersToSelect[0].name
         || name == playersToSelect[1].name)) {
       setPlayerSelected({ name: name });
-    }
-    else {
-      return 0;
+      setDiscard.setDiscard(false);
     }
     return 1;
   };

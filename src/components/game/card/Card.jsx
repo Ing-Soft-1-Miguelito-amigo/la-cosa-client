@@ -15,12 +15,13 @@ const Card = ({
     const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card;
 
     const selectCard = () => {
-        if (cardId !== cardSelected.cardId && turnOwner === tablePosition) {
+        if (cardSelected.cardId === cardId) {
+          setCardSelected({});
+        }
+        else if (cardId !== cardSelected.cardId && turnOwner === tablePosition) {
           setCardSelected({ cardId:cardId, code:code,number_in_card:number_in_card });
         }
-        else {
-          return 0;
-        }
+
         return 1;
       };
 

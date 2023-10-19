@@ -1,8 +1,8 @@
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, should, test  } from "vitest";
+import { fireEvent, render, screen, renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, test } from "vitest";
 import Player from "../components/game/player/Player";
-import { CardSelectedContext, PlayerSelectedContext, SetPlayerSelectedContext, PlayersAliveContext, TurnOwnerContext } from "../components/game/Game";
+import { CardSelectedContext, PlayerSelectedContext, SetPlayerSelectedContext, PlayersAliveContext, TurnOwnerContext, SetDiscardContext } from "../components/game/Game";
 const props = {
     name: "a",
     playerData: {
@@ -48,19 +48,21 @@ describe("Player component", () => {
     
     beforeEach(() => {
         render(
-            <PlayerSelectedContext.Provider value={mockContext.playerSelected.name}>
-                <SetPlayerSelectedContext.Provider value={mockContext.setPlayerSelected}>
-                    <CardSelectedContext.Provider value={mockContext.cardSelected}>
-                        <PlayersAliveContext.Provider value={mockContext.playersAlive}>
-                            <TurnOwnerContext.Provider value={mockContext.turnOwner}>
-                                <Player {...props} />
-                                <Player {...props2} />
-                                <Player {...props3} />
-                            </TurnOwnerContext.Provider>
-                        </PlayersAliveContext.Provider>
-                    </CardSelectedContext.Provider>
-                </SetPlayerSelectedContext.Provider>
-            </PlayerSelectedContext.Provider>
+            <SetDiscardContext.Provider value={{setDiscard: vi.fn()}}>
+                <PlayerSelectedContext.Provider value={mockContext.playerSelected.name}>
+                    <SetPlayerSelectedContext.Provider value={mockContext.setPlayerSelected}>
+                        <CardSelectedContext.Provider value={mockContext.cardSelected}>
+                            <PlayersAliveContext.Provider value={mockContext.playersAlive}>
+                                <TurnOwnerContext.Provider value={mockContext.turnOwner}>
+                                    <Player {...props} />
+                                    <Player {...props2} />
+                                    <Player {...props3} />
+                                </TurnOwnerContext.Provider>
+                            </PlayersAliveContext.Provider>
+                        </CardSelectedContext.Provider>
+                    </SetPlayerSelectedContext.Provider>
+                </PlayerSelectedContext.Provider>
+            </SetDiscardContext.Provider>
         );
     });
     
@@ -73,21 +75,19 @@ describe("Player component", () => {
         const player1 = screen.getByTestId("player-a");        
         const player2 = screen.getByTestId("player-a2");        
         const player3 = screen.getByTestId("player-a3");      
-
+    
         fireEvent.click(player1);
-        fireEvent.click(player1);
-        expect(mockContext.setPlayerSelected).toHaveBeenCalledTimes(0);
-        fireEvent.click(player2);
         expect(mockContext.setPlayerSelected).toHaveBeenCalledTimes(1);
-        fireEvent.click(player3);
+        fireEvent.click(player2);
         expect(mockContext.setPlayerSelected).toHaveBeenCalledTimes(2);
+        fireEvent.click(player3);
+        expect(mockContext.setPlayerSelected).toHaveBeenCalledTimes(3);
     });
 
     test("should player selected have diferent style properties than not seleted", async () => {
         const player1 = screen.getByTestId("player-a");        
         const player2 = screen.getByTestId("player-a2");        
         const player3 = screen.getByTestId("player-a3");      
-
 
         expect(window.getComputedStyle(player1)._values["background-color"]).not.toEqual(window.getComputedStyle(player2)._values["background-color"]);
         expect(window.getComputedStyle(player3)._values["background-color"]).toEqual(window.getComputedStyle(player2)._values["background-color"]);

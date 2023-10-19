@@ -59,11 +59,11 @@ describe('Component Card', () => {
         const card3 = screen.getByTestId("card-3");        
         fireEvent.click(card1);
         fireEvent.click(card1);
-        expect(mockContext.setCardSelected).toHaveBeenCalledTimes(0);
-        fireEvent.click(card2);
-        expect(mockContext.setCardSelected).toHaveBeenCalledTimes(1);
-        fireEvent.click(card3);
         expect(mockContext.setCardSelected).toHaveBeenCalledTimes(2);
+        fireEvent.click(card2);
+        expect(mockContext.setCardSelected).toHaveBeenCalledTimes(3);
+        fireEvent.click(card3);
+        expect(mockContext.setCardSelected).toHaveBeenCalledTimes(4);
     });
 
     test('should selected card have diferent style properties than not seleted', async () => {
