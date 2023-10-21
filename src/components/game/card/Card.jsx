@@ -52,7 +52,6 @@ const Card = ({
         default: //ending exchange or ending turn or lifting card
           return 0;     
         
-        return 1;
       };
     }
 

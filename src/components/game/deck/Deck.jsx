@@ -21,13 +21,13 @@ const Deck = (
     const [message, setMessage] = useState('');
     const [clicked, setClicked] = useState(false);
     
-    const styleDeck = player.table_position == turnPlayer ? style.img : style.img2;
+    const styleDeck = player.table_position == turnOwner ? style.img : style.img2;
 
 
     useEffect(()=>{
         setMessage('');
         setClicked(false)
-    },[turnPlayer])
+    },[turnOwner])
 
 
     const liftCard = async () => {
@@ -36,7 +36,7 @@ const Deck = (
                 if (player.hand.length >= 5){
                     setMessage('Tienes el maximo de cartas ya!')
                 }
-                else if (player.table_position == turnPlayer && !clicked) {
+                else if (player.table_position == turnOwner && !clicked) {
                     const data = {game_id: gameId, player_id: player.id}
                     const response = await FetchStealCard(data)
                     if(response.status === 200) {
@@ -47,7 +47,7 @@ const Deck = (
                         setMessage(response.detail)
                     }
                 }
-                else if (player.table_position == turnPlayer && clicked) {
+                else if (player.table_position == turnOwner && clicked) {
                     setMessage('Ya robaste una carta')
                 }
                 else {
@@ -61,7 +61,7 @@ const Deck = (
     }
 
     const discardCard = async () => {
-        if (player.table_position == turnPlayer && cardSelected.cardId !== undefined) {     
+        if (player.table_position == turnOwner && cardSelected.cardId !== undefined) {     
             setDiscard.setDiscard(true);    
             setPlayerSelected({});
         }

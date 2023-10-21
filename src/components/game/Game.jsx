@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./game.module.css";
 import Lobby from "./lobby/Lobby";
@@ -39,6 +39,9 @@ const Game = () => {
   const [actionText, setActionText] = useState("");
   // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
   const [gameState, setGameState] = useState();
+  const timerIdRef2 = useRef(null);
+
+
 
   let gameId = 0;
   let playerId = 0;
@@ -49,6 +52,47 @@ const Game = () => {
     gameId = params.state.gameId;
     playerId = params.state.playerId;
   }
+  
+  //polling for gameData
+  //Polling for game state and players list.
+  useEffect(() => {
+    FetchData({
+      onSetGameData: setGameData,
+      onSetPlayers: setPlayers,
+      gameId: gameId,
+    });
+
+    // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
+    setGameState(gameData.state);
+    if (players[playerId - 1] && !players[playerId - 1].alive) {
+      setGameState(3);
+    }
+  });
+
+
+
+  //polling for player
+  useEffect(  () => {
+    let timeoutId2;
+
+    const pollingCallback2 = () => {
+      FetchPlayer({ setPlayer, gameId, playerId });
+      // Sleep for 1 second before polling again.
+      timeoutId2= setTimeout(pollingCallback2, 2000); // 2 seconds
+    };
+
+    pollingCallback2(); 
+    timerIdRef2.current = setInterval(pollingCallback2, 2000);
+
+    const stopPolling = () => {
+      clearInterval(timerIdRef2.current);
+    };
+
+    return () => {
+      stopPolling();
+    };
+
+  }, [gameData.turn]);
 
 
   useEffect(() => {
@@ -85,36 +129,6 @@ const Game = () => {
     setDiscard(false);
   };
 
-  const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  //Polling for game state and players list.
-  useEffect(() => {
-    FetchData({
-      onSetGameData: setGameData,
-      onSetPlayers: setPlayers,
-      gameId: gameId,
-    });
-
-    // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
-    setGameState(gameData.state);
-    if (players[playerId - 1] && !players[playerId - 1].alive) {
-      setGameState(3);
-    }
-  });
-
-  //This function should be changed for sprint 2. Is not doing polling. 
-  useEffect(() => {
-    FetchPlayer({ setPlayer, gameId, playerId });
-  }, [gameData.turn]);
-
-
-
-  //This function should be changed for sprint 2. Is not doing polling. 
-  // useEffect(() => {
-  //     FetchPlayer({setPlayer, gameId, playerId});
-  // },[gameData.state]);
 
   const gameStyle = `
     ${gameData.state === 0 ? "lobby" : "game"}
@@ -145,7 +159,7 @@ const Game = () => {
       )
       break;
     // game
-    default:
+    case 1:
       renderer = (
         <div className={"game"}>
           <span className={style.title} data-testid="La Cosa">La Cosa</span>

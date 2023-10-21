@@ -5,7 +5,8 @@ import { CardSelectedContext,
   SetPlayerSelectedContext, 
   PlayersAliveContext, 
   TurnOwnerContext, 
-  SetDiscardContext 
+  SetDiscardContext, 
+  GameContext
 } from "../Game";
 
 const Player = ({
@@ -16,13 +17,16 @@ const Player = ({
   const setPlayerSelected = useContext(SetPlayerSelectedContext);
   const cardSelected = useContext(CardSelectedContext)
   const playersAlive = useContext(PlayersAliveContext);
-  const turnOwner = useContext(TurnOwnerContext);
   const setDiscard = useContext(SetDiscardContext);
-
+  const gameData = useContext(GameContext)
+  const turnOwner = gameData.turn.owner;
+  const turnState = gameData.turn.state; 
+  
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
   const [playersToSelect, setPlayersToSelect] = useState([]);
-
+  let turnOwnerIndex; 
+  
   const playerStyle = namePlayerSelected === name ? styles.playerSelected : styles.playerStyle;
 
   const style = {
@@ -36,10 +40,11 @@ const Player = ({
     }
   },[cardSelected])
 
+  
   useEffect(() => {
     // obtain the player alives next to the turnOwner
     const pTS = () => {
-      const turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
+      turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
       const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
       const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
       return [player_on_left, player_on_right];
@@ -48,22 +53,58 @@ const Player = ({
     setPlayersToSelect(pTS());
   }, [turnOwner, cardSelected, namePlayerSelected]);
 
+  console.log("card", cardSelected);
+    
   const selectPlayer = () => {
-    // verify if the player selected is one of the players alives next to the turnOwner
-    // and if the player selected is not the player who is playing
-    // and if the card was selected
-    if (namePlayerSelected === name) {
-      setPlayerSelected({});
+    console.log("turn state", turnState)
+    switch(turnState){
+      
+    //taking decision
+    case 1: 
+            if (cardSelected.cardId !== undefined  &&   //if a card has been selected. 
+                name !== namePlayerSelected )           //if another player has been selected   
+              {
+                /*check how to select depending on the card selected 
+                if the card is sospecha or cambio de lugar => select adyacent player
+                if the card is whisky or vigila tus espaldas => don't select player
+                if the card is mas vale que corras => select any player who is alive */
+                switch (cardSelected.code){
+                  case "whk": //whisky
+                  case "vte": //vigila tus espaldas
+                    setPlayerSelected({});
+                    setDiscard.setDiscard(false);
+                    break; 
+
+                  case "mvc": //más vale que corras  
+                    //check if the player selected is alive. 
+                    if (playerData.name !== playersAlive[turnOwnerIndex].name && 
+                      playersAlive.findIndex(player => player.name === name) !== -1) {
+                      setPlayerSelected({name: name})
+                      setDiscard.setDiscard(false);
+                    }
+                    break; 
+                 
+                  default: //sospecha, análisis, lanzallamas, cambio de lugar
+                    if (name == playersToSelect[0].name || name == playersToSelect[1].name){
+                      setPlayerSelected({ name: name });
+                      setDiscard.setDiscard(false);
+                    } 
+                  break; 
+              }
+            }
+            else{
+              console.log(cardSelected.cardId, namePlayerSelected)
+            }
+            break; 
+    case 2: 
+      setPlayerSelected({})
+      break;
+    default: 
+      setPlayerSelected({})
+      break;
+      
     }
-    else if (cardSelected.cardId !== undefined
-      && name !== namePlayerSelected
-      && (name == playersToSelect[0].name
-        || name == playersToSelect[1].name)) {
-      setPlayerSelected({ name: name });
-      setDiscard.setDiscard(false);
-    }
-    return 1;
-  };
+  }; 
 
   return (
     <div className={playerStyle} style={style} onClick={selectPlayer} data-testid={"player-"+name}>

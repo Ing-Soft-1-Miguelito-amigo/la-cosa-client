@@ -1,4 +1,4 @@
-import GameList from "../components/game/GameList";
+import GameList from "../components/gameList/GameList";
 
 const GameListRouter = () => {
     return (
