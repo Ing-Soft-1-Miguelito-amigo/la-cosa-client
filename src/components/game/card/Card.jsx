@@ -38,6 +38,7 @@ const Card = ({
             setCardSelected({});
           }
           else if ( kind === 1 && turnDestPlayer === player.name ) {
+            console.log("hasCardToDefend", hasCardToDefend);
             if (hasCardToDefend) {
               setCardSelected({ cardId:cardId, code:code, kind:kind});
             }

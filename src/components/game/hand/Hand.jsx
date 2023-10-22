@@ -5,7 +5,7 @@ import FetchCards from "../../../containers/FetchCards";
 import FetchResponse from "../../../containers/FetchResponse";
 import { useContext } from "react";
 import { PlayerContext, GameContext } from "../Game";
-import { set } from "react-hook-form";
+import FetchEndTurn from "../../../containers/FetchEndTurn";
 
 export const CardToDefendContext = createContext();
 
@@ -32,11 +32,15 @@ const Hand = ({ gameId, playerId }) => {
       switch(gameData.turn.played_card.code){
         case "lla": 
           //Card played lanzallamas, then check if player has nada de barbacoas
-          if (hand.filter(card => card.code === "nbd").length === 0) {
-            const data = {game_id: null, player_id: playerId, response_card_id: 0}
+          const filterNdb = hand.filter(card => card.code === "ndb")
+          if (filterNdb.length === 0) {
+            const data = {game_id: gameId, player_id: playerId, response_card_id:null}
             setHasCardToDefend(false);
             FetchResponse(data);
           } 
+          else {
+            setHasCardToDefend(true);
+          }
           break;
         default:
           setHasCardToDefend(true);

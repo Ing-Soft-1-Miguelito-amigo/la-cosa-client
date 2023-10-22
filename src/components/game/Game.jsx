@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useRef } from "react";
+import { useState, useEffect, createContext, useRef, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./game.module.css";
 import Lobby from "./lobby/Lobby";
@@ -12,7 +12,8 @@ import FunctionButton from "../functionButton/FunctionButton";
 import FetchPlayCard from "../../containers/FetchPlayCard";
 import DeadPlayer from "./deadPlayer/DeadPlayer";
 import FetchDiscard from '../../containers/FetchDiscard';
-
+import FetchResponse from "../../containers/FetchResponse";
+import FetchEndTurn from "../../containers/FetchEndTurn";
 
 export const GameContext = createContext({})
 export const PlayerContext = createContext({})
@@ -90,6 +91,11 @@ const Game = () => {
           action: action
         });
         break;
+      case "ndb":
+        const canDefend = gameData.turn.state === 2 && gameData.turn.destination_player === player.name && gameData.turn.played_card.code === "lla";
+        console.log(canDefend)
+        const data = {game_id: gameId, player_id: playerId, response_card_id:cardSelected.cardId}
+        FetchResponse(data)
       default:
         setCanPlayCard({
           canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
@@ -98,7 +104,7 @@ const Game = () => {
         break;
     }
 
-  }, [playerSelected, discard]);
+  }, [playerSelected, discard, gameData.turn]);
 
   const playCard = () => {
     if (canPlayCard.action === 1) {
@@ -165,7 +171,7 @@ const Game = () => {
                           <Table players={players} />
                         </PlayerSelectedContext.Provider>
                       </PlayersAliveContext.Provider>
-
+                      <span>{canPlayCard.canPlayCard }</span >
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
 
                           <Deck />
