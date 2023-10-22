@@ -102,10 +102,22 @@ const Game = () => {
     } else {
       setActionText("Jugar carta");
     }
-    setCanPlayCard({
-      canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
-      action: action
-    });
+    switch (cardSelected.code) {
+      case "whk":
+      case "vte":
+        setCanPlayCard({
+          canPlayCard: (playerSelected.name === undefined || discard) && cardSelected.cardId !== undefined,
+          action: action
+        });
+        break;
+      default:
+        setCanPlayCard({
+          canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
+          action: action
+        });
+        break;
+    }
+
   }, [playerSelected, discard]);
 
   const playCard = () => {
@@ -128,7 +140,6 @@ const Game = () => {
     setCanPlayCard({});
     setDiscard(false);
   };
-
 
   const gameStyle = `
     ${gameData.state === 0 ? "lobby" : "game"}
