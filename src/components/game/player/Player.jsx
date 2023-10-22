@@ -59,11 +59,13 @@ const Player = ({
     };
     setPlayersToSelect(pTS());
 
-    if(namePlayerSelected !== playersToSelect.filter(player => player.name === name)[0].name){
+    if(namePlayerSelected !== playersToSelect.filter(player => player.name === name).name){
       setPlayerSelected({});
     }
 
+    
   }, [cardSelected]);
+
 
     
   const selectPlayer = () => {

@@ -69,30 +69,10 @@ const Game = () => {
     }
   });
 
-
-
   //polling for player
-  useEffect(  () => {
-    let timeoutId2;
-
-    const pollingCallback2 = () => {
-      FetchPlayer({ setPlayer, gameId, playerId });
-      // Sleep for 1 second before polling again.
-      timeoutId2= setTimeout(pollingCallback2, 2000); // 2 seconds
-    };
-
-    pollingCallback2(); 
-    timerIdRef2.current = setInterval(pollingCallback2, 2000);
-
-    const stopPolling = () => {
-      clearInterval(timerIdRef2.current);
-    };
-
-    return () => {
-      stopPolling();
-    };
-
-  }, [gameData.turn]);
+  useEffect(() => { 
+    FetchPlayer({ setPlayer, gameId, playerId });
+  },[gameData.turn])
 
 
   useEffect(() => {
