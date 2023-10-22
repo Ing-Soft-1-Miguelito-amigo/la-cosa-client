@@ -1,7 +1,7 @@
 import style from '../card/card.module.css'
 import { useContext } from "react"
 import { CardSelectedContext, SetCardSelectedContext, GameContext, PlayerContext} from "../Game"
-
+import { CardToDefendContext } from "../hand/Hand"
 const Card = ({
     cardId,
     code,
@@ -13,13 +13,13 @@ const Card = ({
     const player = useContext(PlayerContext);
     const setCardSelected = useContext(SetCardSelectedContext);
     const cardSelected = useContext(CardSelectedContext);
+    const hasCardToDefend = useContext(CardToDefendContext);
     const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card;
     
     const turn = game.turn;
     const turnOwner = turn.owner;
     const turnState = turn.state;
     const turnDestPlayer = turn.destination_player;
-    const turnPlayedCard = turn.played_card;
 
     const selectCard = () => {
       switch (turnState) {
@@ -38,7 +38,9 @@ const Card = ({
             setCardSelected({});
           }
           else if ( kind === 1 && turnDestPlayer === player.name ) {
-            setCardSelected({ cardId:cardId, code:code, kind:kind});
+            if (hasCardToDefend) {
+              setCardSelected({ cardId:cardId, code:code, kind:kind});
+            }
           }
           break;
 
