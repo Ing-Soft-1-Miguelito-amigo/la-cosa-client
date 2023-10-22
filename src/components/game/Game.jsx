@@ -40,9 +40,7 @@ const Game = () => {
   const [actionText, setActionText] = useState("");
   // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
   const [gameState, setGameState] = useState();
-  const timerIdRef2 = useRef(null);
-
-
+  const [canDefend, setCanDefend] = useState(false);
 
   let gameId = 0;
   let playerId = 0;
@@ -92,10 +90,8 @@ const Game = () => {
         });
         break;
       case "ndb":
-        const canDefend = gameData.turn.state === 2 && gameData.turn.destination_player === player.name && gameData.turn.played_card.code === "lla";
-        console.log(canDefend)
-        const data = {game_id: gameId, player_id: playerId, response_card_id:cardSelected.cardId}
-        FetchResponse(data)
+        setCanDefend(gameData.turn.state === 2 && gameData.turn.destination_player === player.name && gameData.turn.played_card.code === "lla");
+        break;
       default:
         setCanPlayCard({
           canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
@@ -126,6 +122,44 @@ const Game = () => {
     setCanPlayCard({});
     setDiscard(false);
   };
+
+ const defendCard = () => {
+    FetchResponse({
+      "game_id": gameId,
+      "player_id": playerId,
+      "response_card_id": cardSelected.cardId
+    });
+
+    setPlayerSelected({});
+    setCardSelected({});
+    setCanPlayCard({});
+    setDiscard(false);
+  }
+  
+
+  const notDefendCard = () => {
+    FetchResponse({
+      "game_id": gameId,
+      "player_id": playerId,
+      "response_card_id": null,
+    });
+
+    setPlayerSelected({});
+    setCardSelected({});
+    setCanPlayCard({});
+    setDiscard(false);
+  }
+  
+  useEffect(() => {
+    if (gameData.state === 1){
+      if (gameData.turn.state === 5) {
+        FetchEndTurn({
+          gameId,
+        })
+      };
+    }
+  }, [gameData.turn]); 
+
 
   const gameStyle = `
     ${gameData.state === 0 ? "lobby" : "game"}
@@ -171,9 +205,9 @@ const Game = () => {
                           <Table players={players} />
                         </PlayerSelectedContext.Provider>
                       </PlayersAliveContext.Provider>
-                      <span>{canPlayCard.canPlayCard }</span >
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
-
+                      {canDefend && <FunctionButton text={"Defenderme"} onClick={defendCard}/>}
+                      {canDefend && <FunctionButton text={"No defenderme"} onClick={notDefendCard} />}
                           <Deck />
                     </SetDiscardContext.Provider>
                   </SetPlayerSelectedContext.Provider>
