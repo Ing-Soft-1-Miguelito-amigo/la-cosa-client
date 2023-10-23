@@ -7,13 +7,13 @@
 }
 
 .endOfGame {
-    background-color: #942d29;
+    background-color: #6d211e5d;
     display: flex;
     display: block;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    border: 1.5vh solid  #5f1d1b;
+    border: 0.5vh solid  #5f1d1b69;
     height: 50vh;
     line-height: 15vh;
     margin-left: 30%;
@@ -32,6 +32,6 @@
     display: flex;
     justify-content: center;
     align-items: center; 
-    font-size: 4vh;
+    font-size: 40px;
     margin-top: 20%;
 }

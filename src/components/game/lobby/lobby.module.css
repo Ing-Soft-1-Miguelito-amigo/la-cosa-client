@@ -7,12 +7,12 @@
 }
 
 .fade{
-    background-color: #942d29;
+    background-color: #6d211e5d;
     display: block;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    border: 1.5vh solid  #5f1d1b;
+    border: 0.5vh solid  #5f1d1b69;
     height: 50vh;
     line-height: 15vh;
     margin-left: 30%;

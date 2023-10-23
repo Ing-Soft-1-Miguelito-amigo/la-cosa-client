@@ -106,13 +106,6 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
       });
     }
 
-  // useEffect(()=>{
-  //   if (cardSelected.cardId === undefined && !hasCardToDefend){
-  //     defendCard(false);   
-  //   }
-  // },[hasCardToDefend]);
-
-
   return (
         <div className={"game"}>
           <span className={style.title} data-testid="La Cosa">La Cosa</span>
@@ -136,7 +129,7 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                   <div>
                     <SetCardSelectedContext.Provider value={setCardSelected}>
                       {player.alive ? <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}
-                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>: <DeadPlayer/>}
+                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>: <DeadPlayer socket={socket}/>}
                     </SetCardSelectedContext.Provider>
                   </div>
               </CardSelectedContext.Provider>

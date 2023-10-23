@@ -29,7 +29,9 @@ const EndOfGame = ({socket}) => {
     return response;
   } 
 
-  Response(gameId).then((response) => { setMessage(response.message)});
+  console.log("entro a endOfGame")
+  Response(gameId).then((response) => { setMessage(response.json.message)});
+  console.log(message)
   
   return (
     <>
