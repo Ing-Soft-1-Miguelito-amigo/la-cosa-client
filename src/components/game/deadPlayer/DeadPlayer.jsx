@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import styles from "./deadPlayer.module.css";
 import FunctionButton from "../../functionButton/FunctionButton";
 
-const DeadPlayer = () => {
+const DeadPlayer = ({socket}) => {
     const navigate = useNavigate();
     const goToHome = () => {
+        socket.disconnect();
         navigate("/");
     };
 

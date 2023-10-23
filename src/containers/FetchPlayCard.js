@@ -4,7 +4,7 @@ const FetchPlayCard = async ({
     gameId,
     playerId,
     cardId,
-    destination_name
+    destinationName
 }) => {
     const response = await httpRequest({
         method: "PUT",
@@ -13,7 +13,7 @@ const FetchPlayCard = async ({
             game_id: gameId,
             player_id: playerId,
             card_id: cardId,
-            destination_name: destination_name
+            destination_name: destinationName
         },
     });
 

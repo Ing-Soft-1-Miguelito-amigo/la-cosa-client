@@ -20,7 +20,7 @@ const GameRouter = () => {
     
     const gameSocket = createSocket("http://localhost:8000/", gameId, playerId);
 
-    return (<Core socket={gameSocket}/>)
+    return (<Core socket={gameSocket} gameId={gameId} playerId={playerId}/>)
 }
 
 export default GameRouter;

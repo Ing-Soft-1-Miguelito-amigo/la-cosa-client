@@ -4,7 +4,7 @@ import styles from "./endOfGame.module.css";
 import FunctionButton from "../functionButton/FunctionButton";
 import { getResults } from "../../containers/EndOfGameResults";
 
-const EndOfGame = () => {
+const EndOfGame = ({socket}) => {
   const navigate = useNavigate();
   const params = useLocation();
   const [message, setMessage] = useState("");
@@ -20,6 +20,7 @@ const EndOfGame = () => {
   }
 
   const goToHome = () => {
+    socket.disconnect()
     navigate("/");
   };
 
@@ -31,9 +32,8 @@ const EndOfGame = () => {
   const winner = players.filter((player) => player.alive === true);
   console.log(winner);
 
-  Response(gameId).then((response) => { setMessage(`Terminó el juego. El ganador es ${winner[0].name}`)});
+  Response(gameId).then((response) => { setMessage(response.message)});
   
-
   return (
     <>
       <div className={styles.endOfGame} data-testid ="text" >

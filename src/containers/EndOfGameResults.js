@@ -4,7 +4,7 @@ export const getResults = async(game_id) => {
     try {
         const response = await httpRequest({
         method: "GET",
-        service: `game/${game_id}`,
+        service: `game/${game_id}/results`,
         });
         return response;
     } catch (error) {

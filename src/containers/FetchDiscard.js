@@ -1,11 +1,20 @@
 import { httpRequest } from '../services/HttpService'
     
-const FetchDiscard = async ( data ) => {
+const FetchDiscard = async ({
+    gameId,
+    playerId,
+    cardId,
+    destinationName
+    }) => {
     try {
         const response = await httpRequest({
             method: 'PUT', 
             service: 'game/discard', 
-            payload: data
+            payload: { 
+                game_id: gameId,
+                player_id: playerId,
+                card_id: cardId,
+                destination_name: destinationName} 
         });
         return response;
     } catch (error) {
