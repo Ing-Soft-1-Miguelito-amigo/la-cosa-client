@@ -123,7 +123,7 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                     <SetDiscardContext.Provider value={{setDiscard: setDiscard, discard:discard}}>
                       <PlayersAliveContext.Provider value={players.filter(player => player.alive === true)}>
                         <PlayerSelectedContext.Provider value={playerSelected.name}>
-                          <Table players={players} />
+                          <Table players={players} player={player}/>
                         </PlayerSelectedContext.Provider>
                       </PlayersAliveContext.Provider>
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
