@@ -5,11 +5,8 @@ import styles from "./gameCreationForm.module.css";
 import FunctionButton from "../functionButton/FunctionButton";
 import { useNavigate } from "react-router-dom";
 import { FetchCreateGame } from "../../containers/FetchGameCreate.js";
-import { useDispatch } from "react-redux";
-import { setUserData } from "../../redux/userDataSlice.js";
 
 const GameCreationForm = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [errorData, setErrorData] = useState(false);
   const [message, setMessage] = useState("");
@@ -33,7 +30,6 @@ const GameCreationForm = () => {
     };
     if (response.status === 201) {
       setErrorData(false);
-      dispatch(setUserData(responseData));
       navigate(`/game/${response.json.game_id}`, { state: responseData });
     } else {
       setMessage(response.json.detail);

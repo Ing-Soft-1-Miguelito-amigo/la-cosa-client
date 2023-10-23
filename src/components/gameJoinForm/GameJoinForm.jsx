@@ -5,8 +5,6 @@ import { FetchJoinGame } from "../../containers/FetchJoinCards.js";
 import styles from "./gameJoinForm.module.css";
 import FunctionButton from "../functionButton/FunctionButton";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUserData } from "../../redux/userDataSlice.js";
 
 const GameJoinForm = () => {
   const navigate = useNavigate();
@@ -40,8 +38,6 @@ const GameJoinForm = () => {
     }
     if (response.status === 200) {
       setErrorData(false);
-      const dispatch = useDispatch();
-      dispatch(setUserData(responseData));
       navigate(`/game/${responseData.gameId}`, { state: responseData });
     } else if (response.status === 404 || response.status === 422) {
       setMessage(response.json.detail);
