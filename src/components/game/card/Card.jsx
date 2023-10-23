@@ -21,6 +21,7 @@ const Card = ({
     const turnDestPlayer = turn.destination_player;
 
     const selectCard = () => {
+      console.log("turn in card",turn)
       switch (turnState) {
         case 1: //playing card
           if (cardSelected.cardId === cardId) {

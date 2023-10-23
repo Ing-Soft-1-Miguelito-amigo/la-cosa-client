@@ -33,7 +33,7 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [actionText, setActionText] = useState("");
-  const [hasCardToDefend, setHasCardToDefend] = useState(false);
+  const [hasCardToDefend, setHasCardToDefend] = useState();
 
   /*
   socket.on("discard",  (data) => setWhisky(JSON.stringify(data)));
@@ -95,33 +95,30 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
     setCardSelected({});
     setDiscard(false);
   };
-
-  useEffect(()=>{
-    if (cardSelected.cardId === undefined && !hasCardToDefend){
-      defendCard(false);
-    }
-  },[hasCardToDefend]);
-
-
+  
   const defendCard = (
-    defend
-  ) => {
-    FetchResponse({
-      gameId: gameId,
-      playerId: playerId,
-      responseCardId: defend ? cardSelected.cardId : null
-    });
+    cardToDefend
+    ) => {
+      FetchResponse({
+        gameId: gameId,
+        playerId: playerId,
+        responseCardId: cardToDefend
+      });
+    }
 
-    setCardSelected({});
-    setHasCardToDefend(false);
-  }
+  // useEffect(()=>{
+
+  //   if (cardSelected.cardId === undefined && !hasCardToDefend){
+  //     defendCard(false);   
+  //   }
+  // },[hasCardToDefend]);
+
 
   return (
         <div className={"game"}>
           <span className={style.title} data-testid="La Cosa">La Cosa</span>
           <span className={style.span}>Jugando en {gameData.name}</span>
           <GameContext.Provider value={gameData}>
-            {/*<PlayerContext.Provider value={player}>*/}
               <CardSelectedContext.Provider value={cardSelected}>
                   <SetPlayerSelectedContext.Provider value={setPlayerSelected}>
                     <SetDiscardContext.Provider value={{setDiscard: setDiscard, discard:discard}}>
@@ -133,17 +130,17 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
                       {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defendCard(true)}/>}
                       {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defendCard(false)} />}
-                          <Deck />
+                          <Deck player={player}/>
                     </SetDiscardContext.Provider>
                   </SetPlayerSelectedContext.Provider>
                   
                   <div>
                     <SetCardSelectedContext.Provider value={setCardSelected}>
-                      <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend} player={player}/>
+                      <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}
+                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>
                     </SetCardSelectedContext.Provider>
                   </div>
               </CardSelectedContext.Provider>
-            {/*</PlayerContext.Provider>*/}
           </GameContext.Provider>  
         </div>) 
 };

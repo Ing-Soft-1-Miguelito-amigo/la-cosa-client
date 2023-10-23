@@ -16,8 +16,6 @@ const Core = ({socket, gameId, playerId}) => {
     }
 
     const handlePlayerStatusEvent = (data) => {
-        console.log("llega data de player_status")
-        console.log(data)
         setPlayerData(data);
     }
 
@@ -30,19 +28,18 @@ const Core = ({socket, gameId, playerId}) => {
         case 0:
         case 3:
             return (<Lobby socket={socket} player={playerData} gameData={gameData} gameId={gameId} playerId={playerId}/>)
-         
         case 1:
             //if (playerData.alive) {
                 return (<Game socket={socket} player={playerData} gameData={gameData} gameId={gameId} playerId={playerId}/>);
             //} else {
-             //   return (<DeadPlayer socket={socket}/>)
+            //   return (<DeadPlayer socket={socket}/>)
             //}
 
         case 2:
             return (<EndOfGame socket={socket}/>)
 
         default:
-            return (<div><h1>Error</h1></div>)
+            return (<div><h1>Waiting...</h1></div>)
     
     }
 }

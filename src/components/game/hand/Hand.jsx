@@ -9,15 +9,9 @@ import { PlayerContext, GameContext, SetCardSelectedContext } from "../Game";
 
 // export const CardToDefendContext = createContext();
 
-const Hand = ({ gameId, playerId, onSetHasCardToDefend, player}) => {
+const Hand = ({ gameId, playerId, onSetHasCardToDefend, player, gameData, setCardSelected, defendCard}) => {
   const [hand, setHand] = useState([]);
   const [tablePosition, setTablePosition] = useState();
-  const gameData = useContext(GameContext);
-  //const player = useContext(PlayerContext);
-  const setCardSelected = useContext(SetCardSelectedContext);
-
-  console.log("playerrrrrrrr:")
-  console.log(player)
 
   useEffect(() => {
     setHand(player.hand)
@@ -33,19 +27,20 @@ const Hand = ({ gameId, playerId, onSetHasCardToDefend, player}) => {
         case "lla": 
           //Card played 'lanzallamas', then check if player has 'nada de barbacoas'
           const cardToDefend = hand.filter(card => card.code === "ndb")
-          if (cardToDefend[0] !== undefined){
-            onSetHasCardToDefend(true)
-            setCardSelected({cardId: cardToDefend[0].cardId})
+          if (cardToDefend.length !== 0){
+            console.log("card to defend",cardToDefend[0].cardId)
+            defendCard( cardToDefend[0].cardId)
           }else{
-            onSetHasCardToDefend(false)
+            defendCard(null)
           }
           break;
         // the others cases for next spring (cdl,mvc.sos,ana,det,sed)
         default:
-          onSetHasCardToDefend(false);
+          defendCard(null)
+          break;
       }}
   
-  },[gameData.turn]);
+    },[gameData]);
 
   hand.sort((a, b) => a.id - b.id)
 
