@@ -1,7 +1,7 @@
 import style from '../card/card.module.css'
 import { useContext } from "react"
 import { CardSelectedContext, SetCardSelectedContext, GameContext, PlayerContext} from "../Game"
-import { CardToDefendContext } from "../hand/Hand"
+// import { CardToDefendContext } from "../hand/Hand"
 const Card = ({
     cardId,
     code,
@@ -13,7 +13,6 @@ const Card = ({
     const player = useContext(PlayerContext);
     const setCardSelected = useContext(SetCardSelectedContext);
     const cardSelected = useContext(CardSelectedContext);
-    const hasCardToDefend = useContext(CardToDefendContext);
     const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card;
     
     const turn = game.turn;
@@ -24,11 +23,10 @@ const Card = ({
     const selectCard = () => {
       switch (turnState) {
         case 1: //playing card
-          console.log("kind", kind);
           if (cardSelected.cardId === cardId) {
             setCardSelected({}); 
           }
-          else if (turnOwner === tablePosition && (kind === 0 || kind === 2)) {
+          else if (turnOwner === tablePosition && kind !== 5) {
             setCardSelected({ cardId:cardId, code:code, kind:kind });
           }
           break;
@@ -37,11 +35,8 @@ const Card = ({
           if (cardSelected.cardId === cardId) {
             setCardSelected({});
           }
-          else if ( kind === 1 && turnDestPlayer === player.name ) {
-            console.log("hasCardToDefend", hasCardToDefend);
-            if (hasCardToDefend) {
+          else if ( kind === 1 && turnDestPlayer === player.name && code === "ndb") {
               setCardSelected({ cardId:cardId, code:code, kind:kind});
-            }
           }
           break;
 

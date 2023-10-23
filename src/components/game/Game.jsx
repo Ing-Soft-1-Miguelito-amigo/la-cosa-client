@@ -33,14 +33,14 @@ const Game = () => {
   const [player, setPlayer] = useState([]);
   const [gameData, setGameData] = useState({});
   const [players, setPlayers] = useState([]);
-  const [cardSelected, setCardSelected] = useState({});
-  const [playerSelected, setPlayerSelected] = useState({});
+  const [cardSelected, setCardSelected] = useState({});//{cardId, code, kind}
+  const [playerSelected, setPlayerSelected] = useState({});//{name}
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [actionText, setActionText] = useState("");
   // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
   const [gameState, setGameState] = useState();
-  const [canDefend, setCanDefend] = useState(false);
+  const [hasCardToDefend, setHasCardToDefend] = useState(false);
 
   let gameId = 0;
   let playerId = 0;
@@ -71,12 +71,21 @@ const Game = () => {
   //polling for player
   useEffect(() => { 
     FetchPlayer({ setPlayer, gameId, playerId });
+
+    if (gameData.state === 1){
+      if ((gameData.turn.state === 5 && canPlayCard.action === 2) || canPlayCard.action === 1) {
+        FetchEndTurn({
+          gameId,
+        })
+      };
+    }
+
   },[gameData.turn])
 
 
   useEffect(() => {
     const action = discard ? 1 : 2;
-    if (discard) {
+    if (discard && cardSelected !== undefined) {
       setActionText("Descartar carta");
     } else {
       setActionText("Jugar carta");
@@ -89,9 +98,6 @@ const Game = () => {
           action: action
         });
         break;
-      case "ndb":
-        setCanDefend(gameData.turn.state === 2 && gameData.turn.destination_player === player.name && gameData.turn.played_card.code === "lla");
-        break;
       default:
         setCanPlayCard({
           canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
@@ -100,7 +106,7 @@ const Game = () => {
         break;
     }
 
-  }, [playerSelected, discard, gameData.turn]);
+  }, [playerSelected, discard, cardSelected ,gameData.turn]);
 
   const playCard = () => {
     if (canPlayCard.action === 1) {
@@ -114,52 +120,33 @@ const Game = () => {
         gameId: gameId,
         playerId: playerId,
         cardId: cardSelected.cardId,
-        destination_name: playerSelected.name
+        destinationName: playerSelected.name === undefined ? players.filter(player => player.alive === true)[(players.filter(player => player.alive === true).findIndex(player => player.table_position === gameData.turn.owner) + 1) % players.filter(player => player.alive === true).length].name : playerSelected.name
       });
     }
     setPlayerSelected({});
     setCardSelected({});
-    setCanPlayCard({});
     setDiscard(false);
   };
 
- const defendCard = () => {
-    FetchResponse({
-      "game_id": gameId,
-      "player_id": playerId,
-      "response_card_id": cardSelected.cardId
-    });
-
-    setPlayerSelected({});
-    setCardSelected({});
-    setCanPlayCard({});
-    setDiscard(false);
-  }
-  
-
-  const notDefendCard = () => {
-    FetchResponse({
-      "game_id": gameId,
-      "player_id": playerId,
-      "response_card_id": null,
-    });
-
-    setPlayerSelected({});
-    setCardSelected({});
-    setCanPlayCard({});
-    setDiscard(false);
-  }
-  
-  useEffect(() => {
-    if (gameData.state === 1){
-      if (gameData.turn.state === 5) {
-        FetchEndTurn({
-          gameId,
-        })
-      };
+  useEffect(()=>{
+    if (cardSelected.cardId === undefined && !hasCardToDefend){
+      defendCard(false);
     }
-  }, [gameData.turn]); 
+  },[hasCardToDefend]);
 
+
+  const defendCard = (
+    defend
+  ) => {
+    FetchResponse({
+      gameId: gameId,
+      playerId: playerId,
+      responseCardId: defend ? cardSelected.cardId : null
+    });
+
+    setCardSelected({});
+    setHasCardToDefend(false);
+  }  
 
   const gameStyle = `
     ${gameData.state === 0 ? "lobby" : "game"}
@@ -206,15 +193,15 @@ const Game = () => {
                         </PlayerSelectedContext.Provider>
                       </PlayersAliveContext.Provider>
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
-                      {canDefend && <FunctionButton text={"Defenderme"} onClick={defendCard}/>}
-                      {canDefend && <FunctionButton text={"No defenderme"} onClick={notDefendCard} />}
+                      {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defendCard(true)}/>}
+                      {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defendCard(false)} />}
                           <Deck />
                     </SetDiscardContext.Provider>
                   </SetPlayerSelectedContext.Provider>
                   
                   <div>
                     <SetCardSelectedContext.Provider value={setCardSelected}>
-                      <Hand gameId={gameId} playerId={playerId} />
+                      <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}/>
                     </SetCardSelectedContext.Provider>
                   </div>
               </CardSelectedContext.Provider>

@@ -45,21 +45,26 @@ const Player = ({
     // obtain the player alives next to the turnOwner
     const pTS = () => {
       switch (cardSelected.code){
-        case "whk": //whisky
-        case "vte": //vigila tus espaldas
-          return [];
-        case "mvc": //más vale que corras
-          return playersAlive.filter(player => player.table_position != turnOwner)
-
-        default: //sospecha, análisis, lanzallamas, cambio de lugar
+        //sospecha, análisis, lanzallamas, cambio de lugar
+        case "sos": //sospecha
+        case "ana": //análisis
+        case "lla": //lanzallamas
+        case "cdl": //cambio de lugar
           turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
           const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
           const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
-          return [player_on_left, player_on_right];}
+          return [player_on_left, player_on_right];
+        
+        case "mvc": //más vale que corras
+          return playersAlive.filter(player => player.table_position != turnOwner);
+          
+        default: // defense cards, wiskey and vigila tus espaldas
+          return [];
+      }
     };
     setPlayersToSelect(pTS());
 
-    if(namePlayerSelected !== playersToSelect.filter(player => player.name === name).name){
+    if(namePlayerSelected !== playersToSelect.filter(player => player.name === namePlayerSelected).name){
       setPlayerSelected({});
     }
 
@@ -69,10 +74,8 @@ const Player = ({
 
     
   const selectPlayer = () => {
-    console.log("turn state", turnState)
     if (name === namePlayerSelected){
       setPlayerSelected({});
-      setDiscard.setDiscard(false);
     }
     else if ( cardSelected.cardId !== undefined &&
               turnState === 1){
@@ -82,17 +85,19 @@ const Player = ({
         if the card is whisky or vigila tus espaldas => don't select player
         if the card is mas vale que corras => select any player who is alive */
       switch (cardSelected.code){
-        case "whk": //whisky
-        case "vte": //vigila tus espaldas
-          setPlayerSelected({});
-          setDiscard.setDiscard(false);
-          break; 
-
-        default: //sospecha, análisis, lanzallamas, cambio de lugar, más vale que corras 
-          if (name === playersToSelect.filter(player => player.name === name)[0].name){
+        case "sos": //sospecha
+        case "ana": //análisis
+        case "lla": //lanzallamas
+        case "cdl": //cambio de lugar
+        case "mvc": //mas vale que corras
+          if (playersToSelect.filter(player => player.name === name).length !== 0){
             setPlayerSelected({ name: name });
             setDiscard.setDiscard(false);
-          } 
+          }
+          break; 
+        default: // defense cards, wiskey and vigila tus espaldas
+          setPlayerSelected({});
+          setDiscard.setDiscard(false);
         }
   };} 
   

@@ -62,7 +62,7 @@ const Deck = (
 
     const discardCard = async () => {
         if (player.table_position == turnOwner && cardSelected.cardId !== undefined) {     
-            setDiscard.setDiscard(true);    
+            setDiscard.setDiscard(!setDiscard.discard);
             setPlayerSelected({});
         }
     }

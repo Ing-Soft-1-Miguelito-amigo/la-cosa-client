@@ -1,11 +1,19 @@
 import { httpRequest } from "../services/HttpService";
 
-const FetchResponse = async (data) => {
+const FetchResponse = async ({
+  gameId,
+  playerId,
+  responseCardId
+}) => {
   try {
     const response = await httpRequest({
       method: "PUT",
       service: "game/response",
-      payload: data
+      payload: {
+        game_id: gameId,
+        player_id: playerId,
+        response_card_id: responseCardId
+      }
     });
     return response; 
   } catch (error) {
