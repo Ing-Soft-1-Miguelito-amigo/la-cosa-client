@@ -5,7 +5,8 @@ import { CardSelectedContext,
   SetPlayerSelectedContext, 
   PlayersAliveContext, 
   TurnOwnerContext, 
-  SetDiscardContext 
+  SetDiscardContext, 
+  GameContext
 } from "../Game";
 
 const Player = ({
@@ -16,13 +17,16 @@ const Player = ({
   const setPlayerSelected = useContext(SetPlayerSelectedContext);
   const cardSelected = useContext(CardSelectedContext)
   const playersAlive = useContext(PlayersAliveContext);
-  const turnOwner = useContext(TurnOwnerContext);
   const setDiscard = useContext(SetDiscardContext);
-
+  const gameData = useContext(GameContext)
+  const turnOwner = gameData.turn.owner;
+  const turnState = gameData.turn.state; 
+  
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
   const [playersToSelect, setPlayersToSelect] = useState([]);
-
+  let turnOwnerIndex; 
+  
   const playerStyle = namePlayerSelected === name ? styles.playerSelected : styles.playerStyle;
 
   const style = {
@@ -36,34 +40,67 @@ const Player = ({
     }
   },[cardSelected])
 
+  
   useEffect(() => {
     // obtain the player alives next to the turnOwner
     const pTS = () => {
-      const turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
-      const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
-      const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
-      return [player_on_left, player_on_right];
-
+      switch (cardSelected.code){
+        //sospecha, análisis, lanzallamas, cambio de lugar
+        case "sos": //sospecha
+        case "ana": //análisis
+        case "lla": //lanzallamas
+        case "cdl": //cambio de lugar
+          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
+          const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
+          const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
+          return [player_on_left, player_on_right];
+        
+        case "mvc": //más vale que corras
+          return playersAlive.filter(player => player.table_position != turnOwner);
+          
+        default: // defense cards, wiskey and vigila tus espaldas
+          return [];
+      }
     };
     setPlayersToSelect(pTS());
-  }, [turnOwner, cardSelected, namePlayerSelected]);
 
-  const selectPlayer = () => {
-    // verify if the player selected is one of the players alives next to the turnOwner
-    // and if the player selected is not the player who is playing
-    // and if the card was selected
-    if (namePlayerSelected === name) {
+    if(namePlayerSelected !== playersToSelect.filter(player => player.name === namePlayerSelected).name){
       setPlayerSelected({});
     }
-    else if (cardSelected.cardId !== undefined
-      && name !== namePlayerSelected
-      && (name == playersToSelect[0].name
-        || name == playersToSelect[1].name)) {
-      setPlayerSelected({ name: name });
-      setDiscard.setDiscard(false);
+
+    
+  }, [cardSelected]);
+
+
+    
+  const selectPlayer = () => {
+    if (name === namePlayerSelected){
+      setPlayerSelected({});
     }
-    return 1;
-  };
+    else if ( cardSelected.cardId !== undefined &&
+              turnState === 1){
+        //if a card has been selected. 
+        /*check how to select depending on the card selected 
+        if the card is sospecha or cambio de lugar => select adyacent player
+        if the card is whisky or vigila tus espaldas => don't select player
+        if the card is mas vale que corras => select any player who is alive */
+      switch (cardSelected.code){
+        case "sos": //sospecha
+        case "ana": //análisis
+        case "lla": //lanzallamas
+        case "cdl": //cambio de lugar
+        case "mvc": //mas vale que corras
+          if (playersToSelect.filter(player => player.name === name).length !== 0){
+            setPlayerSelected({ name: name });
+            setDiscard.setDiscard(false);
+          }
+          break; 
+        default: // defense cards, wiskey and vigila tus espaldas
+          setPlayerSelected({});
+          setDiscard.setDiscard(false);
+        }
+  };} 
+  
 
   return (
     <div className={playerStyle} style={style} onClick={selectPlayer} data-testid={"player-"+name}>

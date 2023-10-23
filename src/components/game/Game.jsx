@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useRef, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./game.module.css";
 import Lobby from "./lobby/Lobby";
@@ -12,7 +12,8 @@ import FunctionButton from "../functionButton/FunctionButton";
 import FetchPlayCard from "../../containers/FetchPlayCard";
 import DeadPlayer from "./deadPlayer/DeadPlayer";
 import FetchDiscard from '../../containers/FetchDiscard';
-
+import FetchResponse from "../../containers/FetchResponse";
+import FetchEndTurn from "../../containers/FetchEndTurn";
 
 export const GameContext = createContext({})
 export const PlayerContext = createContext({})
@@ -32,13 +33,14 @@ const Game = () => {
   const [player, setPlayer] = useState([]);
   const [gameData, setGameData] = useState({});
   const [players, setPlayers] = useState([]);
-  const [cardSelected, setCardSelected] = useState({});
-  const [playerSelected, setPlayerSelected] = useState({});
+  const [cardSelected, setCardSelected] = useState({});//{cardId, code, kind}
+  const [playerSelected, setPlayerSelected] = useState({});//{name}
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [actionText, setActionText] = useState("");
   // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
   const [gameState, setGameState] = useState();
+  const [hasCardToDefend, setHasCardToDefend] = useState(false);
 
   let gameId = 0;
   let playerId = 0;
@@ -49,46 +51,8 @@ const Game = () => {
     gameId = params.state.gameId;
     playerId = params.state.playerId;
   }
-
-
-  useEffect(() => {
-    const action = discard ? 1 : 2;
-    if (discard) {
-      setActionText("Descartar carta");
-    } else {
-      setActionText("Jugar carta");
-    }
-    setCanPlayCard({
-      canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
-      action: action
-    });
-  }, [playerSelected, discard]);
-
-  const playCard = () => {
-    if (canPlayCard.action === 1) {
-      FetchDiscard({
-        gameId: gameId,
-        playerId: playerId,
-        cardId: cardSelected.cardId
-      });
-    } else if (canPlayCard.action === 2) {
-      FetchPlayCard({
-        gameId: gameId,
-        playerId: playerId,
-        cardId: cardSelected.cardId,
-        destination_name: playerSelected.name
-      });
-    }
-    setPlayerSelected({});
-    setCardSelected({});
-    setCanPlayCard({});
-    setDiscard(false);
-  };
-
-  const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
+  
+  //polling for gameData
   //Polling for game state and players list.
   useEffect(() => {
     FetchData({
@@ -104,17 +68,85 @@ const Game = () => {
     }
   });
 
-  //This function should be changed for sprint 2. Is not doing polling. 
-  useEffect(() => {
+  //polling for player
+  useEffect(() => { 
     FetchPlayer({ setPlayer, gameId, playerId });
-  }, [gameData.turn_owner]);
+
+    if (gameData.state === 1){
+      if ((gameData.turn.state === 5 && canPlayCard.action === 2) || canPlayCard.action === 1) {
+        FetchEndTurn({
+          gameId,
+        })
+      };
+    }
+
+  },[gameData.turn])
 
 
+  useEffect(() => {
+    const action = discard ? 1 : 2;
+    if (discard && cardSelected !== undefined) {
+      setActionText("Descartar carta");
+    } else {
+      setActionText("Jugar carta");
+    }
+    switch (cardSelected.code) {
+      case "whk":
+      case "vte":
+        setCanPlayCard({
+          canPlayCard: (playerSelected.name === undefined || discard) && cardSelected.cardId !== undefined,
+          action: action
+        });
+        break;
+      default:
+        setCanPlayCard({
+          canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
+          action: action
+        });
+        break;
+    }
 
-  //This function should be changed for sprint 2. Is not doing polling. 
-  // useEffect(() => {
-  //     FetchPlayer({setPlayer, gameId, playerId});
-  // },[gameData.state]);
+  }, [playerSelected, discard, cardSelected ,gameData.turn]);
+
+  const playCard = () => {
+    if (canPlayCard.action === 1) {
+      FetchDiscard({
+        gameId: gameId,
+        playerId: playerId,
+        cardId: cardSelected.cardId
+      });
+    } else if (canPlayCard.action === 2) {
+      FetchPlayCard({
+        gameId: gameId,
+        playerId: playerId,
+        cardId: cardSelected.cardId,
+        destinationName: playerSelected.name === undefined ? players.filter(player => player.alive === true)[(players.filter(player => player.alive === true).findIndex(player => player.table_position === gameData.turn.owner) + 1) % players.filter(player => player.alive === true).length].name : playerSelected.name
+      });
+    }
+    setPlayerSelected({});
+    setCardSelected({});
+    setDiscard(false);
+  };
+
+  useEffect(()=>{
+    if (cardSelected.cardId === undefined && !hasCardToDefend){
+      defendCard(false);
+    }
+  },[hasCardToDefend]);
+
+
+  const defendCard = (
+    defend
+  ) => {
+    FetchResponse({
+      gameId: gameId,
+      playerId: playerId,
+      responseCardId: defend ? cardSelected.cardId : null
+    });
+
+    setCardSelected({});
+    setHasCardToDefend(false);
+  }  
 
   const gameStyle = `
     ${gameData.state === 0 ? "lobby" : "game"}
@@ -126,59 +158,61 @@ const Game = () => {
     }
   }, [gameData]);
 
+  let renderer;
   switch (gameState) {
     // lobby
     case 0:
-      return (
+      renderer = (
         <PlayerContext.Provider value={player}>
           <GameContext.Provider value={gameData}>
             <Lobby players={players}></Lobby>
           </GameContext.Provider>
         </PlayerContext.Provider>
-      )
-
+          )      
+      break;
     // deadPlayer
     case 3:
-      return (
+      renderer = (
         <DeadPlayer></DeadPlayer>
       )
-
+      break;
     // game
-    default:
-      return (
+    case 1:
+      renderer = (
         <div className={"game"}>
           <span className={style.title} data-testid="La Cosa">La Cosa</span>
           <span className={style.span}>Jugando en {gameData.name}</span>
-          <CardSelectedContext.Provider value={cardSelected}>
-            <TurnOwnerContext.Provider value={gameData.turn_owner}>
-              <SetPlayerSelectedContext.Provider value={setPlayerSelected}>
-                <SetDiscardContext.Provider value={{setDiscard: setDiscard, discard:discard}}>
-                  <PlayersAliveContext.Provider value={players.filter(player => player.alive === true)}>
-                    <PlayerSelectedContext.Provider value={playerSelected.name}>
-                      <Table players={players} />
-                    </PlayerSelectedContext.Provider>
-                  </PlayersAliveContext.Provider>
-
-                  {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
-
-                  <GameContext.Provider value={gameData}>
-                    <PlayerContext.Provider value={player}>
-                      <Deck />
-                    </PlayerContext.Provider>
-                  </GameContext.Provider>
-                </SetDiscardContext.Provider>
-              </SetPlayerSelectedContext.Provider>
-              <div>
-                <SetCardSelectedContext.Provider value={setCardSelected}>
-                  <Hand gameId={gameId} playerId={playerId} />
-                </SetCardSelectedContext.Provider>
-              </div>
-            </TurnOwnerContext.Provider>
-          </CardSelectedContext.Provider>
+          <GameContext.Provider value={gameData}>
+            <PlayerContext.Provider value={player}>
+              <CardSelectedContext.Provider value={cardSelected}>
+                  <SetPlayerSelectedContext.Provider value={setPlayerSelected}>
+                    <SetDiscardContext.Provider value={{setDiscard: setDiscard, discard:discard}}>
+                      <PlayersAliveContext.Provider value={players.filter(player => player.alive === true)}>
+                        <PlayerSelectedContext.Provider value={playerSelected.name}>
+                          <Table players={players} />
+                        </PlayerSelectedContext.Provider>
+                      </PlayersAliveContext.Provider>
+                      {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
+                      {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defendCard(true)}/>}
+                      {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defendCard(false)} />}
+                          <Deck />
+                    </SetDiscardContext.Provider>
+                  </SetPlayerSelectedContext.Provider>
+                  
+                  <div>
+                    <SetCardSelectedContext.Provider value={setCardSelected}>
+                      <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}/>
+                    </SetCardSelectedContext.Provider>
+                  </div>
+              </CardSelectedContext.Provider>
+            </PlayerContext.Provider>
+          </GameContext.Provider>  
         </div>
       )
+      break;
+    
   }
-
+  return (renderer);
 };
 
 export default Game;
