@@ -2,19 +2,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import styles from "./cardWhisky.module.css";
 
-const player = "Player Name ";
-
-const mock = {
-  message: player + "jugo whisky y estas son sus cartas!",
-  cards: [
-    {id: 4, code: "aeb", name: "str", kind: 1, description: "str", number_in_card: 4, state: "str", playable: true },
-    {id: 4, code: "aeb", name: "str", kind: 1, description: "str", number_in_card: 4, state: "str", playable: true },
-    {id: 4, code: "aeb", name: "str", kind: 1, description: "str", number_in_card: 4, state: "str", playable: true },
-    {id: 1, code: "aeb", name: "str", kind: 1, description: "str", number_in_card: 4, state: "str", playable: true }
-  ]
-};
-
-const CardWhisky = () => {
+const CardWhisky = (data) => {
   const [showComponent, setShowComponent] = useState(true);
 
   useEffect(() => {
@@ -27,7 +15,7 @@ const CardWhisky = () => {
     };
   }, []);
   
-  const hand = mock.cards; 
+  const hand = data.cards; 
 
   return (
     <>
