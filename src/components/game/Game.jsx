@@ -135,8 +135,8 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                   
                   <div>
                     <SetCardSelectedContext.Provider value={setCardSelected}>
-                      <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}
-                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>
+                      {player.alive ? <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}
+                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>: <DeadPlayer/>}
                     </SetCardSelectedContext.Provider>
                   </div>
               </CardSelectedContext.Provider>
