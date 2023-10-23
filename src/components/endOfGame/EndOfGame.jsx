@@ -28,9 +28,6 @@ const EndOfGame = ({socket}) => {
     const response = await getResults(gameId);
     return response;
   } 
-  
-  const winner = players.filter((player) => player.alive === true);
-  console.log(winner);
 
   Response(gameId).then((response) => { setMessage(response.message)});
   
