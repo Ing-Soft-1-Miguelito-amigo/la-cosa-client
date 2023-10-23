@@ -35,14 +35,14 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState();
 
-  /*
-  socket.on("discard",  (data) => setWhisky(JSON.stringify(data)));
-  socket.on("action",   (data) => setWhisky(JSON.stringify(data)));
-  socket.on("defense",  (data) => setWhisky(JSON.stringify(data)));
-  socket.on("analisis", (data) => setWhisky(JSON.stringify(data)));
-  socket.on("sospecha", (data) => setWhisky(JSON.stringify(data)));
-  socket.on("whisky",   (data) => setWhisky(JSON.stringify(data)));
-  */
+  socket.on("discard",  (data) => console.log(JSON.stringify(data)));
+  socket.on("action",   (data) => console.log(JSON.stringify(data)));
+  socket.on("defense",  (data) => console.log(JSON.stringify(data)));
+  socket.on("analisis", (data) => console.log(JSON.stringify(data)));
+  socket.on("whisky",   (data) => console.log(JSON.stringify(data)));
+  socket.on("sospecha", (data) => console.log(JSON.stringify(data)));
+
+
   const players = gameData.players;
   useEffect(() => {
       if ((gameData.turn.state === 5 && canPlayCard.action === 2) || canPlayCard.action === 1) {
@@ -107,7 +107,6 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
     }
 
   // useEffect(()=>{
-
   //   if (cardSelected.cardId === undefined && !hasCardToDefend){
   //     defendCard(false);   
   //   }

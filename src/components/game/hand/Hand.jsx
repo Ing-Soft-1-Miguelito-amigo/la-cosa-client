@@ -28,13 +28,11 @@ const Hand = ({ gameId, playerId, onSetHasCardToDefend, player, gameData, setCar
           //Card played 'lanzallamas', then check if player has 'nada de barbacoas'
           const cardToDefend = hand.filter(card => card.code === "ndb")
           if (cardToDefend.length !== 0){
-            console.log("card to defend",cardToDefend[0].cardId)
-            defendCard( cardToDefend[0].cardId)
+            defendCard( cardToDefend[0].id)
           }else{
             defendCard(null)
           }
           break;
-        // the others cases for next spring (cdl,mvc.sos,ana,det,sed)
         default:
           defendCard(null)
           break;

@@ -7,7 +7,6 @@ const Deck = ({
     player
 }) => {
     
-    console.log("player in deck",player)
     const game = useContext(GameContext);
     const cardSelected = useContext(CardSelectedContext); //Discard Card
     const setDiscard = useContext(SetDiscardContext);
