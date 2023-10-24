@@ -7,7 +7,7 @@ import { getResults } from "../../containers/EndOfGameResults";
 const EndOfGame = ({socket}) => {
   const navigate = useNavigate();
   const params = useLocation();
-  const [message, setMessage] = useState("");
+  const [winners, setWinners] = useState("");
 
   let gameId = 1; 
   let players = [];
@@ -29,14 +29,12 @@ const EndOfGame = ({socket}) => {
     return response;
   } 
 
-  console.log("entro a endOfGame")
-  Response(gameId).then((response) => { setMessage(response.json.message)});
-  console.log(message)
+  Response(gameId).then((response) => { setWinners(response.json.winners)});
   
   return (
     <>
       <div className={styles.endOfGame} data-testid ="text" >
-        <p className={styles.text}>{message}</p> 
+        <p className={styles.text}>¡Partida finalizada!<br />{winners}</p> 
       </div>
       <div className={styles.button}>
         <FunctionButton text={"Abandonar Partida"} onClick={goToHome} />

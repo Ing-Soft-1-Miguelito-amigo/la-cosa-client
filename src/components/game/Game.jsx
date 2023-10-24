@@ -46,11 +46,12 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
   const players = gameData.players;
   useEffect(() => {
       if ((gameData.turn.state === 5 && canPlayCard.action === 2) || canPlayCard.action === 1) {
+        console.log("gameData antes de fetchear endTurn", gameData)
         FetchEndTurn({
           gameId,
         })
       };
-  },[gameData.turn])
+  },[gameData.turn.state])
 
   useEffect(() => {
     const action = discard ? 1 : 2;

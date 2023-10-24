@@ -9,14 +9,6 @@ const Core = ({socket, gameId, playerId}) => {
     const [gameData, setGameData] = useState({});
     const [playerData, setPlayerData] = useState({});
 
-    const handleGameStatusEvent = (data) => {
-        setGameData(data);
-    }
-
-    const handlePlayerStatusEvent = (data) => {
-        setPlayerData(data);
-    }
-
     socket.on("connect", () => console.log("websocket connected"));
     socket.on("disconnect", (reason) =>  console.log("socket se desconecto por", reason));
     socket.on("game_status", (data) => setGameData(data));
@@ -29,7 +21,6 @@ const Core = ({socket, gameId, playerId}) => {
             return (<Game socket={socket} player={playerData} gameData={gameData} gameId={gameId} playerId={playerId}/>);
 
         case 2:
-            console.log("endOfGame")
             return (<EndOfGame socket={socket}/>)
         
         case 3:
