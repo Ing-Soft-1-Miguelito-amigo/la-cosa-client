@@ -6,19 +6,18 @@
 
 }
 
-.endOfGame {
-    background-color: #6d211e5d;
-    display: flex;
+.fade{
+    background-color: #942d29;
     display: block;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    border: 0.5vh solid  #5f1d1b69;
+    border: 1.5vh solid  #5f1d1b;
     height: 50vh;
     line-height: 15vh;
     margin-left: 30%;
     margin-right: 30%;
-    margin-top: 10%;
+    margin-top: 5%;
     animation: fadeIn 0.7s ease-in-out;
 }
 
@@ -28,11 +27,19 @@
 }
 
 .text{
-    color:aliceblue;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    font-size: 60px;
-    margin-top: 10%;
-    text-align: center;
+    font-family: 'Creepster', cursive;
+    color: rgb(255, 255, 255);
+    font-size: 7vh;
+    text-align: center; 
 }
+
+
+/* Animation  */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }

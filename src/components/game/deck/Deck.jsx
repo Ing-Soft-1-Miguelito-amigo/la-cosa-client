@@ -3,12 +3,11 @@ import { GameContext, PlayerContext, CardSelectedContext, SetDiscardContext, Set
 import FetchStealCard from '../../../containers/FetchStealCard';
 import style from '../deck/deck.module.css';
 
-const Deck = (
-    
-) => {
+const Deck = ({
+    player
+}) => {
     
     const game = useContext(GameContext);
-    const player = useContext(PlayerContext);
     const cardSelected = useContext(CardSelectedContext); //Discard Card
     const setDiscard = useContext(SetDiscardContext);
     const setPlayerSelected = useContext(SetPlayerSelectedContext);

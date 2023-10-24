@@ -14,6 +14,9 @@ import DeadPlayer from "./deadPlayer/DeadPlayer";
 import FetchDiscard from '../../containers/FetchDiscard';
 import FetchResponse from "../../containers/FetchResponse";
 import FetchEndTurn from "../../containers/FetchEndTurn";
+import CardWhisky from '../game/cardEffects/cardWhisky';
+import CardAnalysis from "../game/cardEffects/cardAnalysis";
+import CardSuspicion from "../game/cardEffects/cardSuspicion";
 
 export const GameContext = createContext({})
 export const PlayerContext = createContext({})
@@ -27,61 +30,37 @@ export const PlayersAliveContext = createContext([]);
 export const SetDiscardContext = createContext();
 
 
-const Game = () => {
-  const params = useLocation();
-  const navigate = useNavigate();
-  const [player, setPlayer] = useState([]);
-  const [gameData, setGameData] = useState({});
-  const [players, setPlayers] = useState([]);
+const Game = ({socket, player, gameData, gameId, playerId}) => {
   const [cardSelected, setCardSelected] = useState({});//{cardId, code, kind}
   const [playerSelected, setPlayerSelected] = useState({});//{name}
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [actionText, setActionText] = useState("");
-  // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
-  const [gameState, setGameState] = useState();
-  const [hasCardToDefend, setHasCardToDefend] = useState(false);
+  const [hasCardToDefend, setHasCardToDefend] = useState();
+  const [cardAnalysis, setCardAnalysis] = useState(false);
+  const [cardSuspicion, setCardSuspicion] = useState(false);
+  const [cardWhisky, setCardWhisky] = useState(false);
+  const [analysisData, setAnalysisData] = useState({});
+  const [suspicionData, setSuspicionData] = useState({});
+  const [whiskyData, setWhiskyData] = useState({});
 
-  let gameId = 0;
-  let playerId = 0;
-  if (!params.state) {
-    gameId = 1;
-    playerId = 1;
-  } else {
-    gameId = params.state.gameId;
-    playerId = params.state.playerId;
-  }
-  
-  //polling for gameData
-  //Polling for game state and players list.
+  socket.on("discard",  (data) => console.log(JSON.stringify(data)));
+  socket.on("action",   (data) => console.log(JSON.stringify(data)));
+  socket.on("defense",  (data) => console.log(JSON.stringify(data)));
+  socket.on("analisis", (data) => {setCardAnalysis(true); setAnalysisData(data)});
+  socket.on("whisky",   (data) => {setCardWhisky(true); setWhiskyData(data)});
+  socket.on("sospecha", (data) => {setCardSuspicion(true); setSuspicionData(data)});
+
+
+  const players = gameData.players;
   useEffect(() => {
-    FetchData({
-      onSetGameData: setGameData,
-      onSetPlayers: setPlayers,
-      gameId: gameId,
-    });
-
-    // gameState 0 -> lobby, 1 -> game, 2 -> end-of-game, 3 -> deadPlayer
-    setGameState(gameData.state);
-    if (players[playerId - 1] && !players[playerId - 1].alive) {
-      setGameState(3);
-    }
-  });
-
-  //polling for player
-  useEffect(() => { 
-    FetchPlayer({ setPlayer, gameId, playerId });
-
-    if (gameData.state === 1){
       if ((gameData.turn.state === 5 && canPlayCard.action === 2) || canPlayCard.action === 1) {
+        console.log("gameData antes de fetchear endTurn", gameData)
         FetchEndTurn({
           gameId,
         })
       };
-    }
-
-  },[gameData.turn])
-
+  },[gameData.turn.state])
 
   useEffect(() => {
     const action = discard ? 1 : 2;
@@ -105,8 +84,7 @@ const Game = () => {
         });
         break;
     }
-
-  }, [playerSelected, discard, cardSelected ,gameData.turn]);
+  }, [playerSelected, discard, cardSelected, gameData.turn]);
 
   const playCard = () => {
     if (canPlayCard.action === 1) {
@@ -120,99 +98,56 @@ const Game = () => {
         gameId: gameId,
         playerId: playerId,
         cardId: cardSelected.cardId,
-        destinationName: playerSelected.name === undefined ? players.filter(player => player.alive === true)[(players.filter(player => player.alive === true).findIndex(player => player.table_position === gameData.turn.owner) + 1) % players.filter(player => player.alive === true).length].name : playerSelected.name
+        destinationName: playerSelected.name === undefined ? player.name : playerSelected.name
       });
     }
     setPlayerSelected({});
     setCardSelected({});
     setDiscard(false);
   };
-
-  useEffect(()=>{
-    if (cardSelected.cardId === undefined && !hasCardToDefend){
-      defendCard(false);
-    }
-  },[hasCardToDefend]);
-
-
+  
   const defendCard = (
-    defend
-  ) => {
-    FetchResponse({
-      gameId: gameId,
-      playerId: playerId,
-      responseCardId: defend ? cardSelected.cardId : null
-    });
-
-    setCardSelected({});
-    setHasCardToDefend(false);
-  }  
-
-  const gameStyle = `
-    ${gameData.state === 0 ? "lobby" : "game"}
-  `;
-
-  useEffect(() => {
-    if (gameData.state === 2) {
-      navigate("/end-of-game", { state: { gameId, players } });
+    cardToDefend
+    ) => {
+      FetchResponse({
+        gameId: gameId,
+        playerId: playerId,
+        responseCardId: cardToDefend
+      });
     }
-  }, [gameData]);
 
-  let renderer;
-  switch (gameState) {
-    // lobby
-    case 0:
-      renderer = (
-        <PlayerContext.Provider value={player}>
-          <GameContext.Provider value={gameData}>
-            <Lobby players={players}></Lobby>
-          </GameContext.Provider>
-        </PlayerContext.Provider>
-          )      
-      break;
-    // deadPlayer
-    case 3:
-      renderer = (
-        <DeadPlayer></DeadPlayer>
-      )
-      break;
-    // game
-    case 1:
-      renderer = (
+  return (
         <div className={"game"}>
           <span className={style.title} data-testid="La Cosa">La Cosa</span>
           <span className={style.span}>Jugando en {gameData.name}</span>
           <GameContext.Provider value={gameData}>
-            <PlayerContext.Provider value={player}>
               <CardSelectedContext.Provider value={cardSelected}>
                   <SetPlayerSelectedContext.Provider value={setPlayerSelected}>
                     <SetDiscardContext.Provider value={{setDiscard: setDiscard, discard:discard}}>
                       <PlayersAliveContext.Provider value={players.filter(player => player.alive === true)}>
                         <PlayerSelectedContext.Provider value={playerSelected.name}>
-                          <Table players={players} />
+                          <Table players={players} player={player}/>
                         </PlayerSelectedContext.Provider>
                       </PlayersAliveContext.Provider>
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
                       {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defendCard(true)}/>}
                       {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defendCard(false)} />}
-                          <Deck />
+                      {cardAnalysis && <CardAnalysis data={analysisData} setCardAnalysis={setCardAnalysis}/>}
+                      {cardSuspicion && <CardSuspicion data={suspicionData} setCardSuspicion={setCardSuspicion}/>}
+                      {cardWhisky && <CardWhisky data={whiskyData} setCardWhisky={setCardWhisky}/>}
+                      {!(cardAnalysis || cardSuspicion ||  cardWhisky) && <Deck player={player}/>}
                     </SetDiscardContext.Provider>
                   </SetPlayerSelectedContext.Provider>
                   
                   <div>
                     <SetCardSelectedContext.Provider value={setCardSelected}>
-                      <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}/>
+                      {player.alive ? <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}
+                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>: <DeadPlayer socket={socket}/>}
                     </SetCardSelectedContext.Provider>
                   </div>
               </CardSelectedContext.Provider>
-            </PlayerContext.Provider>
           </GameContext.Provider>  
-        </div>
-      )
-      break;
-    
-  }
-  return (renderer);
+        </div>) 
 };
 
 export default Game;

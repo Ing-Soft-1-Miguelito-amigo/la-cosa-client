@@ -19,6 +19,7 @@
 
 }
 
+
 .playerText {
     font-size: 16px;
     font-weight: bold;
@@ -42,4 +43,10 @@
 .playerSelected span{
     transition: 0.7s;
     transform: scale(1.1);
+}
+
+.me{
+    font-weight: 600;
+    font-size: 30px;
+    color: #ffffff;
 }
