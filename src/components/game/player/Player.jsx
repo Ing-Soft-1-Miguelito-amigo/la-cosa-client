@@ -105,7 +105,7 @@ const Player = ({
 
   return (
     <div className={playerStyle} style={style} onClick={selectPlayer} data-testid={"player-"+name}>
-      {name === player.name ? <span className={styles.me}>{"VOS"}</span> : <span className={styles.playerText}>{playerData.name}</span>}
+      {name === player.name ? <span className={styles.me}>{"Tu"}</span> : <span className={styles.playerText}>{playerData.name}</span>}
     </div>
   )
 }

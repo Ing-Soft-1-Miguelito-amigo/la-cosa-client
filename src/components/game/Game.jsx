@@ -14,6 +14,9 @@ import DeadPlayer from "./deadPlayer/DeadPlayer";
 import FetchDiscard from '../../containers/FetchDiscard';
 import FetchResponse from "../../containers/FetchResponse";
 import FetchEndTurn from "../../containers/FetchEndTurn";
+import CardWhisky from '../game/cardEffects/cardWhisky';
+import CardAnalysis from "../game/cardEffects/cardAnalysis";
+import CardSuspicion from "../game/cardEffects/cardSuspicion";
 
 export const GameContext = createContext({})
 export const PlayerContext = createContext({})
@@ -34,13 +37,19 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
   const [discard, setDiscard] = useState(false);
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState();
+  const [cardAnalysis, setCardAnalysis] = useState(false);
+  const [cardSuspicion, setCardSuspicion] = useState(false);
+  const [cardWhisky, setCardWhisky] = useState(false);
+  const [analysisData, setAnalysisData] = useState({});
+  const [suspicionData, setSuspicionData] = useState({});
+  const [whiskyData, setWhiskyData] = useState({});
 
   socket.on("discard",  (data) => console.log(JSON.stringify(data)));
   socket.on("action",   (data) => console.log(JSON.stringify(data)));
   socket.on("defense",  (data) => console.log(JSON.stringify(data)));
-  socket.on("analisis", (data) => console.log(JSON.stringify(data)));
-  socket.on("whisky",   (data) => console.log(JSON.stringify(data)));
-  socket.on("sospecha", (data) => console.log(JSON.stringify(data)));
+  socket.on("analisis", (data) => {setCardAnalysis(true); setAnalysisData(data)});
+  socket.on("whisky",   (data) => {setCardWhisky(true); setWhiskyData(data)});
+  socket.on("sospecha", (data) => {setCardSuspicion(true); setSuspicionData(data)});
 
 
   const players = gameData.players;
@@ -123,7 +132,10 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
                       {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defendCard(true)}/>}
                       {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defendCard(false)} />}
-                          <Deck player={player}/>
+                      {cardAnalysis && <CardAnalysis data={analysisData} setCardAnalysis={setCardAnalysis}/>}
+                      {cardSuspicion && <CardSuspicion data={suspicionData} setCardSuspicion={setCardSuspicion}/>}
+                      {cardWhisky && <CardWhisky data={whiskyData} setCardWhisky={setCardWhisky}/>}
+                      {!(cardAnalysis || cardSuspicion ||  cardWhisky) && <Deck player={player}/>}
                     </SetDiscardContext.Provider>
                   </SetPlayerSelectedContext.Provider>
                   
