@@ -1,30 +1,26 @@
 import FetchStartGame from "../../../containers/FetchStartGame";
 import FetchEndGame from "../../../containers/FetchEndGame";
 import FunctionButton from "../../functionButton/FunctionButton";
-import { useContext, useState, useEffect} from "react";
-import { PlayerContext, GameContext} from "../Game";
+import { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./lobby.module.css";
 
-const Lobby = () => {
-    const navigate = useNavigate();  
-    const player = useContext(PlayerContext) 
-    const gameContext = useContext(GameContext);
+const Lobby = ({socket, player, gameData, gameId, playerId}) => {
+    const navigate = useNavigate();   
     const [host, setHost] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState(false);
     const [text, setText] = useState("");
     const [data , setData] = useState({}); 
-    //const [hostHasLeft, setHostHasLeft] = useState(false);
+    const [hostHasLeft, setHostHasLeft] = useState(false);
     
-    /*This statement will be useful to implement in sprint 2
-    if (gameContext.state === 3) {
+    if (gameData.state === 3) {
         setHostHasLeft(true);
-    } */
+    }
 
     useEffect(() => {
         const dt = {
-            game_id: gameContext.id,
+            game_id: gameData.id,
             player_name: player.name,
         };
         setData(dt);
@@ -35,34 +31,38 @@ const Lobby = () => {
         } else {
             setText("Esperando al host...");
         }
-    }, [player.owner, gameContext.id, player.name]);
+    }, [player.owner, gameData.id, player.name]);
 
     const startGame = async (data) => {
         const response = await FetchStartGame(data);
         if (response.status === 200) {
             setError(false);
-            window.location.reload();
         } else {
             setMessage(response.json.detail);
             setError(true);
         } 
     }
 
-    /* Made for sprint 2
     const goOutGame = async () => {      
         const data = {
-            game_id: gameContext.id,
+            game_id: gameData.id,
             player_id: player.id,
         }  
         const goOut = await FetchEndGame(data); 
         if(goOut.status === 200){
-            setMessage(goOut.json.detail)
+            setMessage(goOut.json.detail);
         }else{
             setMessage(goOut.json.detail);
             setError(true);
-        } 
+        }
+        socket.disconnect(); 
         navigate("/");
-    }*/
+    }
+
+    const handleHostLeft = () => {
+        socket.disconnect();
+        navigate("/");
+    }
 
     return (    
         <div className={styles.body}>
@@ -72,9 +72,8 @@ const Lobby = () => {
                 {error && <p className={styles.error}>{message}</p>}
             <div className={styles.button}>
                 {host && <FunctionButton text={"Iniciar Partida" } onClick={() => startGame(data)}/>}
-               {/* sprint 2
                {!hostHasLeft && <FunctionButton text={"Abandonar Partida"} onClick={goOutGame}/>}
-                {hostHasLeft && <FunctionButton text={"Volver a inicio"} onClick={navigate("/")}/>}*/}
+                {hostHasLeft && <FunctionButton text={"Volver a inicio"} onClick={handleHostLeft}/>} 
             </div>
         </div>   
     )

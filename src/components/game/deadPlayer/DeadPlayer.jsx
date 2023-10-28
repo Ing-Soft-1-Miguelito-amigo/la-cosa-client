@@ -4,22 +4,18 @@ import { useNavigate } from "react-router-dom";
 import styles from "./deadPlayer.module.css";
 import FunctionButton from "../../functionButton/FunctionButton";
 
-const DeadPlayer = () => {
+const DeadPlayer = ({socket}) => {
     const navigate = useNavigate();
     const goToHome = () => {
+        socket.disconnect();
         navigate("/");
     };
 
   return (
-    <div className={styles.body}>
       <div className={styles.fade}>
-          <p className={styles.text}>¡Has sido incinerado!</p>
-          <p className={styles.text}>&#128293;</p>
-      </div>
-      <div className={styles.button}>
+        <p className={styles.text}>¡Has sido incinerado! &#128293;</p>
         <FunctionButton text={"Salir de la Partida"} onClick={goToHome}/>
       </div>
-    </div>
   );
 };
 

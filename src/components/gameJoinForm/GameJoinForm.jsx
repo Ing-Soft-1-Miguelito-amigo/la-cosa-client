@@ -4,12 +4,20 @@ import {valueHasQuotationMarks} from "../../containers/FormValidation.js";
 import { FetchJoinGame } from "../../containers/FetchJoinCards.js";
 import styles from "./gameJoinForm.module.css";
 import FunctionButton from "../functionButton/FunctionButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const GameJoinForm = () => {
   const navigate = useNavigate();
+  const params = useLocation(); 
   const [message, setMessage] = useState("");
   const [errorData, setErrorData] = useState(false);
+
+  let gameId = 0;
+  if (!params.state) {
+    gameId = 1;
+  } else {
+    gameId = params.state.gameId;
+  }
 
   const {
     register,
@@ -17,7 +25,7 @@ const GameJoinForm = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      game_id: 1,
+      game_id:gameId, 
       player_name: "",
     },
   });

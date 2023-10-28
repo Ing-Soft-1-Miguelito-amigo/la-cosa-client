@@ -8,8 +8,8 @@ const Home = () => {
         navigate("/game-creation-form")
     }
 
-    const gotoJoinGame = () => {
-        navigate("/game-join-form")
+    const gotoListGame = () => {
+        navigate("/list-games")
     }
 
     return (
@@ -17,7 +17,7 @@ const Home = () => {
             <title>La Cosa</title>
             <h1>La Cosa</h1>
             <FunctionButton text={"Crear Partida"} onClick={gotoCreateGame}/>
-            <FunctionButton text={"Unirse a Partida"} onClick={gotoJoinGame}/>
+            <FunctionButton text={"Unirse a Partida"} onClick={gotoListGame}/>
         </div>
     )
 }

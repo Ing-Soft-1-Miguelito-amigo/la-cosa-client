@@ -1,45 +1,21 @@
-.body {
-    display: flex;
-    display:block;
-    justify-content: center;
-    align-items: center;
-
-}
-
 .fade{
-    background-color: #942d29;
+    background-color: #6d211e5d;
     display: block;
     justify-content: center;
-    align-items: center;
     border-radius: 10px;
-    border: 1.5vh solid  #5f1d1b;
-    height: 50vh;
-    line-height: 15vh;
-    margin-left: 30%;
-    margin-right: 30%;
-    margin-top: 5%;
-    animation: fadeIn 0.7s ease-in-out;
-}
-
-.button{
-    margin-left: 40%;
-    margin-right: 40%;
+    border: 0.5vh solid  #5f1d1b69;
+    justify-content: center; 
+    position: absolute;
+    left: 50%;
+    top: 78%;
+    transform: translate(-50%, -50%);
+    height:200px;
+    width: 550px;
 }
 
 .text{
     font-family: 'Creepster', cursive;
     color: rgb(255, 255, 255);
-    font-size: 10vh;
-    text-align: center; 
+    font-size: 35px;
+    text-align: center;
 }
-
-
-/* Animation  */
-@keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }

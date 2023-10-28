@@ -9,12 +9,16 @@
     border: 7px solid #333;
     transition: 0.7s;
 }
-
+.playerStyle:hover{
+    cursor:pointer;
+}
 
 .playerStyle:hover span {
     transition: 0.7s;
     transform: scale(1.2);
+
 }
+
 
 .playerText {
     font-size: 16px;
@@ -39,4 +43,10 @@
 .playerSelected span{
     transition: 0.7s;
     transform: scale(1.1);
+}
+
+.me{
+    font-weight: 600;
+    font-size: 30px;
+    color: #ffffff;
 }
