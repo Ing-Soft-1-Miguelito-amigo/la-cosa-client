@@ -58,7 +58,3 @@
     cursor: pointer;
     transition: transform 0.35s ease-out;
 }
-
-.trash:hover {
-    transform: rotate(-340deg) scale(1.2,1.1);
-}

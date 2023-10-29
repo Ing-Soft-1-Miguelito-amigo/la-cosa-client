@@ -1,12 +1,7 @@
 import { useState, useEffect, createContext, useRef, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import style from "./game.module.css";
-import Lobby from "./lobby/Lobby";
 import Hand from "./hand/Hand";
-import Player from "./player/Player";
 import Table from "./table/Table";
-import FetchData from "../../containers/FetchGame";
-import FetchPlayer from "../../containers/FetchPlayer";
 import Deck from './deck/Deck';
 import FunctionButton from "../functionButton/FunctionButton";
 import FetchPlayCard from "../../containers/FetchPlayCard";
@@ -17,6 +12,7 @@ import FetchEndTurn from "../../containers/FetchEndTurn";
 import CardWhisky from '../game/cardEffects/cardWhisky';
 import CardAnalysis from "../game/cardEffects/cardAnalysis";
 import CardSuspicion from "../game/cardEffects/cardSuspicion";
+import { set } from "react-hook-form";
 
 export const GameContext = createContext({})
 export const PlayerContext = createContext({})
@@ -36,7 +32,7 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
   const [actionText, setActionText] = useState("");
-  const [hasCardToDefend, setHasCardToDefend] = useState();
+  const [hasCardToDefend, setHasCardToDefend] = useState(false);
   const [cardAnalysis, setCardAnalysis] = useState(false);
   const [cardSuspicion, setCardSuspicion] = useState(false);
   const [cardWhisky, setCardWhisky] = useState(false);
@@ -55,7 +51,6 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
   const players = gameData.players;
   useEffect(() => {
       if ((gameData.turn.state === 5 && canPlayCard.action === 2) || canPlayCard.action === 1) {
-        console.log("gameData antes de fetchear endTurn", gameData)
         FetchEndTurn({
           gameId,
         })
@@ -109,12 +104,25 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
   const defendCard = (
     cardToDefend
     ) => {
-      FetchResponse({
-        gameId: gameId,
-        playerId: playerId,
-        responseCardId: cardToDefend
-      });
+      if (cardToDefend !== null){
+        console.log("SI puede defenderse")
+        setHasCardToDefend(true);    
+      }else{
+        defend(false);
+      }
     }
+
+  const defend = (
+    defend
+  ) => {
+    FetchResponse({
+      gameId: gameId,
+      playerId: playerId,
+      responseCardId: (defend ? cardSelected.cardId : null)
+    });
+    setHasCardToDefend(false);
+    setCardSelected({});
+  }
 
   return (
         <div className={"game"}>
@@ -130,8 +138,8 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                         </PlayerSelectedContext.Provider>
                       </PlayersAliveContext.Provider>
                       {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
-                      {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defendCard(true)}/>}
-                      {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defendCard(false)} />}
+                      {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defend(true)}/>}
+                      {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defend(false)} />}
                       {cardAnalysis && <CardAnalysis data={analysisData} setCardAnalysis={setCardAnalysis}/>}
                       {cardSuspicion && <CardSuspicion data={suspicionData} setCardSuspicion={setCardSuspicion}/>}
                       {cardWhisky && <CardWhisky data={whiskyData} setCardWhisky={setCardWhisky}/>}
@@ -140,10 +148,11 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                   </SetPlayerSelectedContext.Provider>
                   
                   <div>
-                    <SetCardSelectedContext.Provider value={setCardSelected}>
-                      {player.alive ? <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}
-                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>: <DeadPlayer socket={socket}/>}
-                    </SetCardSelectedContext.Provider>
+                      {player.alive ? <Hand player={player} 
+                                            gameData={gameData} 
+                                            setCardSelected={setCardSelected} 
+                                            defendCard={defendCard}/>
+                                    : <DeadPlayer socket={socket}/>}
                   </div>
               </CardSelectedContext.Provider>
           </GameContext.Provider>  

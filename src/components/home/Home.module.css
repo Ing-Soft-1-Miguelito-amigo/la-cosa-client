@@ -3,6 +3,7 @@
     background-image: url("../../img/background.jpg");
     font-family: 'Creepster', cursive;
     color: white;
+    background-size: cover;
 }
 
 .home{
