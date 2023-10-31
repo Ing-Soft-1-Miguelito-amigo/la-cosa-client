@@ -68,7 +68,6 @@ const Deck = ({
     }
 
     const arrowClassName = playDirection ? "arrowRight" : "arrowLeft";
-    console.log(`arrowClassName: ${arrowClassName}`)
     return (
         <div className={style.deckContainer}>
             <div className={style.cardDeckContainer}>

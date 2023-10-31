@@ -64,6 +64,7 @@
     height: 5%;
     transform: rotate(90deg);
     margin-right: 3%;
+    transition: 0.4s;
 }
 
 .arrowLeft {
@@ -71,4 +72,5 @@
     height: 5%;
     transform: rotate(270deg);
     margin-right: 3%;
+    transition: 0.4s;
 }
