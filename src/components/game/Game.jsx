@@ -144,7 +144,7 @@ const Game = ({socket, player, gameData, gameId, playerId}) => {
                       {cardAnalysis && <CardAnalysis data={analysisData} setCardAnalysis={setCardAnalysis}/>}
                       {cardSuspicion && <CardSuspicion data={suspicionData} setCardSuspicion={setCardSuspicion}/>}
                       {cardWhisky && <CardWhisky data={whiskyData} setCardWhisky={setCardWhisky}/>}
-                      {!(cardAnalysis || cardSuspicion ||  cardWhisky) && <Deck player={player}/>}
+                      {!(cardAnalysis || cardSuspicion ||  cardWhisky) && <Deck player={player} playDirection={gameData.play_direction}/>}
                     </SetDiscardContext.Provider>
                   </SetPlayerSelectedContext.Provider>
                   
