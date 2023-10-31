@@ -48,37 +48,50 @@ const GameJoinForm = () => {
     }
   };
 
-  return (
-    <div className={styles.body}>
-      <form>
-        {/*Player Name*/}
-        <label className={styles.labelJoin} htmlFor="playerName">
-          Nombre Jugador
-        </label>
-        <input
-          type="text"
-          id="playerName"
-          className={styles.inputJoin}
-          {...register("player_name", {
-            required: {
-              value: true,
-              message: "Nombre requerido",
-            },
-            validate: (value) => {
-              if (valueHasQuotationMarks(value))
-                return "Nombre del jugador no puede contener comillas";
-              else return true;
-            },
-          })}
-        />
-        {errors?.player_name && <span className={styles.spanJoin}>{errors.player_name.message}</span>}
-        {errorData && <span className={styles.spanJoin}>{message}</span>}
+  const gotoMenu = () => {
+      navigate("/");
+  }
 
-         <div className={styles.buttonJoin}>
-            <FunctionButton text={"Unirse"} onClick={handleSubmit(onSubmit)} />
-         </div> 
-      </form>
-    </div>
+  return (
+    <>
+      <div className={styles.menuButton}>
+        <FunctionButton 
+          text={"Volver al Menú"}
+          onClick={gotoMenu}
+          className={styles.menuButton}
+        />
+      </div>
+      <div className={styles.body}>
+        <form>
+          {/*Player Name*/}
+          <label className={styles.labelJoin} htmlFor="playerName">
+            Nombre Jugador
+          </label>
+          <input
+            type="text"
+            id="playerName"
+            className={styles.inputJoin}
+            {...register("player_name", {
+              required: {
+                value: true,
+                message: "Nombre requerido",
+              },
+              validate: (value) => {
+                if (valueHasQuotationMarks(value))
+                  return "Nombre del jugador no puede contener comillas";
+                else return true;
+              },
+            })}
+          />
+          {errors?.player_name && <span className={styles.spanJoin}>{errors.player_name.message}</span>}
+          {errorData && <span className={styles.spanJoin}>{message}</span>}
+
+          <div className={styles.buttonJoin}>
+              <FunctionButton text={"Unirse"} onClick={handleSubmit(onSubmit)} />
+          </div> 
+        </form>
+      </div>
+    </>
   );
 };
 

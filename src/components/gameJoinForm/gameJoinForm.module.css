@@ -44,3 +44,10 @@
     margin-left: 20%;
     margin-right: 20%;
 }
+
+.menuButton {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 2%; 
+}
