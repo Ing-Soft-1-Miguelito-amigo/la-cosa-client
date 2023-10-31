@@ -50,35 +50,48 @@ const GameList = () => {
       navigate("/game-join-form", { state: { gameId } });
     };
 
+  const gotoMenu = () => {
+      navigate("/");
+  }
+
   return (
-    <div  className={styles.body}>
-      <thead className={styles.text}>
-        <tr>
-          <th>Nombre</th>
-          <th>Mínimo Jugadores</th>
-          <th>Máximo Jugadores</th>
-          <th>Jugadores Unidos</th>
-        </tr>
-      </thead>
-      {list.map((game, i) => (
-        <tbody >
-            <tr key={i}>   
-                <td className={styles.name}> 
-                <FunctionButton text={`${game.name}`} onClick={goToForm(game.id)}/>
-                </td>
-                <td>
-                    {game.min_players}
-                </td>
-                <td>
-                    {game.max_players}
-                </td>
-                <td>
-                    {game.amount_of_players}
-                </td>
-            </tr>
-        </tbody>
-      ))}
-    </div>
+    <>
+      <div className={styles.menuButton}>
+        <FunctionButton 
+          text={"Volver al Menú"}
+          onClick={gotoMenu}
+          className={styles.menuButton}
+        />
+      </div>
+      <div  className={styles.body}>
+        <thead className={styles.text}>
+          <tr>
+            <th>Nombre</th>
+            <th>Mínimo Jugadores</th>
+            <th>Máximo Jugadores</th>
+            <th>Jugadores Unidos</th>
+          </tr>
+        </thead>
+        {list.map((game, i) => (
+          <tbody >
+              <tr key={i}>   
+                  <td className={styles.name}> 
+                  <FunctionButton text={`${game.name}`} onClick={goToForm(game.id)}/>
+                  </td>
+                  <td>
+                      {game.min_players}
+                  </td>
+                  <td>
+                      {game.max_players}
+                  </td>
+                  <td>
+                      {game.amount_of_players}
+                  </td>
+              </tr>
+          </tbody>
+        ))}
+      </div>
+    </>
   );
 };
 

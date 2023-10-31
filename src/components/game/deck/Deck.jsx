@@ -4,7 +4,8 @@ import FetchStealCard from '../../../containers/FetchStealCard';
 import style from '../deck/deck.module.css';
 
 const Deck = ({
-    player
+    player,
+    playDirection
 }) => {
     
     const game = useContext(GameContext);
@@ -66,10 +67,14 @@ const Deck = ({
         }
     }
 
-
+    const arrowClassName = playDirection ? "arrowRight" : "arrowLeft";
+    console.log(`arrowClassName: ${arrowClassName}`)
     return (
         <div className={style.deckContainer}>
             <div className={style.cardDeckContainer}>
+                <div className={style[arrowClassName]}>
+                    <img src="../../../src/img/arrow.png"/>
+                </div>
                 <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
                     <img src={`../../../src/img/atk.png`} className={styleDeck} />
                 </div>

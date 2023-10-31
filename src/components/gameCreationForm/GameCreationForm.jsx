@@ -37,128 +37,141 @@ const GameCreationForm = () => {
     }
   };
 
+  const gotoMenu = () => {
+    navigate("/");
+  }
+  
   return (
-    <div className={styles.body}>
-      <form className={styles.creationForm}>
-        {/*Host Name*/}
-        <label className={styles.labelCreation} htmlFor="hostName">
-          {" "}
-          &nbsp;&nbsp;Nombre Host
-        </label>
-        <input
-          type="text"
-          id="hostName"
-          className={styles.inputCreation}
-          {...register("host.name", {
-            required: {
-              value: true,
-              message: "Nombre requerido",
-            },
-            validate: (value) => {
-              if (valueHasQuotationMarks(value))
-                return "No puede contener comillas";
-              else return true;
-            },
-          })}
+    <>
+      <div className={styles.menuButton}>
+        <FunctionButton 
+          text={"Volver al Menú"}
+          onClick={gotoMenu}
+          className={styles.menuButton}
         />
-        {errors?.host?.name && (
-          <span className={styles.spanCreation}>
-            {errors.host.name.message}
-          </span>
-        )}
-
-        {/*Game Name*/}
-        <label className={styles.labelCreation} htmlFor="gameName">
-          Nombre Partida
-        </label>
-        <input
-          type="text"
-          id="gameName"
-          className={styles.inputCreation}
-          {...register("game.name", {
-            required: {
-              value: true,
-              message: "Campo requerido",
-            },
-            validate: (value) => {
-              if (valueHasQuotationMarks(value))
-                return "Partida no puede contener comillas";
-              else return true;
-            },
-          })}
-        />
-        {errors?.game?.name && (
-          <span className={styles.spanCreation}>
-            {errors.game.name.message}
-          </span>
-        )}
-
-      {/*Min Players*/}
-      <label className={styles.labelCreation} htmlFor="minPlayers">
-             Mínimo Jugadores
-            </label>
-            <input
-              type="number"
-              id="minPlayers"
-              className={styles.inputCreation}
-              {...register("game.min_players", {
-                required: {
-                  value: true,
-                  message: "Ingrese valor numérico",
-                },
-                validate: (value) => {
-                if ( value < 4 || value > 12)
-                    return "Ingrese valor entre 4 y 12";
-                  else return true;
-                },
-              })}
-            />
-            {errors?.game?.min_players && (
-              <span className={styles.spanCreation}>
-                {errors.game.min_players.message}
-              </span>
-            )}
-
-      {/*Max Players*/}
-    <label className={styles.labelCreation} htmlFor="maxPlayers">
-             Máximo Jugadores
-            </label>
-            <input
-              type="number"
-              id="maxPlayers"
-              className={styles.inputCreation}
-              {...register("game.max_players", {
-                required: {
-                  value: true,
-                  message: "Ingrese valor numérico",
-                },
-                validate: (value) => {
-                  if ( value < 4 || value > 12)
-                    return "Ingrese valor entre 4 y 12";
-                  else return true;
-                },
-              })}
-            />
-            {errors?.game?.max_players && (
-              <span className={styles.spanCreation}>
-                {errors.game.max_players.message}
-              </span>
-            )}
-
-        {errorData && (
-          <span className={styles.spanCreation} role="alert">
-            {message}
-          </span>
-        )}
-
-        <div className={styles.button}>
-          <FunctionButton
-            text={"Crear Partida"}
-            onClick={handleSubmit(onSubmit)}
+      </div>
+      <div className={styles.body}>
+        <form className={styles.creationForm}>
+          {/*Host Name*/}
+          <label className={styles.labelCreation} htmlFor="hostName">
+            {" "}
+            &nbsp;&nbsp;Nombre Host
+          </label>
+          <input
+            type="text"
+            id="hostName"
+            className={styles.inputCreation}
+            {...register("host.name", {
+              required: {
+                value: true,
+                message: "Nombre requerido",
+              },
+              validate: (value) => {
+                if (valueHasQuotationMarks(value))
+                  return "No puede contener comillas";
+                else return true;
+              },
+            })}
           />
-        </div>
-      </form>
-    </div>
+          {errors?.host?.name && (
+            <span className={styles.spanCreation}>
+              {errors.host.name.message}
+            </span>
+          )}
+
+          {/*Game Name*/}
+          <label className={styles.labelCreation} htmlFor="gameName">
+            Nombre Partida
+          </label>
+          <input
+            type="text"
+            id="gameName"
+            className={styles.inputCreation}
+            {...register("game.name", {
+              required: {
+                value: true,
+                message: "Campo requerido",
+              },
+              validate: (value) => {
+                if (valueHasQuotationMarks(value))
+                  return "Partida no puede contener comillas";
+                else return true;
+              },
+            })}
+          />
+          {errors?.game?.name && (
+            <span className={styles.spanCreation}>
+              {errors.game.name.message}
+            </span>
+          )}
+
+        {/*Min Players*/}
+        <label className={styles.labelCreation} htmlFor="minPlayers">
+              Mínimo Jugadores
+              </label>
+              <input
+                type="number"
+                id="minPlayers"
+                className={styles.inputCreation}
+                {...register("game.min_players", {
+                  required: {
+                    value: true,
+                    message: "Ingrese valor numérico",
+                  },
+                  validate: (value) => {
+                  if ( value < 4 || value > 12)
+                      return "Ingrese valor entre 4 y 12";
+                    else return true;
+                  },
+                })}
+              />
+              {errors?.game?.min_players && (
+                <span className={styles.spanCreation}>
+                  {errors.game.min_players.message}
+                </span>
+              )}
+
+        {/*Max Players*/}
+      <label className={styles.labelCreation} htmlFor="maxPlayers">
+              Máximo Jugadores
+              </label>
+              <input
+                type="number"
+                id="maxPlayers"
+                className={styles.inputCreation}
+                {...register("game.max_players", {
+                  required: {
+                    value: true,
+                    message: "Ingrese valor numérico",
+                  },
+                  validate: (value) => {
+                    if ( value < 4 || value > 12)
+                      return "Ingrese valor entre 4 y 12";
+                    else return true;
+                  },
+                })}
+              />
+              {errors?.game?.max_players && (
+                <span className={styles.spanCreation}>
+                  {errors.game.max_players.message}
+                </span>
+              )}
+
+          {errorData && (
+            <span className={styles.spanCreation} role="alert">
+              {message}
+            </span>
+          )}
+
+          <div className={styles.button}>
+            <FunctionButton
+              text={"Crear Partida"}
+              onClick={handleSubmit(onSubmit)}
+            />
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 
