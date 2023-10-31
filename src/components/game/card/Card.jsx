@@ -1,6 +1,6 @@
 import style from '../card/card.module.css'
 import { useContext } from "react"
-import { CardSelectedContext, GameContext, PlayerContext} from "../Game"
+import { CardSelectedContext, GameContext} from "../Game"
 // import { CardToDefendContext } from "../hand/Hand"
 const Card = ({
     cardId,
@@ -11,14 +11,12 @@ const Card = ({
     setCardSelected
 }) => {
     const game = useContext(GameContext);
-    const player = useContext(PlayerContext);
     const cardSelected = useContext(CardSelectedContext);
     const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card;
     
     const turn = game.turn;
     const turnOwner = turn.owner;
     const turnState = turn.state;
-    const turnDestPlayer = turn.destination_player;
 
     const selectCard = () => {
       switch (turnState) {

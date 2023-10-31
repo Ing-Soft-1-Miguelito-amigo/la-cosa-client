@@ -1,5 +1,5 @@
 import Card from "../card/Card";
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect} from "react";
 import style from "../hand/hand.module.css";
 
 const Hand = ({ 
@@ -55,7 +55,7 @@ const Hand = ({
   hand.sort((a, b) => a.id - b.id)
 
   return (
-    <div className={style.container} data-testid="cards" >
+    <div className={style.container} data-testid="hand" >
         {hand.map((card, i) => (
           <Card key={i}
             cardId={card.id}
