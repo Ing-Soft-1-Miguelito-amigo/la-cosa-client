@@ -79,9 +79,9 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       case "vte":
       case "det":
         setCanPlayCard({
-          canPlayCard:
-            (playerSelected.name === undefined || discard) &&
-            cardSelected.cardId !== undefined,
+          canPlayCard: (playerSelected.name === undefined || discard) &&
+                        gameData.turn.state === 1 &&
+                        cardSelected.cardId !== undefined,
           action: action,
         });
         break;
@@ -155,21 +155,6 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                   <Table players={players} player={player} />
                 </PlayerSelectedContext.Provider>
               </PlayersAliveContext.Provider>
-              {canPlayCard.canPlayCard && (
-                <FunctionButton text={actionText} onClick={playCard} />
-              )}
-              {hasCardToDefend && (
-                <FunctionButton
-                  text={"Defenderme"}
-                  onClick={() => defend(true)}
-                />
-              )}
-              {hasCardToDefend && (
-                <FunctionButton
-                  text={"No defenderme"}
-                  onClick={() => defend(false)}
-                />
-              )}
               {cardAnalysis && (
                 <CardAnalysis
                   data={analysisData}
@@ -193,10 +178,28 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
           {player.role == 3 && (
             <div className={style.button}>
+              {hasCardToDefend && (
+                <FunctionButton
+                  text={"Defenderme"}
+                  onClick={() => defend(true)}
+                />
+              )}
+              {hasCardToDefend && (
+                <FunctionButton
+                  text={"No defenderme"}
+                  onClick={() => defend(false)}
+                />
+              )}
               <FunctionButton
                 text={"Declararme Ganador"}
                 onClick={() => DeclareVictory({ gameId, playerId })}
               />
+              {canPlayCard.canPlayCard && (
+                <FunctionButton 
+                  text={actionText} 
+                  onClick={playCard} 
+                />
+              )}
             </div>
           )}
 

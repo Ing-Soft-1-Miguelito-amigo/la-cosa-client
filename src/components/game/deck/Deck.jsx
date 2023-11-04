@@ -17,12 +17,14 @@ const Deck = ({
     const turn = game.turn;
     const turnOwner = turn.owner;
     const turnState = turn.state;
-    
+    const isTurnOwner = (turn.owner === player.tablePosition); //calculate if the player is the owner of the turn
+
+
     const [message, setMessage] = useState('');
     const [clicked, setClicked] = useState(false);
     
-    const styleDeck = player.table_position == turnOwner ? style.img : style.img2;
-
+    const styleDeck =  (turnState === 0 && player.table_position == turnOwner) ? style.img : style.img2;
+    const arrowClassName = playDirection ? "arrowRight" : "arrowLeft";
 
     useEffect(()=>{
         setMessage('');
@@ -55,19 +57,17 @@ const Deck = ({
                 }
                 break;
             default:
-                setMessage('No puedes robar cartas ahora')
+                return 0;
                 }
-        return 0;
     }
 
     const discardCard = async () => {
-        if (player.table_position == turnOwner && cardSelected.cardId !== undefined) {     
+        if (isTurnOwner && cardSelected.cardId !== undefined) {     
             setDiscard.setDiscard(!setDiscard.discard);
             setPlayerSelected({});
         }
     }
 
-    const arrowClassName = playDirection ? "arrowRight" : "arrowLeft";
     return (
         <div className={style.deckContainer}>
             <div className={style.cardDeckContainer}>

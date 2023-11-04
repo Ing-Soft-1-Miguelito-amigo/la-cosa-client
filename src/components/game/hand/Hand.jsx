@@ -64,6 +64,9 @@ const Hand = ({
             number_in_card={card.number_in_card}
             kind={card.kind}
             setCardSelected={setCardSelected}
+            playerName={player.name}
+            playerRole={player.role}
+            isTurnOwner={player.owner}
             />
         ))}
     </div>

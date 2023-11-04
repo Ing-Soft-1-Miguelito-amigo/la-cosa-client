@@ -5,35 +5,44 @@ import { CardSelectedContext, GameContext} from "../Game"
 const Card = ({
     cardId,
     code,
-    tablePosition,
     number_in_card,
     kind,
-    setCardSelected
+    setCardSelected,
+    playerName,
+    playerRole,
+    isTurnOwner,
 }) => {
     const game = useContext(GameContext);
     const cardSelected = useContext(CardSelectedContext);
-    const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card;
+    const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card; //set the style of the card
     
-    const turn = game.turn;
-    const turnOwner = turn.owner;
-    const turnState = turn.state;
+    const turn = game.turn; //get the turn
+    const turnState = turn.state; //get the state of the turn
+
+    const isRecipientExchange = (turn.destination_player_exchange === playerName); //calculate if the player is the recipient of exchange
 
     const selectCard = () => {
+      console.log(turn)
       switch (turnState) {
         case 1: //playing card
           if (cardSelected.cardId === cardId) {
             setCardSelected({}); 
           }
-          else if (turnOwner === tablePosition && kind !== 5) {
+          else if (isTurnOwner && kind !== 5) {
             setCardSelected({ cardId:cardId, code:code, kind:kind });
           }
           break;
-        // case 3: //exchanging cards (for spring 3!!)
-        //   if (cardSelected.cardId === cardId) {
-        //     setCardSelected({});
-        //   }
-        //   //check if the player selecting the card is the Towner or the next Towner
-        //   break;
+        case 3: //exchanging cards
+          if (cardSelected.cardId === cardId) {
+            setCardSelected({});
+          }
+          //check if the player selecting the card is the tOwner or the recipent of the exchange
+          //check if the card is not a card is not a infected card or the player is the Thing
+          //check if the card is not a card is not the Thing card
+          else if ((isTurnOwner || isRecipientExchange) && (kind !== 3 || playerRole === 3) && kind !== 5) {
+            setCardSelected({ cardId:cardId, code:code, kind:kind });
+          }
+          break;
 
         default: //ending exchange or ending turn or lifting card
           return 0;     
