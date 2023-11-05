@@ -13,6 +13,7 @@ import CardWhisky from "../game/cardEffects/cardWhisky";
 import CardAnalysis from "../game/cardEffects/cardAnalysis";
 import CardSuspicion from "../game/cardEffects/cardSuspicion";
 import DeclareVictory from "../../containers/DeclareVictory";
+import Chat from "./chat/Chat";
 
 export const GameContext = createContext({});
 export const PlayerContext = createContext({});
@@ -154,21 +155,32 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                 <PlayerSelectedContext.Provider value={playerSelected.name}>
                   <Table players={players} player={player} />
                 </PlayerSelectedContext.Provider>
+
+                <div className={style.chat}>
+                 <Chat socket={socket} gameId={gameId} playerName={player.name} />
+                </div>
+
               </PlayersAliveContext.Provider>
               {canPlayCard.canPlayCard && (
-                <FunctionButton text={actionText} onClick={playCard} />
+                <div className={style.button}>
+                  <FunctionButton text={actionText} onClick={playCard} />
+                </div>
               )}
               {hasCardToDefend && (
-                <FunctionButton
-                  text={"Defenderme"}
-                  onClick={() => defend(true)}
-                />
+                <div className={style.button}>
+                  <FunctionButton
+                    text={"Defenderme"}
+                    onClick={() => defend(true)}
+                  />
+                </div>
               )}
               {hasCardToDefend && (
-                <FunctionButton
-                  text={"No defenderme"}
-                  onClick={() => defend(false)}
-                />
+                <div className={style.button}>
+                  <FunctionButton
+                    text={"No defenderme"}
+                    onClick={() => defend(false)}
+                  />
+                </div>
               )}
               {cardAnalysis && (
                 <CardAnalysis

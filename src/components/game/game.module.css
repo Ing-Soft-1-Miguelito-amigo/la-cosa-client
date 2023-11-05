@@ -3,8 +3,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 55vh;
-    position: relative;
+    position: absolute;
+
 }
 .title{
     display: flex;
@@ -25,4 +25,9 @@
 .button{
     width: 30%;
     margin-left: 35%;
+}
+
+.chat{
+    margin-left: 78%;
+    position: absolute;
 }

@@ -54,8 +54,7 @@ const GameCreationForm = () => {
         <form className={styles.creationForm}>
           {/*Host Name*/}
           <label className={styles.labelCreation} htmlFor="hostName">
-            {" "}
-            &nbsp;&nbsp;Nombre Host
+            &nbsp; &nbsp;Nombre Host
           </label>
           <input
             type="text"
