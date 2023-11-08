@@ -68,7 +68,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   }, [gameData.turn.state]);
 
   useEffect(() => {
-    const action = discard ? 1 : 2;
+    const action = discard ? "discard" : "playCard";
     if (discard && cardSelected !== undefined) {
       setActionText("Descartar carta");
     } else {
@@ -97,13 +97,13 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   }, [playerSelected, discard, cardSelected, gameData.turn]);
 
   const playCard = () => {
-    if (canPlayCard.action === 1) {
+    if (canPlayCard.action === "discard") { //check if the action is discard
       FetchDiscard({
         gameId: gameId,
         playerId: playerId,
         cardId: cardSelected.cardId,
       });
-    } else if (canPlayCard.action === 2) {
+    } else if (canPlayCard.action === "playCard") {//check if the action is play card
       FetchPlayCard({
         gameId: gameId,
         playerId: playerId,
@@ -175,33 +175,19 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
               )}
             </SetDiscardContext.Provider>
           </SetPlayerSelectedContext.Provider>
-
+          
+          <div className={style.button}>
           {player.role == 3 && (
-            <div className={style.button}>
-              {hasCardToDefend && (
-                <FunctionButton
-                  text={"Defenderme"}
-                  onClick={() => defend(true)}
-                />
-              )}
-              {hasCardToDefend && (
-                <FunctionButton
-                  text={"No defenderme"}
-                  onClick={() => defend(false)}
-                />
-              )}
-              <FunctionButton
-                text={"Declararme Ganador"}
-                onClick={() => DeclareVictory({ gameId, playerId })}
-              />
-              {canPlayCard.canPlayCard && (
-                <FunctionButton 
-                  text={actionText} 
-                  onClick={playCard} 
-                />
-              )}
-            </div>
+            <FunctionButton text={"Declararme Ganador"} onClick={() => DeclareVictory({ gameId, playerId })}/>
+            )}
+          {hasCardToDefend && (<>
+            <FunctionButton text={"Defenderme"} onClick={() => defend(true)}/>
+            <FunctionButton text={"No defenderme"} onClick={() => defend(false)}/>
+          </>)}
+          {canPlayCard.canPlayCard && (
+            <FunctionButton text={actionText} onClick={playCard} />
           )}
+          </div>
 
           <div>
             {player.alive ? (

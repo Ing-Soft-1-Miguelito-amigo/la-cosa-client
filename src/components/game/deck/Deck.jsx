@@ -17,7 +17,7 @@ const Deck = ({
     const turn = game.turn;
     const turnOwner = turn.owner;
     const turnState = turn.state;
-    const isTurnOwner = (turn.owner === player.tablePosition); //calculate if the player is the owner of the turn
+    const isTurnOwner = (turn.owner === player.table_position); //calculate if the player is the owner of the turn
 
 
     const [message, setMessage] = useState('');
@@ -62,7 +62,7 @@ const Deck = ({
     }
 
     const discardCard = async () => {
-        if (isTurnOwner && cardSelected.cardId !== undefined) {     
+        if (isTurnOwner && cardSelected.cardId !== undefined && turnState === 1) {     
             setDiscard.setDiscard(!setDiscard.discard);
             setPlayerSelected({});
         }

@@ -22,7 +22,6 @@ const Card = ({
     const isRecipientExchange = (turn.destination_player_exchange === playerName); //calculate if the player is the recipient of exchange
 
     const selectCard = () => {
-      console.log(turn)
       switch (turnState) {
         case 1: //playing card
           if (cardSelected.cardId === cardId) {
@@ -36,13 +35,21 @@ const Card = ({
           if (cardSelected.cardId === cardId) {
             setCardSelected({});
           }
-          //check if the player selecting the card is the tOwner or the recipent of the exchange
+          //check if the player selecting the card is the tOwner or 
           //check if the card is not a card is not a infected card or the player is the Thing
           //check if the card is not a card is not the Thing card
-          else if ((isTurnOwner || isRecipientExchange) && (kind !== 3 || playerRole === 3) && kind !== 5) {
+          else if (isTurnOwner && (kind !== 3 || playerRole === 3) && kind !== 5) {
             setCardSelected({ cardId:cardId, code:code, kind:kind });
           }
           break;
+        case 4://response exchanging cards
+        if (cardSelected.cardId === cardId ) {
+          setCardSelected({});
+        }//check if the player selecting the card is the recipent of the exchange
+        else if(isRecipientExchange && (kind !== 3 || playerRole === 3) && kind !== 5){
+          setCardSelected({ cardId:cardId, code:code, kind:kind });
+        }
+
 
         default: //ending exchange or ending turn or lifting card
           return 0;     
