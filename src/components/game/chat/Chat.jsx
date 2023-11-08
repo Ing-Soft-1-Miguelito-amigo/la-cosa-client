@@ -29,7 +29,7 @@ const Chat = ({socket, gameId, playerName}) => {
                 setMessages(resp.json)    
             }
             else{
-                console.log("response desa<t",resp)
+                console.log("response data: ",resp)
             }
         }
         fetchChat();
