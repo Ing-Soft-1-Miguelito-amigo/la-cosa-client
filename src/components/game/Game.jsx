@@ -41,6 +41,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [analysisData, setAnalysisData] = useState({});
   const [suspicionData, setSuspicionData] = useState({});
   const [whiskyData, setWhiskyData] = useState({});
+  const [instruction, setInstruction] = useState("")
 
   socket.on("discard", (data) => console.log(JSON.stringify(data)));
   socket.on("action", (data) => console.log(JSON.stringify(data)));
@@ -75,6 +76,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
       // making decision
       case 1:
+        setInstruction("Elige una carta para jugar o descartar")
         const action = discard ? "discard" : "playCard";
         if (discard && cardSelected !== undefined) {
           setActionText("Descartar carta");
@@ -105,6 +107,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       
       // exchange beginning
       case 3:
+        setInstruction("Elige una carta para intercambiar")
       case 4:
         setCanPlayCard({
           canExchangeCard: (cardSelected.cardId !== undefined)
@@ -141,6 +144,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const defendCard = (cardToDefend) => {
     if (cardToDefend !== null) {
       setHasCardToDefend(true);
+      setInstruction("Te han atacado de ... elige si quieres defenderte")
     } else {
       defend(false);
     }
@@ -177,7 +181,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   return (
     <div className={"game"}>
       <span className={style.title} data-testid="La Cosa">
-        La Cosa
+        {instruction}
       </span>
       <span className={style.span}>Jugando en {gameData.name}</span>
       <GameContext.Provider value={gameData}>
