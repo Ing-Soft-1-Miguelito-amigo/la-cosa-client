@@ -16,6 +16,7 @@ import DeclareVictory from "../../containers/DeclareVictory";
 import ExchangeCard from "../../containers/ExchangeCard";
 import ResponseExchange from "../../containers/ResponseExchange";
 import Chat from "./chat/Chat";
+import Logs from "./logs/Logs";
 
 export const GameContext = createContext({});
 export const PlayerContext = createContext({});
@@ -188,7 +189,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   }
 
   return (
-    <div className={"game"}>
+    <div>
       <span className={style.title} data-testid="La Cosa">
         {instruction}
       </span>
@@ -208,6 +209,10 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
                 <div className={style.chat}>
                  <Chat socket={socket} gameId={gameId} playerName={player.name} />
+                </div>
+              
+                <div className={style.logs}>
+                  <Logs socket={socket} gameId={gameId} />
                 </div>
 
               </PlayersAliveContext.Provider>
@@ -250,6 +255,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
               {!(cardAnalysis || cardSuspicion || cardWhisky) && (
                 <Deck player={player} playDirection={gameData.play_direction} />
               )}
+
             </SetDiscardContext.Provider>
           </SetPlayerSelectedContext.Provider>
           
@@ -271,6 +277,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
             <FunctionButton text={"Defenderme del intercambio"} onClick={() => exchangeCard(true)}/>
           )}
           </div>
+
 
           <div>
             {player.alive ? (
