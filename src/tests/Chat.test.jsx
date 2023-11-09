@@ -5,72 +5,60 @@
 //probar que renderice el mensaje enviado
 
 
-
+import MockedSocket from 'socket.io-mock';
 import { fireEvent, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import Chat from "../components/game/chat/Chat";
+
 describe("Chat", () => {
   test("should render", async () => {
-    const utils = render(<Chat />);
+    const socketMock = new MockedSocket();
+    const utils = render(<Chat  socket={socketMock}/>);
     expect(screen.getByRole("button", { name: "Enviar" })).toBeDefined();
   });
 
-//   test("should get the message", async () => {
-//     const utils = render(<Chat />);
-   
-//    // ver 
-//     const message = screen.getByLabelText("Nombre Partida");
+  test("should display required error when value is invalid", async () => {
+    const socketMock = new MockedSocket();
+    const utils = render(<Chat socket={socketMock} gameId={1} playerName={'player1'}/>);
+    
+    const message = screen.getByTestId("input");
+    const button = screen.getByRole("button", { name: "Enviar" });
 
-//     fireEvent.change(message, { target: { value: "message to test" } });
+    fireEvent.change(message, { target: { value: "" } });
 
-//     expect(message.value).toBe("message to test" );
-//   });
+    await userEvent.click(button);
 
-//   test("should display required error when value is invalid", async () => {
-//     const utils = render(<Chat />);
-//     // ver 
-//     const message = screen.getByLabelText("Nombre Partida");
-//     const button = screen.getByRole("button", { name: "Enviar" });
-
-//     fireEvent.change(message, { target: { value: "" } });
-
-//     await userEvent.click(button);
-
-//     expect(screen.getByText("Mensaje requerido")).toBeDefined();
-//   });
-
-//   test("should display error when value has quotation marks", async () => {
-//     const utils = render(<Chat />);
-//     // ver 
-//     const message = screen.getByLabelText("Nombre Partida");
-//     const button = screen.getByRole("button", { name: "Enviar" });
-
-//     fireEvent.change(message, { target: { value: '"LaCosa"' } });
-
-//     await userEvent.click(button);
-
-//     expect(
-//       screen.getByText("No puede contener comillas")
-//     ).toBeDefined();
-
-//   });
-
-//   test("should not display error when value is valid", async () => {
-//     const utils = render(<Chat />);
-//     // ver 
-//     const message = screen.getByLabelText("Nombre Partida");
-//     const button = screen.getByRole("button", { name: "Enviar" });
-
-//     fireEvent.change(gameName, { target: { value: "LaCosa message" } });
-//     fireEvent.change(hostName, { target: { value: "Player1 sent a message" } });
-
-//     await userEvent.click(button);
-
-//     expect(screen.queryByText("Nombre requerido")).toBeNull();
-//   });
+    expect(screen.getByText("Mensaje requerido")).toBeDefined();
+  });
 
 
+  test("should display required error when value has quotation marks", async () => {
+    const socketMock = new MockedSocket();
+    const utils = render(<Chat socket={socketMock} gameId={1} playerName={'player1'}/>);
+    
+    const message = screen.getByTestId("input");
+    const button = screen.getByRole("button", { name: "Enviar" });
 
+    fireEvent.change(message, { target: { value: '"LaCosa"'}});
+
+    await userEvent.click(button);
+
+    expect(screen.getByText("No puede contener comillas")).toBeDefined();
+  });
+
+  test("should not display error when value is valid", async () => {
+    const socketMock = new MockedSocket();
+    const utils = render(<Chat socket={socketMock} gameId={1} playerName={'player1'}/>);
+    
+    const message = screen.getByTestId("input");
+    const button = screen.getByRole("button", { name: "Enviar" });
+
+    fireEvent.change(message, { target: { value: "LaCosa"}});
+
+    await userEvent.click(button);
+
+    expect(screen.queryByText("Nombre requerido")).toBeNull();
+  });
 
 });

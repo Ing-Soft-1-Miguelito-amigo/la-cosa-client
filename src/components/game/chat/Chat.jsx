@@ -87,6 +87,7 @@ const Chat = ({socket, gameId, playerName}) => {
                 <input
                 type="text"
                 id="msg"
+                data-testid="input"
                 className={styles.inputCreation}
                 {...register("content", {
                     required: {
