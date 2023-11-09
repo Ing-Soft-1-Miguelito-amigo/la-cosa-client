@@ -15,6 +15,7 @@ import CardSuspicion from "../game/cardEffects/cardSuspicion";
 import DeclareVictory from "../../containers/DeclareVictory";
 import ExchangeCard from "../../containers/ExchangeCard";
 import ResponseExchange from "../../containers/ResponseExchange";
+import Chat from "./chat/Chat";
 
 export const GameContext = createContext({});
 export const PlayerContext = createContext({});
@@ -204,7 +205,33 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                 <PlayerSelectedContext.Provider value={playerSelected.name}>
                   <Table players={players} player={player} />
                 </PlayerSelectedContext.Provider>
+
+                <div className={style.chat}>
+                 <Chat socket={socket} gameId={gameId} playerName={player.name} />
+                </div>
+
               </PlayersAliveContext.Provider>
+              {canPlayCard.canPlayCard && (
+                <div className={style.button}>
+                  <FunctionButton text={actionText} onClick={playCard} />
+                </div>
+              )}
+              {hasCardToDefend && (
+                <div className={style.button}>
+                  <FunctionButton
+                    text={"Defenderme"}
+                    onClick={() => defend(true)}
+                  />
+                </div>
+              )}
+              {hasCardToDefend && (
+                <div className={style.button}>
+                  <FunctionButton
+                    text={"No defenderme"}
+                    onClick={() => defend(false)}
+                  />
+                </div>
+              )}
               {cardAnalysis && (
                 <CardAnalysis
                   data={analysisData}

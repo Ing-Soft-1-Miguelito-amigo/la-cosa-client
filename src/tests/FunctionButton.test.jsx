@@ -1,6 +1,7 @@
-import { beforeEach, expect, test, vi } from "vitest";
+import { expect, test, vi } from "vitest";
 import FunctionButton from "../components/functionButton/FunctionButton";
 import {fireEvent, render, screen} from '@testing-library/react';
+
 
 describe("FunctionButton", () => {
 
@@ -25,11 +26,11 @@ describe("FunctionButton", () => {
             );
             
         const button = screen.getByText("Hello");
-        expect(printSpy).not.toHaveBeenCalled(); // not called yet
+        expect(printSpy).not.toHaveBeenCalled();
         
         fireEvent.click(button);
-        expect(printSpy).toHaveBeenCalled(); // called once
-        expect(printSpy).not.toHaveBeenCalledTimes(2); // not called twice
+        expect(printSpy).toHaveBeenCalled();
+        expect(printSpy).not.toHaveBeenCalledTimes(2);
     });
 
 
