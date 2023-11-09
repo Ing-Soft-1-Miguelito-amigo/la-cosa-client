@@ -1,7 +1,6 @@
 import style from '../card/card.module.css'
 import { useContext } from "react"
 import { CardSelectedContext, GameContext} from "../Game"
-import { registerConsoleShortcuts } from 'vitest/node';
 // import { CardToDefendContext } from "../hand/Hand"
 const Card = ({
     cardId,

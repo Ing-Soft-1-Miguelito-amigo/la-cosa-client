@@ -72,6 +72,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   useEffect(() => {
 
     switch(turnState) {
+
       // making decision
       case 1:
         const action = discard ? "discard" : "playCard";
@@ -145,15 +146,6 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     }
   };
 
-  const handleDefend = (defend) => {
-    if(turn.state === 2){
-      defend(defend);
-    }else if (turn.state === 4){
-      exchangeCard(defend);
-    }
-  }
-
-
   const defend = (defend) => {
     FetchResponse({
       gameId: gameId,
@@ -164,7 +156,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSelected({});
   };
 
-  const exchangeCard = (defend) => {
+  const exchangeCard = () => {
     if(turnState === 3){
       ExchangeCard({
         gameId: gameId,
@@ -175,8 +167,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       ResponseExchange({
         gameId: gameId,
         playerId: playerId,
-        cardId: defend ? null : cardSelected.cardId,
-        defenseCardId: defend ? cardSelected.cardId : null,
+        cardId: cardSelected.cardId,
+        defenseCardId: null
       })
     }
     setCardSelected({});
