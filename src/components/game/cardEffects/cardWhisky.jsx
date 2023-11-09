@@ -22,7 +22,7 @@ const CardWhisky = ({ data , setCardWhisky }) => {
       <div className={styles.container}>
           <div className={styles.textAndCardsContainer}>
             <div>
-              <p className={styles.text}> {data.message} </p>
+              <p className={styles.text}> {data.log} </p>
             </div>
             <div className={styles.cardcontainer}>
               {data.cards.map((card, i) => (
