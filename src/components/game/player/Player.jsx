@@ -4,7 +4,6 @@ import { CardSelectedContext,
   PlayerSelectedContext, 
   SetPlayerSelectedContext, 
   PlayersAliveContext, 
-  TurnOwnerContext, 
   SetDiscardContext, 
   GameContext
 } from "../Game";
@@ -57,6 +56,7 @@ const Player = ({
           return [player_on_left, player_on_right];
         
         case "mvc": //más vale que corras
+        case "sed": //seducción
           return playersAlive.filter(player => player.table_position != turnOwner);
           
         default: // defense cards, wiskey and vigila tus espaldas
@@ -91,6 +91,7 @@ const Player = ({
         case "lla": //lanzallamas
         case "cdl": //cambio de lugar
         case "mvc": //mas vale que corras
+        case "sed": //seducción
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             setPlayerSelected({ name: name });
             setDiscard.setDiscard(false);

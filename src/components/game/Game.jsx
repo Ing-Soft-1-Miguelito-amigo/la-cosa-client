@@ -13,6 +13,8 @@ import CardWhisky from "../game/cardEffects/cardWhisky";
 import CardAnalysis from "../game/cardEffects/cardAnalysis";
 import CardSuspicion from "../game/cardEffects/cardSuspicion";
 import DeclareVictory from "../../containers/DeclareVictory";
+import ExchangeCard from "../../containers/ExchangeCard";
+import ResponseExchange from "../../containers/ResponseExchange";
 import Chat from "./chat/Chat";
 
 export const GameContext = createContext({});
@@ -31,6 +33,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [playerSelected, setPlayerSelected] = useState({}); //{name}
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
+  const [hasCardToDefendExchange, setHasCardToDefendExchange] = useState(false);
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);
   const [cardAnalysis, setCardAnalysis] = useState(false);
@@ -39,6 +42,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [analysisData, setAnalysisData] = useState({});
   const [suspicionData, setSuspicionData] = useState({});
   const [whiskyData, setWhiskyData] = useState({});
+  const [instruction, setInstruction] = useState("")
 
   socket.on("discard", (data) => console.log(JSON.stringify(data)));
   socket.on("action", (data) => console.log(JSON.stringify(data)));
@@ -55,56 +59,82 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSuspicion(true);
     setSuspicionData(data);
   });
-
+  
   const players = gameData.players;
+  const turnState = gameData.turn.state; 
+
   useEffect(() => {
-    if (
-      (gameData.turn.state === 5 && canPlayCard.action === 2) ||
-      canPlayCard.action === 1
-    ) {
+    if (turnState === 5 && player.table_position === gameData.turn.owner)  {
       FetchEndTurn({
         gameId,
       });
     }
-  }, [gameData.turn.state]);
+  }, [gameData.turn]);
 
   useEffect(() => {
-    const action = discard ? 1 : 2;
-    if (discard && cardSelected !== undefined) {
-      setActionText("Descartar carta");
-    } else {
-      setActionText("Jugar carta");
-    }
-    switch (cardSelected.code) {
-      case "whk":
-      case "vte":
-      case "det":
-        setCanPlayCard({
-          canPlayCard:
-            (playerSelected.name === undefined || discard) &&
-            cardSelected.cardId !== undefined,
-          action: action,
-        });
+
+    switch(turnState) {
+
+      // making decision
+      case 1:
+        setInstruction("Elige una carta para jugar o descartar")
+        const action = discard ? "discard" : "playCard";
+        if (discard && cardSelected !== undefined) {
+          setActionText("Descartar carta");
+        } else {
+          setActionText("Jugar carta");
+        }
+        switch (cardSelected.code) {
+          case "whk":
+            console.log("canPlayCard adentro de whisky", canPlayCard);
+          case "vte":
+          case "det":
+            setCanPlayCard({
+              canPlayCard: (playerSelected.name === undefined || discard) &&
+                            cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+          default:
+            setCanPlayCard({
+              canPlayCard:
+                (playerSelected.name !== undefined || discard) &&
+                cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+        }
         break;
-      default:
+      
+      // exchange beginning
+      case 3:
+        setInstruction("Elige una carta para intercambiar")
+      case 4:
         setCanPlayCard({
-          canPlayCard:
-            (playerSelected.name !== undefined || discard) &&
-            cardSelected.cardId !== undefined,
-          action: action,
+          canExchangeCard: (cardSelected.cardId !== undefined)
         });
+
+        setHasCardToDefendExchange(cardSelected.code === "fal" || 
+                                   cardSelected.code === "ate" ||
+                                   cardSelected.code === "ngs" );
+
+        
+        setActionText("Intercambiar carta");
+        break;
+
+      default: 
         break;
     }
   }, [playerSelected, discard, cardSelected, gameData.turn]);
 
   const playCard = () => {
-    if (canPlayCard.action === 1) {
+    if (canPlayCard.action === "discard") { //check if the action is discard
       FetchDiscard({
         gameId: gameId,
         playerId: playerId,
         cardId: cardSelected.cardId,
       });
-    } else if (canPlayCard.action === 2) {
+    } else if (canPlayCard.action === "playCard") {//check if the action is play card
       FetchPlayCard({
         gameId: gameId,
         playerId: playerId,
@@ -120,8 +150,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
   const defendCard = (cardToDefend) => {
     if (cardToDefend !== null) {
-      console.log("SI puede defenderse");
       setHasCardToDefend(true);
+      setInstruction("Te han atacado de ... elige si quieres defenderte")
     } else {
       defend(false);
     }
@@ -137,10 +167,30 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSelected({});
   };
 
+  const exchangeCard = (
+    defend
+  ) => {
+    if(turnState === 3){
+      ExchangeCard({
+        gameId: gameId,
+        playerId: playerId,
+        cardId: cardSelected.cardId
+      })
+    } else if (turnState === 4){
+      ResponseExchange({
+        gameId: gameId,
+        playerId: playerId,
+        cardId:        defend ? null : cardSelected.cardId,
+        defenseCardId: defend ? cardSelected.cardId : null 
+      })
+    }
+    setCardSelected({});
+  }
+
   return (
     <div className={"game"}>
       <span className={style.title} data-testid="La Cosa">
-        La Cosa
+        {instruction}
       </span>
       <span className={style.span}>Jugando en {gameData.name}</span>
       <GameContext.Provider value={gameData}>
@@ -202,15 +252,25 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
               )}
             </SetDiscardContext.Provider>
           </SetPlayerSelectedContext.Provider>
-
+          
+          <div className={style.button}>
           {player.role == 3 && (
-            <div className={style.button}>
-              <FunctionButton
-                text={"Declararme Ganador"}
-                onClick={() => DeclareVictory({ gameId, playerId })}
-              />
-            </div>
+            <FunctionButton text={"Declararme Ganador"} onClick={() => DeclareVictory({ gameId, playerId })}/>
+            )}
+          {hasCardToDefend && (<>
+            <FunctionButton text={"Defenderme"} onClick={() => defend(true)}/>
+            <FunctionButton text={"No defenderme"} onClick={() => defend(false)}/>
+          </>)}
+          {canPlayCard.canPlayCard && (
+            <FunctionButton text={actionText} onClick={playCard} />
+            )}
+          {canPlayCard.canExchangeCard && (
+            <FunctionButton text={actionText} onClick={() => exchangeCard(false)}/>
+            )}
+          {hasCardToDefendExchange && (
+            <FunctionButton text={"Defenderme del intercambio"} onClick={() => exchangeCard(true)}/>
           )}
+          </div>
 
           <div>
             {player.alive ? (

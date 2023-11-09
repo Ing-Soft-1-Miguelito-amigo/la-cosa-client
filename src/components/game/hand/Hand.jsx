@@ -9,39 +9,45 @@ const Hand = ({
   defendCard
 }) => {
   const [hand, setHand] = useState([]);
-  const [tablePosition, setTablePosition] = useState();
+  const turn = gameData.turn;
 
   useEffect(() => {
-    setHand(player.hand)
-    setTablePosition(player.table_position)
+    setHand(player.hand)    // setTablePosition(player.table_position)
   },[player]);
 
   useEffect(() => {
     //If the state of the turn is defense and the destination player is me 
-    // if (gameData.turn.state === 3 || (gameData.turn.state === 2 && gameData.turn.destination_change === player.name)){
-      
+    // if (turn.state === 4 && turn.destination_change === player.name){
+    //   const arrayCodes = ["ate", "ngs", "fal"];
+    //   const defendCard = hand.filter(card => arrayCodes.includes(card.code));
+    //   if (defendCard.length !== 0){
+    //     setCardSelected({ cardId:defendCard[0].id, code:defendCard[0].code, kind:defendCard[0].kind });       
+    //     defendCard( defendCard[0].id);
+    //   }else{
+    //     defendCard(null);
+    //   }
     // }
-    // else 
-    if (gameData.turn.state === 2 && gameData.turn.destination_player === player.name) {
+    // else
+    if (turn.state === 2 && turn.destination_player === player.name) {
       //check if hand has a valid card to defend 
-      const cardCode = gameData.turn.played_card.code;
+      const cardCode = turn.played_card.code;
       switch(cardCode){
         case "lla": 
           //Card played 'lanzallamas', then check if player has 'nada de barbacoas'
-          const cardToDefendlla = hand.filter(card => card.code === "ndb");
-          if (cardToDefendlla.length !== 0){
-            setCardSelected({ cardId:cardToDefendlla[0].id, code:cardToDefendlla[0].code, kind:cardToDefendlla[0].kind });
-            defendCard( cardToDefendlla[0].id);
+          const defendCardlla = hand.filter(card => card.code === "ndb");
+          if (defendCardlla.length !== 0){
+            setCardSelected({ cardId:defendCardlla[0].id, code:defendCardlla[0].code, kind:defendCardlla[0].kind });
+            defendCard( defendCardlla[0].id);
           }else{
             defendCard(null);
           }
           break;
         case "cdl":
         case "mvc":
-          const cardToDefendcdl = hand.filter(card => card.code === "aeb");
-          if (cardToDefendcdl.length !== 0){
-            setCardSelected({ cardId:cardToDefendcdl[0].id, code:cardToDefendcdl[0].code, kind:cardToDefendcdl[0].kind });
-            defendCard( cardToDefendcdl[0].id);
+          const defendCardcdl = hand.filter(card => card.code === "aeb");
+          if (defendCardcdl.length !== 0){
+            setCardSelected({ cardId:defendCardcdl[0].id, code:defendCardcdl[0].code, kind:defendCardcdl[0].kind });
+            defendCard( defendCardcdl[0].id);
           }else{
             defendCard(null);
           }
@@ -60,10 +66,12 @@ const Hand = ({
           <Card key={i}
             cardId={card.id}
             code={card.code} 
-            tablePosition = {tablePosition}
             number_in_card={card.number_in_card}
             kind={card.kind}
             setCardSelected={setCardSelected}
+            playerName={player.name}
+            playerRole={player.role}
+            tablePosition={player.table_position}
             />
         ))}
     </div>
