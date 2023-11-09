@@ -13,6 +13,7 @@ const Chat = ({socket, gameId, playerName}) => {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
       } = useForm({
         defaultValues: {
@@ -26,7 +27,7 @@ const Chat = ({socket, gameId, playerName}) => {
         async function fetchChat(){
             const resp = await FetchGetChat({gameId})
             if (resp.status === 200){
-                setMessages(resp.json)    
+                setMessages(resp.json)
             }
             else{
                 console.log("response data: ",resp)
@@ -48,6 +49,7 @@ const Chat = ({socket, gameId, playerName}) => {
 
     //Fuction to send message
     const onSubmit = async (data) => {
+        reset();
         const response = await FetchSendMessage({gameId,data})
         if(response.code === 200){
             console.log("mensaje enviado")
