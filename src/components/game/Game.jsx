@@ -32,7 +32,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [playerSelected, setPlayerSelected] = useState({}); //{name}
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
-  const [exchange, setExchange] = useState(false);
+  const [hasCardToDefendExchange, setHasCardToDefendExchange] = useState(false);
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);
   const [cardAnalysis, setCardAnalysis] = useState(false);
@@ -112,6 +112,12 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
         setCanPlayCard({
           canExchangeCard: (cardSelected.cardId !== undefined)
         });
+
+        setHasCardToDefendExchange(cardSelected.code === "fal" || 
+                                   cardSelected.code === "ate" ||
+                                   cardSelected.code === "ngs" );
+
+        
         setActionText("Intercambiar carta");
         break;
 
@@ -160,7 +166,9 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSelected({});
   };
 
-  const exchangeCard = () => {
+  const exchangeCard = (
+    defend
+  ) => {
     if(turnState === 3){
       ExchangeCard({
         gameId: gameId,
@@ -171,8 +179,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       ResponseExchange({
         gameId: gameId,
         playerId: playerId,
-        cardId: cardSelected.cardId,
-        defenseCardId: null
+        cardId:        defend ? null : cardSelected.cardId,
+        defenseCardId: defend ? cardSelected.cardId : null 
       })
     }
     setCardSelected({});
@@ -228,9 +236,12 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
           </>)}
           {canPlayCard.canPlayCard && (
             <FunctionButton text={actionText} onClick={playCard} />
-          )}
+            )}
           {canPlayCard.canExchangeCard && (
-            <FunctionButton text={actionText} onClick={exchangeCard}/>
+            <FunctionButton text={actionText} onClick={() => exchangeCard(false)}/>
+            )}
+          {hasCardToDefendExchange && (
+            <FunctionButton text={"Defenderme del intercambio"} onClick={() => exchangeCard(true)}/>
           )}
           </div>
 

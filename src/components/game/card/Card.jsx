@@ -23,6 +23,7 @@ const Card = ({
     const isRecipientExchange = (turn.destination_player_exchange === playerName); //calculate if the player is the recipient of exchange
 
     const selectCard = () => {
+      console.log(turn);
       switch (turnState) {
         case 1: //playing card
           if (cardSelected.cardId === cardId) {
