@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+
+.body{
+    border-radius: 10%;
+    margin-left: 2%;
+}
+
+.list{
+    overflow: auto;
+    background-color:  #942d2983;
+    border-color: rgba(240, 248, 255, 0.453);
+    border-radius: 5px; 
+    border-width: 2px;
+    border-style: solid;
+    height: 150px;
+    width: 300px;
+    margin-top: 25%;
+} 
+
+.lg {
+    margin-bottom: 2%;
+    width: 100%;
+    margin-left: -10%;
+}
