@@ -4,8 +4,8 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-
 }
+
 .title{
     display: flex;
     display: block;
@@ -14,6 +14,7 @@
     font-weight: bold;
     margin-left: 47%; 
 }
+
 .span{
     display: flex;
     display: block;
@@ -30,4 +31,9 @@
 .chat{
     margin-left: 78%;
     position: absolute;
+}
+
+.logs{
+    margin-top: 17%;
+    position:absolute;
 }
