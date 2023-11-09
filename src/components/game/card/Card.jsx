@@ -1,6 +1,7 @@
 import style from '../card/card.module.css'
 import { useContext } from "react"
 import { CardSelectedContext, GameContext} from "../Game"
+import { registerConsoleShortcuts } from 'vitest/node';
 // import { CardToDefendContext } from "../hand/Hand"
 const Card = ({
     cardId,
@@ -10,7 +11,7 @@ const Card = ({
     setCardSelected,
     playerName,
     playerRole,
-    isTurnOwner,
+    tablePosition,
 }) => {
     const game = useContext(GameContext);
     const cardSelected = useContext(CardSelectedContext);
@@ -19,6 +20,7 @@ const Card = ({
     const turn = game.turn; //get the turn
     const turnState = turn.state; //get the state of the turn
 
+    const isTurnOwner = (tablePosition === turn.owner)
     const isRecipientExchange = (turn.destination_player_exchange === playerName); //calculate if the player is the recipient of exchange
 
     const selectCard = () => {

@@ -13,7 +13,8 @@ import CardWhisky from "../game/cardEffects/cardWhisky";
 import CardAnalysis from "../game/cardEffects/cardAnalysis";
 import CardSuspicion from "../game/cardEffects/cardSuspicion";
 import DeclareVictory from "../../containers/DeclareVictory";
-import FetchExchangeCard from "../../containers/FetchExchangeCard";
+import ExchangeCard from "../../containers/ExchangeCard";
+import ResponseExchange from "../../containers/ResponseExchange";
 
 export const GameContext = createContext({});
 export const PlayerContext = createContext({});
@@ -56,27 +57,23 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSuspicion(true);
     setSuspicionData(data);
   });
-
+  
   const players = gameData.players;
+  const turnState = gameData.turn.state; 
+
   useEffect(() => {
-    if (
-      (gameData.turn.state === 5 && canPlayCard.action === "playCard") ||
-      canPlayCard.action === "discard"
-    ) {
+    if (turnState === 5 && player.table_position === gameData.turn.owner)  {
       FetchEndTurn({
         gameId,
       });
     }
-  }, [gameData.turn.state]);
+  }, [gameData.turn]);
 
   useEffect(() => {
 
-    console.log("before case", gameData.turn)
-    switch(gameData.turn.state) {
-
+    switch(turnState) {
       // making decision
       case 1:
-        console.log("entro case 1")
         const action = discard ? "discard" : "playCard";
         if (discard && cardSelected !== undefined) {
           setActionText("Descartar carta");
@@ -107,9 +104,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       
       // exchange beginning
       case 3:
-        console.log("entro case 3");
       case 4:
-        console.log("entro a case 4")
         setCanPlayCard({
           canExchangeCard: (cardSelected.cardId !== undefined)
         });
@@ -144,12 +139,20 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
   const defendCard = (cardToDefend) => {
     if (cardToDefend !== null) {
-      console.log("SI puede defenderse");
       setHasCardToDefend(true);
     } else {
       defend(false);
     }
   };
+
+  const handleDefend = (defend) => {
+    if(turn.state === 2){
+      defend(defend);
+    }else if (turn.state === 4){
+      exchangeCard(defend);
+    }
+  }
+
 
   const defend = (defend) => {
     FetchResponse({
@@ -161,12 +164,22 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSelected({});
   };
 
-  const exchangeCard = () => {
-    FetchExchangeCard({
-      gameId: gameId,
-      playerId: playerId,
-      cardId: cardSelected.cardId
-    })
+  const exchangeCard = (defend) => {
+    if(turnState === 3){
+      ExchangeCard({
+        gameId: gameId,
+        playerId: playerId,
+        cardId: cardSelected.cardId
+      })
+    } else if (turnState === 4){
+      ResponseExchange({
+        gameId: gameId,
+        playerId: playerId,
+        cardId: defend ? null : cardSelected.cardId,
+        defenseCardId: defend ? cardSelected.cardId : null,
+      })
+    }
+    setCardSelected({});
   }
 
   return (
