@@ -26,7 +26,7 @@ const CardSuspicion = ( { data , setCardSuspicion } ) => {
         <div className={styles.container}>
           <div className={styles.textAndCardsContainer}>
             <div>
-              <p className={styles.text}> {data.message} </p>
+              <p className={styles.text}> {data.log} </p>
             </div>    
             <div className={styles.card}>
               <img src={`../../src/img/${data.card.code}${data.card.number_in_card}.png`} alt='img'/>
