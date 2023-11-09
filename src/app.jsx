@@ -4,6 +4,7 @@ import GameCreationFormRouter from './routes/GameCreationFormRouter'
 import GameJoinFormRouter from './routes/GameJoinFormRouter'
 import GameRouter from './routes/GameRouter'
 import EndOfGameRouter from './routes/EndOfGameRouter'
+import DIVS from './divs'
 
 const App = () => {
   return (
