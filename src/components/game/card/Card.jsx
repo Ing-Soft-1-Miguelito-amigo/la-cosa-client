@@ -43,13 +43,12 @@ const Card = ({
           }
           break;
         case 4://response exchanging cards
-        if (cardSelected.cardId === cardId ) {
-          setCardSelected({});
-        }//check if the player selecting the card is the recipent of the exchange
-        else if(isRecipientExchange && (kind !== 3 || playerRole === 3) && kind !== 5){
-          setCardSelected({ cardId:cardId, code:code, kind:kind });
-        }
-
+          if (cardSelected.cardId === cardId ) {
+            setCardSelected({});
+          }//check if the player selecting the card is the recipent of the exchange
+          else if(isRecipientExchange && (kind !== 3 || playerRole === 3) && kind !== 5){
+            setCardSelected({ cardId:cardId, code:code, kind:kind });
+          }
 
         default: //ending exchange or ending turn or lifting card
           return 0;     

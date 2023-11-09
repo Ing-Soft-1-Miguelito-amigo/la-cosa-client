@@ -13,6 +13,7 @@ import CardWhisky from "../game/cardEffects/cardWhisky";
 import CardAnalysis from "../game/cardEffects/cardAnalysis";
 import CardSuspicion from "../game/cardEffects/cardSuspicion";
 import DeclareVictory from "../../containers/DeclareVictory";
+import FetchExchangeCard from "../../containers/FetchExchangeCard";
 
 export const GameContext = createContext({});
 export const PlayerContext = createContext({});
@@ -30,6 +31,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [playerSelected, setPlayerSelected] = useState({}); //{name}
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
+  const [exchange, setExchange] = useState(false);
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);
   const [cardAnalysis, setCardAnalysis] = useState(false);
@@ -58,8 +60,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const players = gameData.players;
   useEffect(() => {
     if (
-      (gameData.turn.state === 5 && canPlayCard.action === 2) ||
-      canPlayCard.action === 1
+      (gameData.turn.state === 5 && canPlayCard.action === "playCard") ||
+      canPlayCard.action === "discard"
     ) {
       FetchEndTurn({
         gameId,
@@ -68,30 +70,53 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   }, [gameData.turn.state]);
 
   useEffect(() => {
-    const action = discard ? "discard" : "playCard";
-    if (discard && cardSelected !== undefined) {
-      setActionText("Descartar carta");
-    } else {
-      setActionText("Jugar carta");
-    }
-    switch (cardSelected.code) {
-      case "whk":
-      case "vte":
-      case "det":
-        setCanPlayCard({
-          canPlayCard: (playerSelected.name === undefined || discard) &&
-                        gameData.turn.state === 1 &&
-                        cardSelected.cardId !== undefined,
-          action: action,
-        });
+
+    console.log("before case", gameData.turn)
+    switch(gameData.turn.state) {
+
+      // making decision
+      case 1:
+        console.log("entro case 1")
+        const action = discard ? "discard" : "playCard";
+        if (discard && cardSelected !== undefined) {
+          setActionText("Descartar carta");
+        } else {
+          setActionText("Jugar carta");
+        }
+        switch (cardSelected.code) {
+          case "whk":
+            console.log("canPlayCard adentro de whisky", canPlayCard);
+          case "vte":
+          case "det":
+            setCanPlayCard({
+              canPlayCard: (playerSelected.name === undefined || discard) &&
+                            cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+          default:
+            setCanPlayCard({
+              canPlayCard:
+                (playerSelected.name !== undefined || discard) &&
+                cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+        }
         break;
-      default:
+      
+      // exchange beginning
+      case 3:
+        console.log("entro case 3");
+      case 4:
+        console.log("entro a case 4")
         setCanPlayCard({
-          canPlayCard:
-            (playerSelected.name !== undefined || discard) &&
-            cardSelected.cardId !== undefined,
-          action: action,
+          canExchangeCard: (cardSelected.cardId !== undefined)
         });
+        setActionText("Intercambiar carta");
+        break;
+
+      default: 
         break;
     }
   }, [playerSelected, discard, cardSelected, gameData.turn]);
@@ -135,6 +160,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setHasCardToDefend(false);
     setCardSelected({});
   };
+
+  const exchangeCard = () => {
+    FetchExchangeCard({
+      gameId: gameId,
+      playerId: playerId,
+      cardId: cardSelected.cardId
+    })
+  }
 
   return (
     <div className={"game"}>
@@ -186,6 +219,9 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
           </>)}
           {canPlayCard.canPlayCard && (
             <FunctionButton text={actionText} onClick={playCard} />
+          )}
+          {canPlayCard.canExchangeCard && (
+            <FunctionButton text={actionText} onClick={exchangeCard}/>
           )}
           </div>
 
