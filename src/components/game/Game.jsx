@@ -14,6 +14,7 @@ import CardAnalysis from "../game/cardEffects/cardAnalysis";
 import CardSuspicion from "../game/cardEffects/cardSuspicion";
 import DeclareVictory from "../../containers/DeclareVictory";
 import Chat from "./chat/Chat";
+import Logs from "./logs/Logs";
 
 export const GameContext = createContext({});
 export const PlayerContext = createContext({});
@@ -138,7 +139,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   };
 
   return (
-    <div className={"game"}>
+    <div>
       <span className={style.title} data-testid="La Cosa">
         La Cosa
       </span>
@@ -158,6 +159,10 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
                 <div className={style.chat}>
                  <Chat socket={socket} gameId={gameId} playerName={player.name} />
+                </div>
+              
+                <div className={style.logs}>
+                  <Logs socket={socket} gameId={gameId} />
                 </div>
 
               </PlayersAliveContext.Provider>
@@ -200,6 +205,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
               {!(cardAnalysis || cardSuspicion || cardWhisky) && (
                 <Deck player={player} playDirection={gameData.play_direction} />
               )}
+
             </SetDiscardContext.Provider>
           </SetPlayerSelectedContext.Provider>
 
@@ -211,6 +217,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
               />
             </div>
           )}
+
 
           <div>
             {player.alive ? (
