@@ -4,6 +4,7 @@ import { expect, test } from "vitest";
 import GameCreationForm from "../components/gameCreationForm/GameCreationForm";
 import { BrowserRouter } from "react-router-dom";
 
+
 describe("GameCreationForm", () => {
   test("should render", async () => {
     render(<BrowserRouter><GameCreationForm /></BrowserRouter>);
@@ -122,7 +123,4 @@ describe("GameCreationForm", () => {
 
     expect(screen.queryByText("Ingrese valor numérico")).toBeDefined();
   });
-
-
-
 });

@@ -1,7 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import Card from "../components/game/card/Card";
-import { CardSelectedContext, SetCardSelectedContext, TurnOwnerContext } from "../components/game/Game";
+import { GameContext, CardSelectedContext, SetCardSelectedContext, TurnOwnerContext } from "../components/game/Game";
+
 
 const props = {
     cardId: 1,
@@ -32,9 +33,37 @@ describe('Component Card', () => {
     
     test('should render a card', async () => {
         
+        const gameContextValue = {
+            "id": 1,
+            "name": "a",
+            "min_players": 4,
+            "max_players": 12,
+            "state": 1,
+            "play_direction": null,
+            "turn_owner": 1,
+            "players": [
+                {
+                "name": "player1",
+                "table_position": 1,
+                "alive": true,
+                "quarantine": false
+                }
+            ], 
+            "turn": {
+                "state": 1,
+                "action": 0,
+                "player": 1,
+                "card": null,
+                "target": null, 
+                "owner": 1
+            },
+        };
+
         render(
-        <CardSelectedContext.Provider value={mockContext}>
-        <Card {...props} />
+            <CardSelectedContext.Provider value={mockContext}>
+                <GameContext.Provider value={gameContextValue}>
+                    <Card {...props} />
+                </GameContext.Provider>
         </CardSelectedContext.Provider>    
         );
         const card = screen.getByTestId("card-1");
@@ -42,13 +71,42 @@ describe('Component Card', () => {
     });
 
     test('should call setCardSelected when click on card', async () => {
+        
+        const gameContextValue = {
+            "id": 1,
+            "name": "a",
+            "min_players": 4,
+            "max_players": 12,
+            "state": 1,
+            "play_direction": null,
+            "turn_owner": 1,
+            "players": [
+                {
+                "name": "player1",
+                "table_position": 1,
+                "alive": true,
+                "quarantine": false
+                }
+            ], 
+            "turn": {
+                "state": 1,
+                "action": 0,
+                "player": 1,
+                "card": null,
+                "target": null, 
+                "owner": 1
+            },
+        };
+        
         render(
             <TurnOwnerContext.Provider value={mockContext.turnOwner}>
                 <SetCardSelectedContext.Provider value={mockContext.setCardSelected}>
                     <CardSelectedContext.Provider value={mockContext.cardSelected}>
-                        <Card { ...props} />
-                        <Card { ...props2} />
-                        <Card { ...props3} />
+                        <GameContext.Provider value={gameContextValue}>
+                            <Card { ...props} />
+                            <Card { ...props2} />
+                            <Card { ...props3} />
+                        </GameContext.Provider>
                     </CardSelectedContext.Provider>    
                 </SetCardSelectedContext.Provider>
             </TurnOwnerContext.Provider>
@@ -67,14 +125,41 @@ describe('Component Card', () => {
     });
 
     test('should selected card have diferent style properties than not seleted', async () => {
-        
+        const gameContextValue = {
+            "id": 1,
+            "name": "a",
+            "min_players": 4,
+            "max_players": 12,
+            "state": 1,
+            "play_direction": null,
+            "turn_owner": 1,
+            "players": [
+                {
+                "name": "player1",
+                "table_position": 1,
+                "alive": true,
+                "quarantine": false
+                }
+            ], 
+            "turn": {
+                "state": 1,
+                "action": 0,
+                "player": 1,
+                "card": null,
+                "target": null, 
+                "owner": 1
+            },
+        };
+
         render(
         <TurnOwnerContext.Provider value={mockContext.turnOwner}>
             <SetCardSelectedContext.Provider value={mockContext.setCardSelected}>
                 <CardSelectedContext.Provider value={mockContext.cardSelected}>
-                    <Card { ...props} />
-                    <Card { ...props2} />
-                    <Card { ...props3} />
+                    <GameContext.Provider value={gameContextValue}>
+                        <Card { ...props} />
+                        <Card { ...props2} />
+                        <Card { ...props3} />
+                    </GameContext.Provider>
                 </CardSelectedContext.Provider>    
             </SetCardSelectedContext.Provider>
         </TurnOwnerContext.Provider>

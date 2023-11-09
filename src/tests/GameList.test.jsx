@@ -2,14 +2,11 @@ import { describe} from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import GameList from "../components/gameList/GameList";
-import { waitFor } from "@testing-library/dom";
-import vi from "vitest";
 
 
 describe("GameList component", () => {
 
     test("should render", () => {
-
         render (<BrowserRouter><GameList/></BrowserRouter>);
         
         const name = screen.getByText("Nombre");
