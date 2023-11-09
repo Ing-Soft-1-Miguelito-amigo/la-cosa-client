@@ -10,10 +10,11 @@ const App = () => {
     <div>
       <Routes>
         <Route path="/" element={<HomeRouter></HomeRouter>}></Route>
-        <Route path="/game-creation-form" element={<GameCreationFormRouter></GameCreationFormRouter>}></Route>
-        <Route path="/game-join-form" element={<GameJoinFormRouter></GameJoinFormRouter>}></Route>
-        <Route path="/game/:game_id" element={<GameRouter></GameRouter>}></Route>
-        <Route path="/end-of-game" element={<EndOfGameRouter></EndOfGameRouter>}></Route>
+        <Route path="/game-creation-form" element={<GameCreationFormRouter></GameCreationFormRouter>}/>
+        <Route path="/game-join-form" element={<GameJoinFormRouter></GameJoinFormRouter>}/>
+        <Route path="/game/:game_id" element={<GameRouter></GameRouter>}/>
+        <Route path="/end-of-game" element={<EndOfGameRouter></EndOfGameRouter>}/>
+        <Route path="/div" element={<DIVS/>}/>
       </Routes>
     </div>
   )
