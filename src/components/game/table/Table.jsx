@@ -3,9 +3,12 @@ import styles from "./table.module.css";
 
 const Table = ({
     players,
-    player
+    player,
+    playerSelectedState,
+    cardSelected,
+    setDiscard,
+    turn
 }) => {
-
     // sorts players array by table_position in increasing order
     players.sort((a, b) => a.table_position - b.table_position);
     return (
@@ -17,6 +20,11 @@ const Table = ({
                         name={p.name}
                         playerData={players.find((p1) => p1.name === p.name)}
                         player={player}
+                        playerSelectedState={playerSelectedState}
+                        cardSelected={cardSelected}
+                        players={players}
+                        setDiscard={setDiscard}
+                        turn={turn}
                     />
                 )
             })}

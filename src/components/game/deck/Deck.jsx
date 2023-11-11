@@ -1,23 +1,19 @@
-import { useState, useContext, useEffect } from 'react';
-import { GameContext, PlayerContext, CardSelectedContext, SetDiscardContext, SetPlayerSelectedContext } from "../Game"
+import { useState, useEffect } from 'react';
 import FetchStealCard from '../../../containers/FetchStealCard';
 import style from '../deck/deck.module.css';
 
 const Deck = ({
     player,
-    playDirection
+    playDirection,
+    gameId,
+    turnOwner,
+    turnState,
+    cardSelected,
+    discardState,
+    setPlayerSelected
 }) => {
-    
-    const game = useContext(GameContext);
-    const cardSelected = useContext(CardSelectedContext); //Discard Card
-    const setDiscard = useContext(SetDiscardContext);
-    const setPlayerSelected = useContext(SetPlayerSelectedContext);
 
-    const gameId = game.id;
-    const turn = game.turn;
-    const turnOwner = turn.owner;
-    const turnState = turn.state;
-    const isTurnOwner = (turn.owner === player.table_position); //calculate if the player is the owner of the turn
+    const isTurnOwner = (turnOwner === player.table_position); //calculate if the player is the owner of the turn
 
 
     const [message, setMessage] = useState('');
@@ -63,7 +59,7 @@ const Deck = ({
 
     const discardCard = async () => {
         if (isTurnOwner && cardSelected.cardId !== undefined && turnState === 1) {     
-            setDiscard.setDiscard(!setDiscard.discard);
+            discardState.setDiscard(!discardState.discard);
             setPlayerSelected({});
         }
     }

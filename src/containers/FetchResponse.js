@@ -8,7 +8,7 @@ const FetchResponse = async ({
   try {
     const response = await httpRequest({
       method: "PUT",
-      service: "game/response",
+      service: "game/response-play",
       payload: {
         game_id: gameId,
         player_id: playerId,
