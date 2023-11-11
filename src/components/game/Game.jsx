@@ -15,17 +15,6 @@ import Chat from "./chat/Chat";
 import CardEffect from "./cardEffects/CardEffect";
 import ActionButtons from "./actionButtons/ActionButtons";
 
-export const GameContext = createContext({});
-export const PlayerContext = createContext({});
-export const CardSelectedContext = createContext();
-export const PlayerSelectedContext = createContext();
-export const PlayersContext = createContext();
-export const SetPlayerSelectedContext = createContext();
-export const SetCardSelectedContext = createContext();
-export const TurnOwnerContext = createContext();
-export const PlayersAliveContext = createContext([]);
-export const SetDiscardContext = createContext();
-
 const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [cardSelected, setCardSelected] = useState({}); //{cardId, code, kind}
   const [playerSelected, setPlayerSelected] = useState({}); //{name}
@@ -33,8 +22,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [discard, setDiscard] = useState(false);
   const [hasCardToDefendExchange, setHasCardToDefendExchange] = useState(false);
   const [actionText, setActionText] = useState("");
-  const [hasCardToDefend, setHasCardToDefend] = useState(false);
-  const [instruction, setInstruction] = useState("");  
+  const [hasCardToDefend, setHasCardToDefend] = useState(false);  
   const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
 
   socket.on("discard", (data) => console.log(JSON.stringify(data)));

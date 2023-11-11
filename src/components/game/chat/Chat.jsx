@@ -76,7 +76,6 @@ const Chat = ({socket, gameId, playerName}) => {
                     key={index}>
                         <div>
                             <span className={styles.sender}>{message.sender}</span>: {message.content}
-                            <div className={styles.date}>{message.date} </div> 
                         </div>
                     </div>
                 ))}
