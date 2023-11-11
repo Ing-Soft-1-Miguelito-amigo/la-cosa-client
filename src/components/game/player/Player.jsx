@@ -5,7 +5,7 @@ const Player = ({
   name,
   playerData,
   player,
-  playerSelectedState, // object
+  playerSelectedState,
   cardSelected,
   players,
   setDiscard,

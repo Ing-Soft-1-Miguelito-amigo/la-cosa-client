@@ -173,7 +173,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     <>
       <div className={style.general}>
           <div className={style.topbox} >
-              <div className={style.action}>
+              <div className={style.instruction}>
                 {/* <Instruction /> */}
               </div>        
               <div className={style.table}>

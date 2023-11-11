@@ -4,7 +4,7 @@ import styles from "./table.module.css";
 const Table = ({
     players,
     player,
-    playerSelectedState, // object
+    playerSelectedState,
     cardSelected,
     setDiscard,
     turn
