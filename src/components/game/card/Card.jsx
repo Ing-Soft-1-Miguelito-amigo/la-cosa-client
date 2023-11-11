@@ -11,7 +11,6 @@ const Card = ({
     playerName,
     playerRole,
     tablePosition,
-    playerInQuarantine
 }) => {
     const game = useContext(GameContext);
     const cardSelected = useContext(CardSelectedContext);
@@ -31,11 +30,7 @@ const Card = ({
             setCardSelected({}); 
           }
           else if (isTurnOwner && kind !== 5) {
-            if (!playerInQuarantine){
-              setCardSelected({ cardId:cardId, code:code, kind:kind });
-            }
-            else if (playerInQuarantine && (code !== "cdl" || code !== "vte" || code !== "mvc" || code !== "lla"))
-              setCardSelected({ cardId:cardId, code:code, kind:kind });
+            setCardSelected({ cardId:cardId, code:code, kind:kind });
           }
           break;
         case 3: //exchanging cards

@@ -43,36 +43,46 @@ const Player = ({
   
   useEffect(() => {
     // obtain the player alives next to the turnOwner
+    turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
     const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
     const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];    
-        
+
     const pTS = () => {    
       switch (cardSelected.code){
-        
         //sospecha, análisis, lanzallamas, cambio de lugar
         case "sos": //sospecha
         case "ana": //análisis
+          return [player_on_left, player_on_right];        
         case "lla": //lanzallamas
+          if (player.quarantine == 0){
+            return [player_on_left, player_on_right];        
+          }
+          else {
+            return [];
+          }
         case "cua": //cuarentena
-          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
           return [player_on_left, player_on_right];
-
         case "sed": //seducción
           return playersAlive.filter(player => player.table_position != turnOwner);
-        
         case "cdl": //cambio de lugar
-        case "vte": //vigila tus espaldas
-          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
-          if (!player_on_right.quarantine && !player_on_left.quarantine)
-            return [player_on_left, player_on_right];        
-          else if (player_on_right.quarantine)
-            return [player_on_left];
-          else if (player_on_left.quarantine)
-            return [player_on_right]
-
+          if (player.quarantine == 0){
+            if (player_on_right.quarantine == 0 && player_on_left.quarantine == 0)
+              return [player_on_left, player_on_right];        
+            else if (player_on_right.quarantine !== 0)
+              return [player_on_left];
+            else if (player_on_left.quarantine !== 0)
+              return [player_on_right]
+          }
+          else {
+            return [];
+          }
         case "mvc": //más vale que corras
-          return playersAlive.filter(player => player.table_position != turnOwner && !player.quarantine);
-
+          if (player.quarantine == 0){
+            return playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
+          }
+          else {
+            return [];
+          }
         default: // defense cards, wiskey and vigila tus espaldas
           return [];
       }
@@ -85,8 +95,6 @@ const Player = ({
 
     
   }, [cardSelected]);
-
-
     
   const selectPlayer = () => {
     if (name === namePlayerSelected){
