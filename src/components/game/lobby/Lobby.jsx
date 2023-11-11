@@ -10,9 +10,11 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
     const [host, setHost] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState(false);
-    const [text, setText] = useState("");
     const [data , setData] = useState({}); 
     const [hostHasLeft, setHostHasLeft] = useState(false);
+    const [players, setPlayers] = useState([])
+    const [minPlayers, setMinPlayers] = useState(false);
+    const [text, setText] = useState("")
     
     if (gameData.state === 3) {
         setHostHasLeft(true);
@@ -27,11 +29,17 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
 
         if (player.owner) {
             setHost(true);
-            setText("Esperando a los jugadores...");
+            setText("Aprieta Iniciar Partida \ny juguemos a La Cosa!");
         } else {
-            setText("Esperando al host...");
+            setText("Esperando que el host \ninicie la partida \n(apúrenlo)");
         }
     }, [player.owner, gameData.id, player.name]);
+    console.log("Text", text)
+
+    useEffect(() => {
+        setPlayers(gameData.players.map((player) => player.name));
+        setMinPlayers(gameData.players.length >= gameData.min_players); 
+    }, [gameData.players]);
 
     const startGame = async (data) => {
         const response = await FetchStartGame(data);
@@ -67,12 +75,15 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
     return (    
         <div className={styles.body}>
             <div className={styles.fade}>
-                <p className={styles.text}>{text}</p>
+                <p className={styles.text}>
+                    {minPlayers ? text: 
+                    `${players.length} jugadores unidos\n\n\n Esperando a ${gameData.min_players - players.length} mas para empezar`}
+                </p>
             </div>
                 {error && <p className={styles.error}>{message}</p>}
             <div className={styles.button}>
                 {host && <FunctionButton text={"Iniciar Partida" } onClick={() => startGame(data)}/>}
-               {!hostHasLeft && <FunctionButton text={"Abandonar Partida"} onClick={goOutGame}/>}
+                {!hostHasLeft && <FunctionButton text={"Abandonar Partida"} onClick={goOutGame}/>}
                 {hostHasLeft && <FunctionButton text={"Volver a inicio"} onClick={handleHostLeft}/>} 
             </div>
         </div>   
