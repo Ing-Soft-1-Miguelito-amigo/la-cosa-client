@@ -72,6 +72,7 @@ const Hand = ({
             playerName={player.name}
             playerRole={player.role}
             tablePosition={player.table_position}
+            playerInQuarantine={player.quarantine}
             />
         ))}
     </div>

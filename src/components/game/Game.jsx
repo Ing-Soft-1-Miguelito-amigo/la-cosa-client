@@ -60,6 +60,11 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSuspicion(true);
     setSuspicionData(data);
   });
+  socket.on("cuarentena", (data) => {
+    //Modificar una vez modularizado
+    setCardWhisky(true); 
+    setWhiskyData(data);
+  });
   
   const players = gameData.players;
   const turnState = gameData.turn.state; 

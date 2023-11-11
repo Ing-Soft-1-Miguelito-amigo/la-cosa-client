@@ -43,22 +43,36 @@ const Player = ({
   
   useEffect(() => {
     // obtain the player alives next to the turnOwner
-    const pTS = () => {
+    const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
+    const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];    
+        
+    const pTS = () => {    
       switch (cardSelected.code){
+        
         //sospecha, análisis, lanzallamas, cambio de lugar
         case "sos": //sospecha
         case "ana": //análisis
         case "lla": //lanzallamas
-        case "cdl": //cambio de lugar
-          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
-          const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
-          const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
+        case "cua": //cuarentena
+          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
           return [player_on_left, player_on_right];
-        
-        case "mvc": //más vale que corras
+
         case "sed": //seducción
           return playersAlive.filter(player => player.table_position != turnOwner);
-          
+        
+        case "cdl": //cambio de lugar
+        case "vte": //vigila tus espaldas
+          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
+          if (!player_on_right.quarantine && !player_on_left.quarantine)
+            return [player_on_left, player_on_right];        
+          else if (player_on_right.quarantine)
+            return [player_on_left];
+          else if (player_on_left.quarantine)
+            return [player_on_right]
+
+        case "mvc": //más vale que corras
+          return playersAlive.filter(player => player.table_position != turnOwner && !player.quarantine);
+
         default: // defense cards, wiskey and vigila tus espaldas
           return [];
       }
@@ -92,6 +106,7 @@ const Player = ({
         case "cdl": //cambio de lugar
         case "mvc": //mas vale que corras
         case "sed": //seducción
+        case "cua": //cuarentena
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             setPlayerSelected({ name: name });
             setDiscard.setDiscard(false);
