@@ -3,19 +3,17 @@ import style from "./game.module.css";
 import Hand from "./hand/Hand";
 import Table from "./table/Table";
 import Deck from "./deck/Deck";
-import FunctionButton from "../functionButton/FunctionButton";
 import FetchPlayCard from "../../containers/FetchPlayCard";
 import DeadPlayer from "./deadPlayer/DeadPlayer";
 import FetchDiscard from "../../containers/FetchDiscard";
 import FetchResponse from "../../containers/FetchResponse";
 import FetchEndTurn from "../../containers/FetchEndTurn";
-import CardWhisky from "../game/cardEffects/cardWhisky";
-import CardAnalysis from "../game/cardEffects/cardAnalysis";
-import CardSuspicion from "../game/cardEffects/cardSuspicion";
 import DeclareVictory from "../../containers/DeclareVictory";
 import ExchangeCard from "../../containers/ExchangeCard";
 import ResponseExchange from "../../containers/ResponseExchange";
 import Chat from "./chat/Chat";
+import CardEffect from "./cardEffects/CardEffect";
+import ActionButtons from "./actionButtons/ActionButtons";
 
 export const GameContext = createContext({});
 export const PlayerContext = createContext({});
@@ -36,30 +34,16 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [hasCardToDefendExchange, setHasCardToDefendExchange] = useState(false);
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);
-  const [cardAnalysis, setCardAnalysis] = useState(false);
-  const [cardSuspicion, setCardSuspicion] = useState(false);
-  const [cardWhisky, setCardWhisky] = useState(false);
-  const [analysisData, setAnalysisData] = useState({});
-  const [suspicionData, setSuspicionData] = useState({});
-  const [whiskyData, setWhiskyData] = useState({});
-  const [instruction, setInstruction] = useState("")
+  const [instruction, setInstruction] = useState("");  
+  const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
 
   socket.on("discard", (data) => console.log(JSON.stringify(data)));
   socket.on("action", (data) => console.log(JSON.stringify(data)));
   socket.on("defense", (data) => console.log(JSON.stringify(data)));
-  socket.on("analisis", (data) => {
-    setCardAnalysis(true);
-    setAnalysisData(data);
-  });
-  socket.on("whisky", (data) => {
-    setCardWhisky(true);
-    setWhiskyData(data);
-  });
-  socket.on("sospecha", (data) => {
-    setCardSuspicion(true);
-    setSuspicionData(data);
-  });
-  
+  socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
+  socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
+  socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
+
   const players = gameData.players;
   const turnState = gameData.turn.state; 
 
@@ -72,7 +56,6 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   }, [gameData.turn]);
 
   useEffect(() => {
-
     switch(turnState) {
 
       // making decision
@@ -167,9 +150,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
     setCardSelected({});
   };
 
-  const exchangeCard = (
-    defend
-  ) => {
+  const exchangeCard = (defend) => {
     if(turnState === 3){
       ExchangeCard({
         gameId: gameId,
@@ -211,65 +192,27 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                 </div>
 
               </PlayersAliveContext.Provider>
-              {canPlayCard.canPlayCard && (
-                <div className={style.button}>
-                  <FunctionButton text={actionText} onClick={playCard} />
-                </div>
-              )}
-              {hasCardToDefend && (
-                <div className={style.button}>
-                  <FunctionButton
-                    text={"Defenderme"}
-                    onClick={() => defend(true)}
-                  />
-                </div>
-              )}
-              {hasCardToDefend && (
-                <div className={style.button}>
-                  <FunctionButton
-                    text={"No defenderme"}
-                    onClick={() => defend(false)}
-                  />
-                </div>
-              )}
-              {cardAnalysis && (
-                <CardAnalysis
-                  data={analysisData}
-                  setCardAnalysis={setCardAnalysis}
-                />
-              )}
-              {cardSuspicion && (
-                <CardSuspicion
-                  data={suspicionData}
-                  setCardSuspicion={setCardSuspicion}
-                />
-              )}
-              {cardWhisky && (
-                <CardWhisky data={whiskyData} setCardWhisky={setCardWhisky} />
-              )}
-              {!(cardAnalysis || cardSuspicion || cardWhisky) && (
-                <Deck player={player} playDirection={gameData.play_direction} />
-              )}
+                {showEffect.showEffect ? (
+                    <CardEffect showEffect={showEffect} setShowEffect={setShowEffect}/>
+                ) : (
+                    <Deck player={player} playDirection={gameData.play_direction} />
+                )}
             </SetDiscardContext.Provider>
           </SetPlayerSelectedContext.Provider>
           
           <div className={style.button}>
-          {player.role == 3 && (
-            <FunctionButton text={"Declararme Ganador"} onClick={() => DeclareVictory({ gameId, playerId })}/>
-            )}
-          {hasCardToDefend && (<>
-            <FunctionButton text={"Defenderme"} onClick={() => defend(true)}/>
-            <FunctionButton text={"No defenderme"} onClick={() => defend(false)}/>
-          </>)}
-          {canPlayCard.canPlayCard && (
-            <FunctionButton text={actionText} onClick={playCard} />
-            )}
-          {canPlayCard.canExchangeCard && (
-            <FunctionButton text={actionText} onClick={() => exchangeCard(false)}/>
-            )}
-          {hasCardToDefendExchange && (
-            <FunctionButton text={"Defenderme del intercambio"} onClick={() => exchangeCard(true)}/>
-          )}
+              <ActionButtons  DeclareVictory={DeclareVictory} 
+                              defend={defend}
+                              playCard={playCard}
+                              exchangeCard={exchangeCard}
+                              player={player}
+                              playerId={playerId}
+                              gameId={gameId}
+                              hasCardToDefend={hasCardToDefend}
+                              canPlayCard={canPlayCard}
+                              hasCardToDefendExchange={hasCardToDefendExchange}
+                              actionText={actionText}
+                              />
           </div>
 
           <div>
