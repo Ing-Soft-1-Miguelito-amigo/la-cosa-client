@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useRef, useContext } from "react";
+import { useState, useEffect} from "react";
 import style from "./game.module.css";
 import Hand from "./hand/Hand";
 import Table from "./table/Table";
@@ -12,6 +12,7 @@ import DeclareVictory from "../../containers/DeclareVictory";
 import ExchangeCard from "../../containers/ExchangeCard";
 import ResponseExchange from "../../containers/ResponseExchange";
 import Chat from "./chat/Chat";
+import Logs from "./logs/Logs";
 import CardEffect from "./cardEffects/CardEffect";
 import ActionButtons from "./actionButtons/ActionButtons";
 
@@ -191,7 +192,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                     />
                   </div>        
                   <div className={style.logs}>
-                    {/* <Logs /> */}
+                    <Logs socket={socket} gameId={gameId} />
                   </div>        
               </div>
               <div className={style.deckHandContainer} >
