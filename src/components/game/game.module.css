@@ -17,7 +17,7 @@
 }
 .bottombox{
     margin: 5px;
-    height: 500px;
+    /* height: 500px; */
     width: 100%;
     display: flex;
     flex-grow: 2;
@@ -51,10 +51,14 @@
 .buttons{
     margin: 5px;
     flex-grow: 2;
+    display: flex;
+    flex-direction: column;
 }
 .logs{
     margin: 5px;
     flex-grow: 2;
+    display: flex;
+    align-items:center;
 }
 .deck{
     margin: 5px;
