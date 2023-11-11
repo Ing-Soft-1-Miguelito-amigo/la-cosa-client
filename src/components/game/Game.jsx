@@ -45,15 +45,16 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
 
   const players = gameData.players;
-  const turnState = gameData.turn.state; 
+  const turn = gameData.turn;
+  const turnState = turn.state; 
 
   useEffect(() => {
-    if (turnState === 5 && player.table_position === gameData.turn.owner)  {
+    if (turnState === 5 && player.table_position === turn.owner)  {
       FetchEndTurn({
         gameId,
       });
     }
-  }, [gameData.turn]);
+  }, [turn]);
 
   useEffect(() => {
     switch(turnState) {
@@ -108,7 +109,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       default: 
         break;
     }
-  }, [playerSelected, discard, cardSelected, gameData.turn]);
+  }, [playerSelected, discard, cardSelected, turn]);
 
   const playCard = () => {
     if (canPlayCard.action === "discard") { //check if the action is discard
@@ -169,68 +170,79 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   }
 
   return (
-    <div className={"game"}>
-      <span className={style.title} data-testid="La Cosa">
-        {instruction}
-      </span>
-      <span className={style.span}>Jugando en {gameData.name}</span>
-      <GameContext.Provider value={gameData}>
-        <CardSelectedContext.Provider value={cardSelected}>
-          <SetPlayerSelectedContext.Provider value={setPlayerSelected}>
-            <SetDiscardContext.Provider
-              value={{ setDiscard: setDiscard, discard: discard }}
-            >
-              <PlayersAliveContext.Provider
-                value={players.filter((player) => player.alive === true)}
-              >
-                <PlayerSelectedContext.Provider value={playerSelected.name}>
-                  <Table players={players} player={player} />
-                </PlayerSelectedContext.Provider>
-
-                <div className={style.chat}>
-                 <Chat socket={socket} gameId={gameId} playerName={player.name} />
-                </div>
-
-              </PlayersAliveContext.Provider>
-                {showEffect.showEffect ? (
-                    <CardEffect showEffect={showEffect} setShowEffect={setShowEffect}/>
-                ) : (
-                    <Deck player={player} playDirection={gameData.play_direction} />
-                )}
-            </SetDiscardContext.Provider>
-          </SetPlayerSelectedContext.Provider>
-          
-          <div className={style.button}>
-              <ActionButtons  DeclareVictory={DeclareVictory} 
-                              defend={defend}
-                              playCard={playCard}
-                              exchangeCard={exchangeCard}
-                              player={player}
-                              playerId={playerId}
-                              gameId={gameId}
-                              hasCardToDefend={hasCardToDefend}
-                              canPlayCard={canPlayCard}
-                              hasCardToDefendExchange={hasCardToDefendExchange}
-                              actionText={actionText}
-                              />
+    <>
+      <div className={style.general}>
+          <div className={style.topbox} >
+              <div className={style.action}>
+                {/* <Instruction /> */}
+              </div>        
+              <div className={style.table}>
+                <Table  players={players} 
+                        player={player}
+                        playerSelectedState={{name: playerSelected.name, setPlayerSelected}}
+                        cardSelected={cardSelected}
+                        setDiscard={setDiscard}
+                        turn={gameData.turn}
+                        />
+              </div>        
+          </div>
+          <div className={style.bottombox} >
+              <div className={style.buttonsLogsContainer} >
+                  <div className={style.buttons}>
+                    <ActionButtons  DeclareVictory={DeclareVictory} 
+                                    defend={defend}
+                                    playCard={playCard}
+                                    exchangeCard={exchangeCard}
+                                    player={player}
+                                    playerId={playerId}
+                                    gameId={gameId}
+                                    hasCardToDefend={hasCardToDefend}
+                                    canPlayCard={canPlayCard}
+                                    hasCardToDefendExchange={hasCardToDefendExchange}
+                                    actionText={actionText}
+                    />
+                  </div>        
+                  <div className={style.logs}>
+                    {/* <Logs /> */}
+                  </div>        
+              </div>
+              <div className={style.deckHandContainer} >
+                  <div className={style.deck}>
+                    {showEffect.showEffect ? (
+                      <CardEffect showEffect={showEffect} setShowEffect={setShowEffect}/>
+                    ) : (
+                      <Deck player={player} 
+                            playDirection={gameData.play_direction} 
+                            gameId={gameId}
+                            turnOwner={turn.owner}
+                            turnState={turnState}
+                            cardSelected={cardSelected}
+                            discardState={{discard, setDiscard}}
+                            setPlayerSelected={setPlayerSelected}/>
+                    )}
+                  </div>        
+                  <div className={style.hand}>
+                    {player.alive ? (
+                      <Hand
+                        player={player}
+                        turn={turn}
+                        setCardSelected={setCardSelected}
+                        defendCard={defendCard}
+                        cardSelected={cardSelected}
+                      />
+                    ) : (
+                      <DeadPlayer socket={socket} />
+                    )}
+                  </div>        
+              </div>
+              <div className={style.chatContainer}>
+                <Chat socket={socket} gameId={gameId} playerName={player.name} />
+              </div>
           </div>
 
-          <div>
-            {player.alive ? (
-              <Hand
-                player={player}
-                gameData={gameData}
-                setCardSelected={setCardSelected}
-                defendCard={defendCard}
-              />
-            ) : (
-              <DeadPlayer socket={socket} />
-            )}
-          </div>
-        </CardSelectedContext.Provider>
-      </GameContext.Provider>
-    </div>
-  );
+      </div>        
+    </>
+  )
 };
 
 export default Game;

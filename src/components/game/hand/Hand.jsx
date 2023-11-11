@@ -4,12 +4,13 @@ import style from "../hand/hand.module.css";
 
 const Hand = ({ 
   player, 
-  gameData, 
+  turn, 
   setCardSelected, 
-  defendCard
+  defendCard,
+  cardSelected
 }) => {
   const [hand, setHand] = useState([]);
-  const turn = gameData.turn;
+  //const turn = gameData.turn;
 
   useEffect(() => {
     setHand(player.hand)    // setTablePosition(player.table_position)
@@ -56,7 +57,7 @@ const Hand = ({
           defendCard(null);
           break;
       }}
-    },[gameData]);
+    },[turn]);
 
   hand.sort((a, b) => a.id - b.id)
 
@@ -72,6 +73,8 @@ const Hand = ({
             playerName={player.name}
             playerRole={player.role}
             tablePosition={player.table_position}
+            turn={turn}
+            cardSelected={cardSelected}
             />
         ))}
     </div>

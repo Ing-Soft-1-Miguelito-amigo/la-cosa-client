@@ -1,42 +1,35 @@
 import { useContext, useMemo, useState, useEffect } from "react";
 import styles from "./player.module.css";
-import { CardSelectedContext, 
-  PlayerSelectedContext, 
-  SetPlayerSelectedContext, 
-  PlayersAliveContext, 
-  SetDiscardContext, 
-  GameContext
-} from "../Game";
 
 const Player = ({
   name,
   playerData,
-  player
+  player,
+  playerSelectedState, // object
+  cardSelected,
+  players,
+  setDiscard,
+  turn
 }) => {
-  const namePlayerSelected = useContext(PlayerSelectedContext);
-  const setPlayerSelected = useContext(SetPlayerSelectedContext);
-  const cardSelected = useContext(CardSelectedContext)
-  const playersAlive = useContext(PlayersAliveContext);
-  const setDiscard = useContext(SetDiscardContext);
-  const gameData = useContext(GameContext)
-  const turnOwner = gameData.turn.owner;
-  const turnState = gameData.turn.state; 
-  
+  const turnOwner = turn.owner;
+  const turnState = turn.state; 
+  const playersAlive = players.filter((player) => player.alive);
+
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
   const [playersToSelect, setPlayersToSelect] = useState([]);
   let turnOwnerIndex; 
   
-  const playerStyle = namePlayerSelected === name ? styles.playerSelected : styles.playerStyle;
+  const playerStyle = playerSelectedState.name === name ? styles.playerSelected : styles.playerStyle;
 
   const style = {
-    backgroundColor: isAlive ? (namePlayerSelected === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)",
-    borderColor: hasTurn ? "rgb(255, 127, 80)" : (namePlayerSelected === name ? "rgb(250, 250, 250)" : "rgb(0, 0, 0)"),
+    backgroundColor: isAlive ? (playerSelectedState.name === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)",
+    borderColor: hasTurn ? "rgb(255, 127, 80)" : (playerSelectedState.name === name ? "rgb(250, 250, 250)" : "rgb(0, 0, 0)"),
   };
 
   useEffect(() => {
     if (cardSelected.cardId == undefined) {
-      setPlayerSelected({});
+      playerSelectedState.setPlayerSelected({});
     }
   },[cardSelected])
 
@@ -65,8 +58,8 @@ const Player = ({
     };
     setPlayersToSelect(pTS());
 
-    if(namePlayerSelected !== playersToSelect.filter(player => player.name === namePlayerSelected).name){
-      setPlayerSelected({});
+    if(playerSelectedState.name !== playersToSelect.filter(player => player.name === playerSelectedState.name).name){
+      playerSelectedState.setPlayerSelected({});
     }
 
     
@@ -75,8 +68,8 @@ const Player = ({
 
     
   const selectPlayer = () => {
-    if (name === namePlayerSelected){
-      setPlayerSelected({});
+    if (name === playerSelectedState.name){
+      playerSelectedState.setPlayerSelected({});
     }
     else if ( cardSelected.cardId !== undefined &&
               turnState === 1){
@@ -93,13 +86,13 @@ const Player = ({
         case "mvc": //mas vale que corras
         case "sed": //seducción
           if (playersToSelect.filter(player => player.name === name).length !== 0){
-            setPlayerSelected({ name: name });
-            setDiscard.setDiscard(false);
+            playerSelectedState.setPlayerSelected({ name: name });
+            setDiscard(false);
           }
           break; 
         default: // defense cards, wiskey and vigila tus espaldas
-          setPlayerSelected({});
-          setDiscard.setDiscard(false);
+          playerSelectedState.setPlayerSelected({});
+          setDiscard(false);
         }
   };} 
   

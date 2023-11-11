@@ -1,7 +1,5 @@
 import style from '../card/card.module.css'
-import { useContext } from "react"
-import { CardSelectedContext, GameContext} from "../Game"
-// import { CardToDefendContext } from "../hand/Hand"
+
 const Card = ({
     cardId,
     code,
@@ -11,12 +9,14 @@ const Card = ({
     playerName,
     playerRole,
     tablePosition,
+    turn,
+    cardSelected
 }) => {
-    const game = useContext(GameContext);
-    const cardSelected = useContext(CardSelectedContext);
+    //const game = useContext(GameContext);
+    //const cardSelected = useContext(CardSelectedContext);
     const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card; //set the style of the card
     
-    const turn = game.turn; //get the turn
+    //const turn = game.turn; //get the turn
     const turnState = turn.state; //get the state of the turn
 
     const isTurnOwner = (tablePosition === turn.owner)
