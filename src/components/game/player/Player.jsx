@@ -24,13 +24,14 @@ const Player = ({
   
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
+  const hasQuarantine = useMemo (() => playerData ? playerData.quarantine !== 0 : undefined, [playerData]);
   const [playersToSelect, setPlayersToSelect] = useState([]);
   let turnOwnerIndex; 
   
   const playerStyle = namePlayerSelected === name ? styles.playerSelected : styles.playerStyle;
 
   const style = {
-    backgroundColor: isAlive ? (namePlayerSelected === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)",
+    backgroundColor: (isAlive && hasQuarantine) ? "rgb(200, 40, 40)" : (isAlive ? (namePlayerSelected === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)"),
     borderColor: hasTurn ? "rgb(255, 127, 80)" : (namePlayerSelected === name ? "rgb(250, 250, 250)" : "rgb(0, 0, 0)"),
   };
 
