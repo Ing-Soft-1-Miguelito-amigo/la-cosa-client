@@ -2,15 +2,9 @@
     display: flex;
     justify-content: center; 
     position: absolute;
-    left: 50%;
-    top: 92%;
-    transform: translate(-50%, -50%);
-    height:300px;
-    width: 700px;
+    /* left: 50%;
+    top: 92%; */
+    /* transform: translate(-50%, -50%); */
+    /* height:300px; */
+    /* width: 700px; */
 }
-
-.cornerCard {
-    position: absolute;
-    right: 245px; /* Ajusta la distancia desde la derecha */
-    top: 325px; /* Ajusta la distancia desde arriba para superponerla sobre las otras cartas */
-  }

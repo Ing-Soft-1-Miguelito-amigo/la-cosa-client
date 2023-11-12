@@ -1,41 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
 
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60vh;
-}
 
-.textAndCardsContainer {
-  position: relative;
-  width: 700px;
-  height: 550px;
+.cardDeckContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
+  /* justify-content: center; */
 }
 
 .cardcontainer {
   display: flex;
-  justify-content: center; 
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  height:300px;
-  width: 700px;
+  /* justify-content: center;  */
+  /* position: absolute; */
 }
 
 .card {
   height: 200px;
   width: 150px; 
-  margin-right: 10px;
+  /* margin-right: 10px; */
   border-radius: 10px ;
   transition: 0.5s ease-out;
   background-color: #6022dd;
-  position: relative;
-  left: 0px;
+  /* position: relative; */
+  /* left: 0px; */
   box-shadow: -0.1rem 0 1rem #000;
 }
 
@@ -50,5 +36,5 @@
   color: rgb(255, 255, 255);
   font-size: 3vh;
   text-align: center;
-  margin-top: 16%; 
+  /* margin-top: 16%;  */
 }
