@@ -25,6 +25,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);  
   const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
+  const [instruction, setInstruction] = useState({});
 
   socket.on("discard", (data) => console.log(JSON.stringify(data)));
   socket.on("action", (data) => console.log(JSON.stringify(data)));

@@ -24,7 +24,7 @@ const Player = ({
   const playerStyle = playerSelectedState.name === name ? styles.playerSelected : styles.playerStyle;
 
   const style = {
-    backgroundColor: (isAlive && hasQuarantine) ? "rgb(200, 40, 40)" : (isAlive ? (namePlayerSelected === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)"),
+    backgroundColor: (isAlive && hasQuarantine) ? "rgb(200, 40, 40)" : (isAlive ? (playerSelectedState.name === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)"),
     borderColor: hasTurn ? "rgb(255, 127, 80)" : (playerSelectedState.name === name ? "rgb(250, 250, 250)" : "rgb(0, 0, 0)"),
   };
 
@@ -82,7 +82,7 @@ const Player = ({
       }
     };
     setPlayersToSelect(pTS());
-    
+
     if(playerSelectedState.name !== playersToSelect.filter(player => player.name === playerSelectedState.name).name){
       playerSelectedState.setPlayerSelected({});
     }
