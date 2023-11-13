@@ -65,6 +65,8 @@ const Player = ({
         case "sos": //sospecha
         case "ana": //análisis
         case "ptr": //puerta atrancada
+        case "qen": //Que quede entre nosotros
+        case "cua": //cuarentena
           return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right) 
         case "lla": //lanzallamas
           if (player.quarantine == 0){
@@ -73,11 +75,9 @@ const Player = ({
           else {
             return [];
           }
-        case "cua": //cuarentena
-         return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)
+
         case "sed": //seducción
         case "npa": //¿no podemos ser amigos?
-
           const allAlivePlayers = playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
 
           //check if some of the adyacent players has locked door
@@ -95,7 +95,6 @@ const Player = ({
           else 
             return allAlivePlayers
 
-
         case "cdl": //cambio de lugar           
           if (player.quarantine == 0){
             // if (player_on_right.quarantine == 0 && player_on_left.quarantine == 0)
@@ -104,7 +103,6 @@ const Player = ({
             //   return [player_on_left];
             // else if (player_on_left.quarantine !== 0)
             //   return [player_on_right]
-
 
               return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right).filter(player => player.quarantine == 0)
           }
@@ -128,10 +126,6 @@ const Player = ({
           }
           console.log("adyacentPlayers", adyacentPlayers);
           return adyacentPlayers;
-        
-        case "qen": 
-          return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)  
-        
 
         default: // defense cards, wiskey, vigila tus espaldas and other panic cards
           return [];
