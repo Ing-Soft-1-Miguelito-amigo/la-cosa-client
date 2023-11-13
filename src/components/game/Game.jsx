@@ -34,6 +34,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
   socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
+  socket.on("ups", (data) => setShowEffect({showEffect: true, data, type: "ups"}));
+  socket.on("aterrador", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
 
   const players = gameData.players;
   const turn = gameData.turn;
@@ -59,6 +61,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
           setActionText("Jugar carta");
         }
         switch (cardSelected.code) {
+          case "ups":
+            console.log("canPlayCard adentro de ups", canPlayCard);
           case "whk":
             console.log("canPlayCard adentro de whisky", canPlayCard);
           case "vte":

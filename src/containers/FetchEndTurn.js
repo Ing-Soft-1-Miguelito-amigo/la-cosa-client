@@ -16,4 +16,4 @@ const FetchEndTurn = async ({gameId}) => {
 export default FetchEndTurn;
 
 
-//para whisky ==> null const data = {game_id:int, player_id:int, response_card_id: int} 
+//para whisky y ups ==> null const data = {game_id:int, player_id:int, response_card_id: int} 
