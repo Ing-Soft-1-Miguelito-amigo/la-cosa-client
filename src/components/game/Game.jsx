@@ -36,7 +36,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   socket.on("turn_finished", (data) => {setInstructionReciever(data.new_owner_name)});
   socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
   socket.on("ups", (data) => setShowEffect({showEffect: true, data, type: "ups"}));
-  socket.on("aterrador", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
+  socket.on("ate", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
+  socket.on("qen", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
 
   const players = gameData.players;
   const turn = gameData.turn;

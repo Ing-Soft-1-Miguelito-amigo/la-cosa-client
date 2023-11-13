@@ -127,6 +127,9 @@ const Player = ({
           }
           console.log("adyacentPlayers", adyacentPlayers);
           return adyacentPlayers;
+        
+        case "qen": 
+          return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)  
 
         default: // defense cards, wiskey and vigila tus espaldas
           return [];
@@ -164,6 +167,7 @@ const Player = ({
         case "cua": //cuarentena
         case "ptr": //puerta atrancada 
         case "hac": //hacha
+        case "qen": //queda entre nosotros
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             playerSelectedState.setPlayerSelected({ name: name });
             setDiscard(false);
