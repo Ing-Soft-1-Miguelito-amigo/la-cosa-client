@@ -26,7 +26,10 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
             player_name: player.name,
         };
         setData(dt);
+
+
     }, [gameData.id, player.name]);
+
 
     useEffect(() => {
         setPlayers(gameData.players.map((player) => player.name));
@@ -88,7 +91,7 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
                 }
             </div>
                 {error && <p className={styles.error}>{message}</p>}
-            <div className={styles.button}>
+            <div className={styles.button} data-testid="buttons" >
                 {host && <FunctionButton text={"Iniciar Partida" } onClick={() => startGame(data)}/>}
                 {!hostHasLeft && <FunctionButton text={"Abandonar Partida"} onClick={goOutGame}/>}
                 {hostHasLeft && <FunctionButton text={"Volver a inicio"} onClick={handleHostLeft}/>} 

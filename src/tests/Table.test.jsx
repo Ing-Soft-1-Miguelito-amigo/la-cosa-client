@@ -1,84 +1,100 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { expect, test } from "vitest";
 import Table from "../components/game/table/Table";
-import { BrowserRouter } from "react-router-dom";
-import { GameContext, CardSelectedContext } from "../components/game/Game";
 
+
+const mockPlayerData = (
+    name = "augusto",
+    table_position = 1,
+) => ({
+    "name": name,
+    "owner": false,
+    "id": 2,
+    "table_position": table_position,
+    "role": null,
+    "alive": true,
+    "quarantine": false,
+    "hand": [
+        {
+        "id": 1,
+        "cardId": 1,
+        "code": "lla",
+        "number_in_card": 1,
+        "kind":1
+    },{
+        "id": 2,
+        "code": "lla",
+        "number_in_card": 4,
+        "kind":1
+    },{
+        "id": 3,
+        "code": "lla",
+        "number_in_card": 6,
+        "kind":1
+    },{
+        "id": 4,
+        "code": "wsk",
+        "number_in_card": 8,
+        "kind":1
+    }]
+});
+
+const turn = {
+        "state": 1,
+        "action": 0,
+        "player": 1,
+        "card": null,
+        "target": null, 
+        "owner": 1
+    };
+
+
+const players = [
+    {
+        "name": "player1",
+        "table_position": 1,
+        "alive": true,
+        "quarantine": 0,
+    },
+    {
+        "name": "player2",
+        "table_position": 2,
+        "alive": true,
+        "quarantine": 0,
+    },        
+    {
+        "name": "player3",
+        "table_position": 3,
+        "alive": true,
+        "quarantine": 0,
+    },
+    {
+        "name": "player4",
+        "table_position": 4,
+        "alive": true,
+        "quarantine": 0,
+    }
+];
 
 describe('Table', () => {
-    it('should render the players correctly', () => {
+    test('should render the players correctly', () => {
 
-        const playerContextValue = [
-        {
-            "name": "player1",
-            "owner": true,
-            "id": 2,
-            "table_position": 1,
-            "role": null,
-            "alive": true,
-            "quarantine": false,
-            "hand": []
-        },
-        {
-            "name": "player2",
-            "owner": false,
-            "id": 5,
-            "table_position": 2,
-            "role": null,
-            "alive": true,
-            "quarantine": false,
-            "hand": []
-        },        
-        {
-            "name": "player3",
-            "owner": false,
-            "id": 7,
-            "table_position": 3,
-            "role": null,
-            "alive": true,
-            "quarantine": false,
-            "hand": []
-        },
-      ];
-
-      const gameContextValue = {
-          "id": 1,
-          "name": "a",
-          "min_players": 4,
-          "max_players": 12,
-          "state": 1,
-          "play_direction": null,
-          "turn_owner": 1,
-          "players": [
-              {
-              "name": "player1",
-              "table_position": 1,
-              "alive": true,
-              "quarantine": false
-              }
-          ], 
-          "turn": {
-              "state": 1,
-              "action": 0,
-              "player": 1,
-              "card": null,
-              "target": null, 
-              "owner": 1
-          },
-      };
+        const setPlayerSelected = vi.fn();
+        const setDiscard = vi.fn();
   
-      const { getByText } = render(<BrowserRouter>
-                                     <CardSelectedContext.Provider value={{cardId: 1}}>
-                                        <GameContext.Provider value={gameContextValue}>
-                                            <Table players={playerContextValue} player={"player1"} />
-                                        </GameContext.Provider>
-                                     </CardSelectedContext.Provider>
-                                    </BrowserRouter>
-      );
-  
-      playerContextValue.forEach((player) => {
-        const playerName = getByText(player.name);
-        expect(playerName).toBeDefined();
-      });
+        const { getByText } = render(
+            <Table  players={players} 
+                    player={mockPlayerData()}
+                    playerSelectedState={{name: "ale", setPlayerSelected}}
+                    cardSelected={{cardId: 1}}
+                    setDiscard={setDiscard}
+                    turn={turn}
+                    />                             
+        );
+    
+        players.forEach((player) => {
+            const playerName = getByText(player.name);
+            expect(playerName).toBeDefined();
+        });
     });
   });
