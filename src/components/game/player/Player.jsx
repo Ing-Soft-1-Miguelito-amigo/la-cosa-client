@@ -57,7 +57,9 @@ const Player = ({
     // obtain the player alives next to the turnOwner
     turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
     const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
-    const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];    
+    const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];  
+    const player_three_on_right = playersAlive[(turnOwnerIndex + 3) % playersAlive.length];
+    const player_three_on_left = playersAlive[(((turnOwnerIndex - 3) + playersAlive.length) % playersAlive.length)];  
 
     const pTS = () => {    
       switch (cardSelected.code){
@@ -128,6 +130,9 @@ const Player = ({
           console.log("adyacentPlayers", adyacentPlayers);
           return adyacentPlayers;
 
+        case "und": //uno, dos ...
+          return [player_three_on_left, player_three_on_right].filter(player => player.quarantine == 0);
+
         default: // defense cards, wiskey, vigila tus espaldas and other panic cards
           return [];
       }
@@ -167,6 +172,7 @@ const Player = ({
         case "hac": //hacha
         case "qen": //queda entre nosotros
         case "npa": //¿no podemos ser amigos?
+        case "und": //uno, dos ...
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             playerSelectedState.setPlayerSelected({ name: name });
             setDiscard(false);
