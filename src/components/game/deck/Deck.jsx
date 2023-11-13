@@ -69,7 +69,7 @@ const Deck = ({
         }
     }
 
-    const roles = ["Humano", "Infectado", "La Cosa"]
+    const roles = ["Humano", "Infectado", "La Cosa!"]
     console.log("player role", player.role)
 
     return (
