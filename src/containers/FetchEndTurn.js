@@ -1,13 +1,12 @@
 import { httpRequest } from "../services/HttpService";
 
-const FetchEndTurn = async ({gameId, setInstructionReciever}) => {
+const FetchEndTurn = async ({ gameId }) => {
   try {
     const response = await httpRequest({
       method: "PUT",
       service: "turn/finish",
       payload: {game_id: gameId}
     });
-    setInstructionReciever(response.json.new_owner_name);
     return response; 
   } catch (error) {
     console.log(error);

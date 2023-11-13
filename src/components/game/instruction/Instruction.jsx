@@ -1,17 +1,15 @@
+import styles from "./instruction.module.css"
 
-const Instruction = ({ state, cardLifted, cardSelected }) => {
+const Instruction = ({ state, cardSelected }) => {
     switch(state) {
+        case 0:
+            return(<span>Levanta una carta</span>)
         case 1:
-            if (!cardLifted) {
-                return(<span>Levanta una carta</span>)
+            if (!cardSelected.code) {
+                return(<span>Elige una carta para jugar o descartar</span>)
             } else {
-                if (!cardSelected.code) {
-                    return(<span>Elige una carta para jugar o descartar</span>)
-                } else {
-                    return(<span>Juega o descarta la carta</span>)
-                }
+                return(<span>Juega o descarta la carta</span>)
             }
-
         case 2:
             return(<span>Elige una carta para defenderte</span>)
         case 3:

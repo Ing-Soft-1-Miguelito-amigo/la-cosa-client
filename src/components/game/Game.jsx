@@ -32,6 +32,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
+  socket.on("turn_finished", (data) => {setInstructionReciever(data.new_owner_name)});
 
   const players = gameData.players;
   const turn = gameData.turn;
@@ -39,17 +40,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
   useEffect(() => {
     if (turnState === 5 && player.table_position === turn.owner)  {
-      console.log("ENtro a ese useEffect")
       FetchEndTurn({
-        gameId,
-        setInstructionReciever
+        gameId
       });
     }
   }, [turn]);
 
   useEffect(() => {
     switch(turnState) {
-
       // making decision
       case 1:
         const action = discard ? "discard" : "playCard";
@@ -169,11 +167,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       <div className={style.general}>
           <div className={style.topbox} >
               <div className={style.instruction}>
-                {(player.name === instructionReciever) &&
-                <Instruction  state={turnState} 
-                              cardLifted={cardLifted}
-                              cardSelected={cardSelected}
-                />
+                {player.name === instructionReciever ? (
+                  <Instruction  state={turnState} 
+                                cardLifted={cardLifted}
+                                cardSelected={cardSelected}
+                  />
+                ) : (
+                  <span>Espera tu turno para ser parte de la acción!</span>
+                )
                 }
               </div>        
               <div className={style.table}>

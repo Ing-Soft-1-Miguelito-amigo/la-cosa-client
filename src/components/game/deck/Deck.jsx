@@ -69,11 +69,18 @@ const Deck = ({
         }
     }
 
+    const roles = ["Humano", "Infectado", "La Cosa"]
+    console.log("player role", player.role)
+
     return (
         <>
             <div className={style.container}>
-                <div className={style[arrowClassName]}>
-                    <img src="../../../src/img/arrow.png"/>
+                <div>
+                    <div className={style[arrowClassName]}>
+                        <img src="../../../src/img/arrow.png"/>
+                    </div>
+                    <p>Eres {roles[player.role - 1]}</p>
+                    {player.quarantine > 0 && (<p>Estás en cuarentena!<br/>Turnos restantes para dejar de estarlo: {player.quarantine}</p>)}
                 </div>
                 <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
                     <img src={`../../../src/img/atk.png`} className={styleDeck} />
