@@ -63,14 +63,13 @@ const Deck = ({
     }
 
     const discardCard = async () => {
-        if (isTurnOwner && cardSelected.cardId !== undefined && turnState === 1) {     
+        if (isTurnOwner && cardSelected.cardId !== undefined && turnState === 1 && cardSelected.kind !== 4) {    
             discardState.setDiscard(!discardState.discard);
             setPlayerSelected({});
         }
     }
 
     const roles = ["Humano", "Infectado", "La Cosa!"]
-    console.log("player role", player.role)
 
     return (
         <>

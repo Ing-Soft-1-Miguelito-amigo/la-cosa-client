@@ -27,7 +27,7 @@ const Card = ({
 
     const selectCard = () => {
       // console.log(kind);
-      if (cardSelected.kind !== 4 || kind !== 5) {
+      if (cardSelected.kind !== 4 && kind !== 5) {
         switch (turnState) {
           case 1: //playing card
             if (cardSelected.cardId === cardId) {
