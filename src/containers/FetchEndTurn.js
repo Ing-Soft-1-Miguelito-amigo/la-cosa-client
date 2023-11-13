@@ -1,6 +1,6 @@
 import { httpRequest } from "../services/HttpService";
 
-const FetchEndTurn = async ({gameId}) => {
+const FetchEndTurn = async ({ gameId }) => {
   try {
     const response = await httpRequest({
       method: "PUT",
@@ -10,10 +10,8 @@ const FetchEndTurn = async ({gameId}) => {
     return response; 
   } catch (error) {
     console.log(error);
+    return;
   }
 };
 
 export default FetchEndTurn;
-
-
-//para whisky ==> null const data = {game_id:int, player_id:int, response_card_id: int} 

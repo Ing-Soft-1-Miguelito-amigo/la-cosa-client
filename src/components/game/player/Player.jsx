@@ -9,7 +9,9 @@ const Player = ({
   cardSelected,
   players,
   setDiscard,
-  turn
+  turn, 
+  obstacles, 
+  setDoorSelected
 }) => {
   const turnOwner = turn.owner;
   const turnState = turn.state; 
@@ -17,13 +19,14 @@ const Player = ({
 
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
+  const hasQuarantine = useMemo (() => playerData ? playerData.quarantine !== 0 : undefined, [playerData]);
   const [playersToSelect, setPlayersToSelect] = useState([]);
   let turnOwnerIndex; 
   
   const playerStyle = playerSelectedState.name === name ? styles.playerSelected : styles.playerStyle;
 
   const style = {
-    backgroundColor: isAlive ? (playerSelectedState.name === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)",
+    backgroundColor: (isAlive && hasQuarantine) ? "rgb(200, 40, 40)" : (isAlive ? (playerSelectedState.name === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)"),    
     borderColor: hasTurn ? "rgb(255, 127, 80)" : (playerSelectedState.name === name ? "rgb(250, 250, 250)" : "rgb(0, 0, 0)"),
   };
 
@@ -34,24 +37,97 @@ const Player = ({
   },[cardSelected])
 
   
+  const getAdyacentPlayersWithNoLockedDoor = (player_on_left, player_on_right) => {
+    
+    //check if some of the adyacent players has locked door
+    if (obstacles.includes(player.table_position) && 
+        obstacles.includes(player_on_left.table_position)){
+      return [];
+    }
+    else if (obstacles.includes(player.table_position)){
+      return [player_on_left]
+    }
+    else if (obstacles.includes(player_on_left.table_position))
+      return [player_on_right];
+    else 
+      return [player_on_left, player_on_right]; 
+  } 
+
   useEffect(() => {
     // obtain the player alives next to the turnOwner
-    const pTS = () => {
+    turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
+    const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
+    const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];    
+
+    const pTS = () => {    
       switch (cardSelected.code){
         //sospecha, análisis, lanzallamas, cambio de lugar
         case "sos": //sospecha
         case "ana": //análisis
+        case "ptr": //puerta atrancada
+          return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right) 
         case "lla": //lanzallamas
-        case "cdl": //cambio de lugar
-          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
-          const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
-          const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
-          return [player_on_left, player_on_right];
-        
-        case "mvc": //más vale que corras
+          if (player.quarantine == 0){
+            return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)        
+          }
+          else {
+            return [];
+          }
+        case "cua": //cuarentena
+         return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)
         case "sed": //seducción
-          return playersAlive.filter(player => player.table_position != turnOwner);
-          
+
+          const allAlivePlayers = playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
+
+          //check if some of the adyacent players has locked door
+          if (obstacles.includes(player.table_position) && 
+              obstacles.includes(player_on_left.table_position)){
+
+            return allAlivePlayers.filter(player => player.table_position !== player_on_right.table_position && 
+                                                    player.table_position !== player_on_left.table_position);
+          }
+          else if (obstacles.includes(player.table_position)){
+            return allAlivePlayers.filter(player => player.table_position !== player_on_right.table_position);
+          }
+          else if (obstacles.includes(player_on_left.table_position))
+            return allAlivePlayers.filter(player => player.table_position !== player_on_left.table_position);
+          else 
+            return allAlivePlayers
+
+
+        case "cdl": //cambio de lugar           
+          if (player.quarantine == 0){
+            // if (player_on_right.quarantine == 0 && player_on_left.quarantine == 0)
+            //   return [player_on_left, player_on_right];        
+            // else if (player_on_right.quarantine !== 0)
+            //   return [player_on_left];
+            // else if (player_on_left.quarantine !== 0)
+            //   return [player_on_right]
+
+
+              return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right).filter(player => player.quarantine == 0)
+          }
+          else {
+            return [];
+          }
+        case "mvc": //más vale que corras
+          if (player.quarantine == 0){
+            return playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
+          }
+          else {
+            return [];
+          }
+        
+        case "hac": //hacha 
+          //gets the adyacent players in quarantine.
+          const adyacentPlayers = [player_on_left, player_on_right].filter(player => player.quarantine !== 0);
+
+          if (player.quarantine !== 0){
+            adyacentPlayers.push(player);
+          }
+          console.log("adyacentPlayers", adyacentPlayers);
+          return adyacentPlayers;
+
         default: // defense cards, wiskey and vigila tus espaldas
           return [];
       }
@@ -85,14 +161,19 @@ const Player = ({
         case "cdl": //cambio de lugar
         case "mvc": //mas vale que corras
         case "sed": //seducción
+        case "cua": //cuarentena
+        case "ptr": //puerta atrancada 
+        case "hac": //hacha
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             playerSelectedState.setPlayerSelected({ name: name });
             setDiscard(false);
+            setDoorSelected(0);
           }
           break; 
         default: // defense cards, wiskey and vigila tus espaldas
           playerSelectedState.setPlayerSelected({});
           setDiscard(false);
+          setDoorSelected(0);
         }
   };} 
   
