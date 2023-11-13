@@ -10,7 +10,8 @@ const Deck = ({
     turnState,
     cardSelected,
     discardState,
-    setPlayerSelected
+    setPlayerSelected,
+    setCardLifted
 }) => {
 
     const isTurnOwner = (turnOwner === player.table_position); //calculate if the player is the owner of the turn
@@ -24,7 +25,8 @@ const Deck = ({
 
     useEffect(()=>{
         setMessage('');
-        setClicked(false)
+        setClicked(false);
+        setCardLifted(false);
     },[turnOwner])
 
 
@@ -38,18 +40,19 @@ const Deck = ({
                     const data = {game_id: gameId, player_id: player.id}
                     const response = await FetchStealCard(data)
                     if(response.status === 200) {
-                        setMessage(response.detail)
+                        setMessage(response.detail);
                         setClicked(true);
+                        setCardLifted(true);
                     }
                     else {
-                        setMessage(response.detail)
+                        setMessage(response.detail);
                     }
                 }
                 else if (player.table_position == turnOwner && clicked) {
-                    setMessage('Ya robaste una carta')
+                    setMessage('Ya robaste una carta');
                 }
                 else {
-                    setMessage('No es tu turno')
+                    setMessage('No es tu turno');
                 }
                 break;
             default:

@@ -15,6 +15,7 @@ import Chat from "./chat/Chat";
 import Logs from "./logs/Logs";
 import CardEffect from "./cardEffects/CardEffect";
 import ActionButtons from "./actionButtons/ActionButtons";
+import Instruction from "./instruction/Instruction";
 
 const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [cardSelected, setCardSelected] = useState({}); //{cardId, code, kind}
@@ -25,10 +26,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);  
   const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
+  const [cardLifted, setCardLifted] = useState(false);
 
-  socket.on("discard", (data) => console.log(JSON.stringify(data)));
-  socket.on("action", (data) => console.log(JSON.stringify(data)));
-  socket.on("defense", (data) => console.log(JSON.stringify(data)));
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
@@ -160,7 +159,12 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       <div className={style.general}>
           <div className={style.topbox} >
               <div className={style.instruction}>
-                {/* <Instruction /> */}
+                {turn.owner === player.table_position &&
+                <Instruction  state={turnState} 
+                              cardLifted={cardLifted}
+                              cardSelected={cardSelected}
+                />
+                }
               </div>        
               <div className={style.table}>
                 <Table  players={players} 
@@ -204,7 +208,9 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                             turnState={turnState}
                             cardSelected={cardSelected}
                             discardState={{discard, setDiscard}}
-                            setPlayerSelected={setPlayerSelected}/>
+                            setPlayerSelected={setPlayerSelected}
+                            setCardLifted={setCardLifted}
+                      />
                     )}
                   </div>        
                   <div className={style.hand}>
