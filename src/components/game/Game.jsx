@@ -35,6 +35,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
   socket.on("turn_finished", (data) => {setInstructionReciever(data.new_owner_name)});
   socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
+  socket.on("ups", (data) => setShowEffect({showEffect: true, data, type: "ups"}));
+  socket.on("aterrador", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
 
   const players = gameData.players;
   const turn = gameData.turn;
@@ -59,6 +61,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
           setActionText("Jugar carta");
         }
         switch (cardSelected.code) {
+          case "ups":
           case "whk":
           case "vte":
           case "det":

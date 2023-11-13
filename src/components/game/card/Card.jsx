@@ -18,40 +18,45 @@ const Card = ({
     const isTurnOwner = (tablePosition === turn.owner)
     const isRecipientExchange = (turn.destination_player_exchange === playerName); //calculate if the player is the recipient of exchange
 
+    if(kind === 4){
+      setCardSelected({ cardId:cardId, code:code, kind:kind })
+    }
+
     const selectCard = () => {
       // console.log(kind);
-      switch (turnState) {
-        case 1: //playing card
-          if (cardSelected.cardId === cardId) {
-            setCardSelected({}); 
-          }
-          else if (isTurnOwner && kind !== 5) {
-            setCardSelected({ cardId:cardId, code:code, kind:kind });
-          }
-          break;
-        case 3: //exchanging cards
-          if (cardSelected.cardId === cardId) {
-            setCardSelected({});
-          }
-          //check if the player selecting the card is the tOwner or 
-          //check if the card is not a card is not a infected card or the player is the Thing
-          //check if the card is not a card is not the Thing card
-          else if (isTurnOwner && (kind !== 3 || playerRole === 3) && kind !== 5) {
-            setCardSelected({ cardId:cardId, code:code, kind:kind });
-          }
-          break;
-        case 4://response exchanging cards
-          if (cardSelected.cardId === cardId ) {
-            setCardSelected({});
-          }//check if the player selecting the card is the recipent of the exchange
-          else if(isRecipientExchange && (kind !== 3 || playerRole === 3) && kind !== 5){
-            setCardSelected({ cardId:cardId, code:code, kind:kind });
-          }
+      if (cardSelected.kind !== 4 || kind !== 5) {
+        switch (turnState) {
+          case 1: //playing card
+            if (cardSelected.cardId === cardId) {
+              setCardSelected({}); 
+            }
+            else if (isTurnOwner) {
+              setCardSelected({ cardId:cardId, code:code, kind:kind });
+            }
+            break;
+          case 3: //exchanging cards
+            if (cardSelected.cardId === cardId) {
+              setCardSelected({});
+            }
+            //check if the player selecting the card is the tOwner or 
+            //check if the card is not a card is not a infected card or the player is the Thing
+            //check if the card is not a card is not the Thing card
+            else if (isTurnOwner && (kind !== 3 || playerRole === 3)) {
+              setCardSelected({ cardId:cardId, code:code, kind:kind });
+            }
+            break;
+          case 4://response exchanging cards
+            if (cardSelected.cardId === cardId ) {
+              setCardSelected({});
+            }//check if the player selecting the card is the recipent of the exchange
+            else if(isRecipientExchange && (kind !== 3 || playerRole === 3)){
+              setCardSelected({ cardId:cardId, code:code, kind:kind });
+            }
 
-        default: //ending exchange or ending turn or lifting card
-          return 0;     
-        
-      };
+          default: //ending exchange or ending turn or lifting card
+            return 0;     
+        };
+      }
     }
 
     return (

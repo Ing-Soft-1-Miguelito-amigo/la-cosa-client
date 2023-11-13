@@ -152,7 +152,7 @@ const Player = ({
         //if a card has been selected. 
         /*check how to select depending on the card selected 
         if the card is sospecha or cambio de lugar => select adyacent player
-        if the card is whisky or vigila tus espaldas => don't select player
+        if the card is whisky, vigila tus espaldas or ups => don't select player
         if the card is mas vale que corras => select any player who is alive */
       switch (cardSelected.code){
         case "sos": //sospecha
