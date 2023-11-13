@@ -27,6 +27,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [hasCardToDefend, setHasCardToDefend] = useState(false);  
   const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
   const [cardLifted, setCardLifted] = useState(false);
+  const [instructionReciever, setInstructionReciever] = useState("")
 
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
@@ -38,8 +39,10 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
   useEffect(() => {
     if (turnState === 5 && player.table_position === turn.owner)  {
+      console.log("ENtro a ese useEffect")
       FetchEndTurn({
         gameId,
+        setInstructionReciever
       });
     }
   }, [turn]);
@@ -79,7 +82,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       
       // exchange beginning
       case 3:
+        setInstructionReciever(players.filter((player) => player.table_position === turn.owner)[0].name);
+        setCanPlayCard({
+          canExchangeCard: (cardSelected.cardId !== undefined)
+        });
+        setActionText("Intercambiar carta");
+        break;
       case 4:
+        setInstructionReciever(turn.destination_player_exchange);
         setCanPlayCard({
           canExchangeCard: (cardSelected.cardId !== undefined)
         });
@@ -159,7 +169,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       <div className={style.general}>
           <div className={style.topbox} >
               <div className={style.instruction}>
-                {turn.owner === player.table_position &&
+                {(player.name === instructionReciever) &&
                 <Instruction  state={turnState} 
                               cardLifted={cardLifted}
                               cardSelected={cardSelected}
@@ -210,6 +220,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                             discardState={{discard, setDiscard}}
                             setPlayerSelected={setPlayerSelected}
                             setCardLifted={setCardLifted}
+                            setInstructionReciever={setInstructionReciever}
                       />
                     )}
                   </div>        

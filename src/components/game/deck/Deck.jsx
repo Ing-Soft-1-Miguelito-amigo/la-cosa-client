@@ -11,7 +11,8 @@ const Deck = ({
     cardSelected,
     discardState,
     setPlayerSelected,
-    setCardLifted
+    setCardLifted,
+    setInstructionReciever
 }) => {
 
     const isTurnOwner = (turnOwner === player.table_position); //calculate if the player is the owner of the turn
@@ -33,8 +34,9 @@ const Deck = ({
     const liftCard = async () => {
         switch (turnState) {
             case 0: //lifting card
+                setInstructionReciever(player.name);
                 if (player.hand.length >= 5){
-                    setMessage('Tienes el maximo de cartas ya!')
+                    setMessage('Tienes el maximo de cartas ya!');
                 }
                 else if (player.table_position == turnOwner && !clicked) {
                     const data = {game_id: gameId, player_id: player.id}
