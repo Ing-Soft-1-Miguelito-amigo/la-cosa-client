@@ -21,7 +21,7 @@ const Hand = ({
       switch(cardCode){
         case "lla": 
           //Card played 'lanzallamas', then check if player has 'nada de barbacoas'
-          const defendCardlla = hand.filter(card => card.code === "ndb");
+          const defendCardlla = player.hand.filter(card => card.code === "ndb");
           if (defendCardlla.length !== 0){
             setCardSelected({ cardId:defendCardlla[0].id, code:defendCardlla[0].code, kind:defendCardlla[0].kind });
             defendCard( defendCardlla[0].id);
@@ -31,7 +31,7 @@ const Hand = ({
           break;
         case "cdl":
         case "mvc":
-          const defendCardcdl = hand.filter(card => card.code === "aeb");
+          const defendCardcdl = player.hand.filter(card => card.code === "aeb");
           if (defendCardcdl.length !== 0){
             setCardSelected({ cardId:defendCardcdl[0].id, code:defendCardcdl[0].code, kind:defendCardcdl[0].kind });
             defendCard( defendCardcdl[0].id);
