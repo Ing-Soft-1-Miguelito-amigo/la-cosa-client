@@ -17,13 +17,14 @@ const Player = ({
 
   const isAlive = useMemo(() => playerData ? playerData.alive : undefined, [playerData]);
   const hasTurn = useMemo(() => turnOwner === playerData.table_position, [playerData, turnOwner]);
+  const hasQuarantine = useMemo (() => playerData ? playerData.quarantine !== 0 : undefined, [playerData]);
   const [playersToSelect, setPlayersToSelect] = useState([]);
   let turnOwnerIndex; 
   
   const playerStyle = playerSelectedState.name === name ? styles.playerSelected : styles.playerStyle;
 
   const style = {
-    backgroundColor: isAlive ? (playerSelectedState.name === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)",
+    backgroundColor: (isAlive && hasQuarantine) ? "rgb(200, 40, 40)" : (isAlive ? (playerSelectedState.name === name ? "rgb(100, 240, 250)" : "rgb(70, 190, 119)") : "rgb(100, 100, 100)"),    
     borderColor: hasTurn ? "rgb(255, 127, 80)" : (playerSelectedState.name === name ? "rgb(250, 250, 250)" : "rgb(0, 0, 0)"),
   };
 
@@ -36,22 +37,46 @@ const Player = ({
   
   useEffect(() => {
     // obtain the player alives next to the turnOwner
-    const pTS = () => {
+    turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
+    const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
+    const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];    
+
+    const pTS = () => {    
       switch (cardSelected.code){
         //sospecha, análisis, lanzallamas, cambio de lugar
         case "sos": //sospecha
         case "ana": //análisis
+          return [player_on_left, player_on_right];        
         case "lla": //lanzallamas
-        case "cdl": //cambio de lugar
-          turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);
-          const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
-          const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];
+          if (player.quarantine == 0){
+            return [player_on_left, player_on_right];        
+          }
+          else {
+            return [];
+          }
+        case "cua": //cuarentena
           return [player_on_left, player_on_right];
-        
-        case "mvc": //más vale que corras
         case "sed": //seducción
           return playersAlive.filter(player => player.table_position != turnOwner);
-          
+        case "cdl": //cambio de lugar
+          if (player.quarantine == 0){
+            if (player_on_right.quarantine == 0 && player_on_left.quarantine == 0)
+              return [player_on_left, player_on_right];        
+            else if (player_on_right.quarantine !== 0)
+              return [player_on_left];
+            else if (player_on_left.quarantine !== 0)
+              return [player_on_right]
+          }
+          else {
+            return [];
+          }
+        case "mvc": //más vale que corras
+          if (player.quarantine == 0){
+            return playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
+          }
+          else {
+            return [];
+          }
         default: // defense cards, wiskey and vigila tus espaldas
           return [];
       }
@@ -85,6 +110,7 @@ const Player = ({
         case "cdl": //cambio de lugar
         case "mvc": //mas vale que corras
         case "sed": //seducción
+        case "cua": //cuarentena
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             playerSelectedState.setPlayerSelected({ name: name });
             setDiscard(false);
