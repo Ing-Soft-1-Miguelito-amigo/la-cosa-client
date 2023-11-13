@@ -9,7 +9,9 @@ const Player = ({
   cardSelected,
   players,
   setDiscard,
-  turn
+  turn, 
+  obstacles, 
+  setDoorSelected
 }) => {
   const turnOwner = turn.owner;
   const turnState = turn.state; 
@@ -35,6 +37,22 @@ const Player = ({
   },[cardSelected])
 
   
+  const getAdyacentPlayersWithNoLockedDoor = (player_on_left, player_on_right) => {
+    
+    //check if some of the adyacent players has locked door
+    if (obstacles.includes(player.table_position) && 
+        obstacles.includes(player_on_left.table_position)){
+      return [];
+    }
+    else if (obstacles.includes(player.table_position)){
+      return [player_on_left]
+    }
+    else if (obstacles.includes(player_on_left.table_position))
+      return [player_on_right];
+    else 
+      return [player_on_left, player_on_right]; 
+  } 
+
   useEffect(() => {
     // obtain the player alives next to the turnOwner
     turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
@@ -46,26 +64,48 @@ const Player = ({
         //sospecha, análisis, lanzallamas, cambio de lugar
         case "sos": //sospecha
         case "ana": //análisis
-          return [player_on_left, player_on_right];        
+        case "ptr": //puerta atrancada
+          return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right) 
         case "lla": //lanzallamas
           if (player.quarantine == 0){
-            return [player_on_left, player_on_right];        
+            return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)        
           }
           else {
             return [];
           }
         case "cua": //cuarentena
-          return [player_on_left, player_on_right];
+         return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)
         case "sed": //seducción
-          return playersAlive.filter(player => player.table_position != turnOwner);
-        case "cdl": //cambio de lugar
+
+          const allAlivePlayers = playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
+
+          //check if some of the adyacent players has locked door
+          if (obstacles.includes(player.table_position) && 
+              obstacles.includes(player_on_left.table_position)){
+
+            return allAlivePlayers.filter(player => player.table_position !== player_on_right.table_position && 
+                                                    player.table_position !== player_on_left.table_position);
+          }
+          else if (obstacles.includes(player.table_position)){
+            return allAlivePlayers.filter(player => player.table_position !== player_on_right.table_position);
+          }
+          else if (obstacles.includes(player_on_left.table_position))
+            return allAlivePlayers.filter(player => player.table_position !== player_on_left.table_position);
+          else 
+            return allAlivePlayers
+
+
+        case "cdl": //cambio de lugar           
           if (player.quarantine == 0){
-            if (player_on_right.quarantine == 0 && player_on_left.quarantine == 0)
-              return [player_on_left, player_on_right];        
-            else if (player_on_right.quarantine !== 0)
-              return [player_on_left];
-            else if (player_on_left.quarantine !== 0)
-              return [player_on_right]
+            // if (player_on_right.quarantine == 0 && player_on_left.quarantine == 0)
+            //   return [player_on_left, player_on_right];        
+            // else if (player_on_right.quarantine !== 0)
+            //   return [player_on_left];
+            // else if (player_on_left.quarantine !== 0)
+            //   return [player_on_right]
+
+
+              return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right).filter(player => player.quarantine == 0)
           }
           else {
             return [];
@@ -77,6 +117,17 @@ const Player = ({
           else {
             return [];
           }
+        
+        case "hac": //hacha 
+          //gets the adyacent players in quarantine.
+          const adyacentPlayers = [player_on_left, player_on_right].filter(player => player.quarantine !== 0);
+
+          if (player.quarantine !== 0){
+            adyacentPlayers.push(player);
+          }
+          console.log("adyacentPlayers", adyacentPlayers);
+          return adyacentPlayers;
+
         default: // defense cards, wiskey and vigila tus espaldas
           return [];
       }
@@ -111,14 +162,18 @@ const Player = ({
         case "mvc": //mas vale que corras
         case "sed": //seducción
         case "cua": //cuarentena
+        case "ptr": //puerta atrancada 
+        case "hac": //hacha
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             playerSelectedState.setPlayerSelected({ name: name });
             setDiscard(false);
+            setDoorSelected(0);
           }
           break; 
         default: // defense cards, wiskey and vigila tus espaldas
           playerSelectedState.setPlayerSelected({});
           setDiscard(false);
+          setDoorSelected(0);
         }
   };} 
   

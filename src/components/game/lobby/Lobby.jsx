@@ -7,7 +7,7 @@ import styles from "./lobby.module.css";
 
 const Lobby = ({socket, player, gameData, gameId, playerId}) => {
     const navigate = useNavigate();   
-    const [host, setHost] = useState(false);
+    const [host, setHost] = useState(player.owner);
     const [message, setMessage] = useState("");
     const [error, setError] = useState(false);
     const [data , setData] = useState({}); 
@@ -27,14 +27,9 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
         };
         setData(dt);
 
-        if (player.owner) {
-            setHost(true);
-            setText("Aprieta Iniciar Partida \ny juguemos a La Cosa!");
-        } else {
-            setText("Esperando que el host \ninicie la partida \n(apúrenlo)");
-        }
-    }, [player.owner, gameData.id, player.name]);
-    console.log("Text", text)
+
+    }, [gameData.id, player.name]);
+
 
     useEffect(() => {
         setPlayers(gameData.players.map((player) => player.name));
@@ -75,13 +70,28 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
     return (    
         <div className={styles.body}>
             <div className={styles.fade}>
-                <p className={styles.text}>
-                    {minPlayers ? text: 
-                    `${players.length} jugadores unidos\n\n\n Esperando a ${gameData.min_players - players.length} mas para empezar`}
-                </p>
+                {minPlayers ? 
+                    (host ? 
+                        (<p className={styles.text}>
+                            Se alcanzó el mínimo de jugadores<br/>
+                            Presiona Iniciar Partida<br/>
+                            para jugar a La Cosa!
+                        </p>)
+                    :   (<p className={styles.text}>
+                            Esperando que el host<br/>
+                            inicie la partida<br/>
+                            (Apúrenlo)
+                        </p>)) 
+                    
+                :   (<p className={styles.text}>
+                        {players.length} jugadores unidos<br/>
+                        Esperando {gameData.min_players - players.length} para poder empezar
+                    </p>
+                    )
+                }
             </div>
                 {error && <p className={styles.error}>{message}</p>}
-            <div className={styles.button}>
+            <div className={styles.button} data-testid="buttons" >
                 {host && <FunctionButton text={"Iniciar Partida" } onClick={() => startGame(data)}/>}
                 {!hostHasLeft && <FunctionButton text={"Abandonar Partida"} onClick={goOutGame}/>}
                 {hostHasLeft && <FunctionButton text={"Volver a inicio"} onClick={handleHostLeft}/>} 

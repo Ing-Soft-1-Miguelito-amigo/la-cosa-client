@@ -15,6 +15,7 @@ import Chat from "./chat/Chat";
 import Logs from "./logs/Logs";
 import CardEffect from "./cardEffects/CardEffect";
 import ActionButtons from "./actionButtons/ActionButtons";
+import Instruction from "./instruction/Instruction";
 
 const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [cardSelected, setCardSelected] = useState({}); //{cardId, code, kind}
@@ -25,14 +26,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);  
   const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
-  const [instruction, setInstruction] = useState({});
+  const [cardLifted, setCardLifted] = useState(false);
+  const [instructionReciever, setInstructionReciever] = useState("")
+  const [doorSelected, setDoorSelected] = useState(0);
 
-  socket.on("discard", (data) => console.log(JSON.stringify(data)));
-  socket.on("action", (data) => console.log(JSON.stringify(data)));
-  socket.on("defense", (data) => console.log(JSON.stringify(data)));
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
+  socket.on("turn_finished", (data) => {setInstructionReciever(data.new_owner_name)});
   socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
   socket.on("ups", (data) => setShowEffect({showEffect: true, data, type: "ups"}));
   socket.on("aterrador", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
@@ -44,14 +45,13 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   useEffect(() => {
     if (turnState === 5 && player.table_position === turn.owner)  {
       FetchEndTurn({
-        gameId,
+        gameId
       });
     }
   }, [turn]);
 
   useEffect(() => {
     switch(turnState) {
-
       // making decision
       case 1:
         const action = discard ? "discard" : "playCard";
@@ -71,6 +71,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
               action: action,
             });
             break;
+
+          case "hac": 
+            setCanPlayCard({
+              canPlayCard: (( playerSelected.name !== undefined || discard ) ||  (doorSelected !== 0 ) )&&
+                            cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
           default:
             setCanPlayCard({
               canPlayCard:
@@ -84,7 +92,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       
       // exchange beginning
       case 3:
+        setInstructionReciever(players.filter((player) => player.table_position === turn.owner)[0].name);
+        setCanPlayCard({
+          canExchangeCard: (cardSelected.cardId !== undefined)
+        });
+        setActionText("Intercambiar carta");
+        break;
       case 4:
+        setInstructionReciever(turn.destination_player_exchange);
         setCanPlayCard({
           canExchangeCard: (cardSelected.cardId !== undefined)
         });
@@ -100,7 +115,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       default: 
         break;
     }
-  }, [playerSelected, discard, cardSelected, turn]);
+  }, [playerSelected, discard, cardSelected, turn, doorSelected]);
 
   const playCard = () => {
     if (canPlayCard.action === "discard") { //check if the action is discard
@@ -116,11 +131,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
         cardId: cardSelected.cardId,
         destinationName:
           playerSelected.name === undefined ? player.name : playerSelected.name,
+        obstacleType: (cardSelected.code === "hac" ? (doorSelected !== 0 ? "ptr" : "cua"): null),
+        obstaclePosition: doorSelected !== 0 ? doorSelected : null,
       });
     }
     setPlayerSelected({});
     setCardSelected({});
     setDiscard(false);
+    setDoorSelected(0);
   };
 
   const defendCard = (cardToDefend) => {
@@ -164,15 +182,26 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       <div className={style.general}>
           <div className={style.topbox} >
               <div className={style.instruction}>
-                {/* <Instruction /> */}
+                {player.name === instructionReciever ? (
+                  <Instruction  state={turnState} 
+                                cardLifted={cardLifted}
+                                cardSelected={cardSelected}
+                  />
+                ) : (
+                  <span>Espera tu turno para ser parte de la acción!</span>
+                )
+                }
               </div>        
               <div className={style.table}>
                 <Table  players={players} 
                         player={player}
                         playerSelectedState={{name: playerSelected.name, setPlayerSelected}}
                         cardSelected={cardSelected}
-                        setDiscard={setDiscard}
+                        discardState={{discard, setDiscard}}
                         turn={gameData.turn}
+                        obstacles={gameData.obstacles}
+                        doorSelected={doorSelected}
+                        setDoorSelected={setDoorSelected}
                         />
               </div>        
           </div>
@@ -208,7 +237,10 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                             turnState={turnState}
                             cardSelected={cardSelected}
                             discardState={{discard, setDiscard}}
-                            setPlayerSelected={setPlayerSelected}/>
+                            setPlayerSelected={setPlayerSelected}
+                            setCardLifted={setCardLifted}
+                            setInstructionReciever={setInstructionReciever}
+                      />
                     )}
                   </div>        
                   <div className={style.hand}>
