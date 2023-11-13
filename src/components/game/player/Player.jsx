@@ -77,6 +77,7 @@ const Player = ({
           }
 
         case "sed": //seducción
+        case "sda": //sal de aquí
         case "npa": //¿no podemos ser amigos?
           const allAlivePlayers = playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
 
@@ -160,6 +161,7 @@ const Player = ({
         case "cdl": //cambio de lugar
         case "mvc": //mas vale que corras
         case "sed": //seducción
+        case "sda": //sal de aquí 
         case "cua": //cuarentena
         case "ptr": //puerta atrancada 
         case "hac": //hacha
