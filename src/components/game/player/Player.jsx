@@ -76,6 +76,7 @@ const Player = ({
         case "cua": //cuarentena
          return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)
         case "sed": //seducción
+        case "npa": //¿no podemos ser amigos?
 
           const allAlivePlayers = playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
 
@@ -168,6 +169,7 @@ const Player = ({
         case "ptr": //puerta atrancada 
         case "hac": //hacha
         case "qen": //queda entre nosotros
+        case "npa": //¿no podemos ser amigos?
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             playerSelectedState.setPlayerSelected({ name: name });
             setDiscard(false);
