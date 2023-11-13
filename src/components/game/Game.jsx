@@ -25,6 +25,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [actionText, setActionText] = useState("");
   const [hasCardToDefend, setHasCardToDefend] = useState(false);  
   const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
+  const [instruction, setInstruction] = useState({});
 
   socket.on("discard", (data) => console.log(JSON.stringify(data)));
   socket.on("action", (data) => console.log(JSON.stringify(data)));
@@ -32,6 +33,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
+  socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
 
   const players = gameData.players;
   const turn = gameData.turn;
