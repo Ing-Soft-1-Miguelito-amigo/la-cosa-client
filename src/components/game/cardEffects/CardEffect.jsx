@@ -15,11 +15,8 @@ const CardEffect = ({ showEffect, setShowEffect}) => {
   console.log("shoeffect",showEffect)
 
   return (
-    <div className={styles.container}>
-      <div className={styles.textAndCardsContainer}>
-        <div>
-          <p className={styles.text}> {showEffect.data.message} </p>
-        </div>
+      <div>
+          {/* <p className={styles.text}> {showEffect.data.message} </p> */}
         <div className={styles.cardcontainer}>
           {showEffect.data.cards.map((card, i) => (
             <div className={styles.card} key={i}>
@@ -28,7 +25,6 @@ const CardEffect = ({ showEffect, setShowEffect}) => {
           ))}
         </div>
       </div>
-    </div>
   )
 }
 

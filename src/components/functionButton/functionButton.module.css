@@ -1,7 +1,7 @@
 .container{
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 80%;
 }
 /* CSS */
 .button24 {
@@ -27,7 +27,7 @@
   touch-action: manipulation;
   vertical-align: middle;
   margin: 3px auto;
-  width: 70%;
+  width: 100%;
 }
 
 .button24:hover,

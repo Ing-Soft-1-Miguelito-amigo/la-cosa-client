@@ -12,18 +12,14 @@ const Card = ({
     turn,
     cardSelected
 }) => {
-    //const game = useContext(GameContext);
-    //const cardSelected = useContext(CardSelectedContext);
     const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card; //set the style of the card
-    
-    //const turn = game.turn; //get the turn
     const turnState = turn.state; //get the state of the turn
 
     const isTurnOwner = (tablePosition === turn.owner)
     const isRecipientExchange = (turn.destination_player_exchange === playerName); //calculate if the player is the recipient of exchange
 
     const selectCard = () => {
-      console.log(turn);
+      // console.log(kind);
       switch (turnState) {
         case 1: //playing card
           if (cardSelected.cardId === cardId) {

@@ -50,7 +50,6 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
       // making decision
       case 1:
-        setInstruction("Elige una carta para jugar o descartar")
         const action = discard ? "discard" : "playCard";
         if (discard && cardSelected !== undefined) {
           setActionText("Descartar carta");
@@ -81,7 +80,6 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       
       // exchange beginning
       case 3:
-        setInstruction("Elige una carta para intercambiar")
       case 4:
         setCanPlayCard({
           canExchangeCard: (cardSelected.cardId !== undefined)
@@ -124,7 +122,6 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const defendCard = (cardToDefend) => {
     if (cardToDefend !== null) {
       setHasCardToDefend(true);
-      setInstruction("Te han atacado de ... elige si quieres defenderte")
     } else {
       defend(false);
     }

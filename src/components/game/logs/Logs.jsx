@@ -44,19 +44,15 @@ const Logs = ({socket, gameId}) => {
     }, [logs]);
     
     return (
-        <div className={styles.body} >
-          
-            {/*List of  logs*/}
-            <ul className={styles.list} ref={logsDivRef} >
-                {logs.map((lg, index) => (
-                    <div key={index}>
-                        <div className={styles.lg}>
-                            - {lg.log}
-                        </div>
+        <ul className={styles.list} ref={logsDivRef} >
+            {logs.map((lg, index) => (
+                <div key={index}>
+                    <div className={styles.lg}>
+                        - {lg.log}
                     </div>
-                ))}
-            </ul>
-        </div>
+                </div>
+            ))}
+        </ul>
     )
 
 }
