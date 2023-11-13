@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import style from '../card/card.module.css'
 
 const Card = ({
@@ -18,9 +19,11 @@ const Card = ({
     const isTurnOwner = (tablePosition === turn.owner)
     const isRecipientExchange = (turn.destination_player_exchange === playerName); //calculate if the player is the recipient of exchange
 
-    if(kind === 4){
-      setCardSelected({ cardId:cardId, code:code, kind:kind })
-    }
+    useEffect(() => {
+      if(kind === 4){
+        setCardSelected({ cardId:cardId, code:code, kind:kind })
+      }
+    },[])
 
     const selectCard = () => {
       // console.log(kind);
