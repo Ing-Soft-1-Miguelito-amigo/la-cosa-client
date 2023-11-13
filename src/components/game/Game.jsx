@@ -28,11 +28,13 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
   const [cardLifted, setCardLifted] = useState(false);
   const [instructionReciever, setInstructionReciever] = useState("")
+  const [doorSelected, setDoorSelected] = useState(0);
 
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
   socket.on("turn_finished", (data) => {setInstructionReciever(data.new_owner_name)});
+  socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
 
   const players = gameData.players;
   const turn = gameData.turn;
@@ -58,11 +60,18 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
         }
         switch (cardSelected.code) {
           case "whk":
-            console.log("canPlayCard adentro de whisky", canPlayCard);
           case "vte":
           case "det":
             setCanPlayCard({
               canPlayCard: (playerSelected.name === undefined || discard) &&
+                            cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+
+          case "hac": 
+            setCanPlayCard({
+              canPlayCard: (( playerSelected.name !== undefined || discard ) ||  (doorSelected !== 0 ) )&&
                             cardSelected.cardId !== undefined,
               action: action,
             });
@@ -103,7 +112,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
       default: 
         break;
     }
-  }, [playerSelected, discard, cardSelected, turn]);
+  }, [playerSelected, discard, cardSelected, turn, doorSelected]);
 
   const playCard = () => {
     if (canPlayCard.action === "discard") { //check if the action is discard
@@ -119,11 +128,14 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
         cardId: cardSelected.cardId,
         destinationName:
           playerSelected.name === undefined ? player.name : playerSelected.name,
+        obstacleType: (cardSelected.code === "hac" ? (doorSelected !== 0 ? "ptr" : "cua"): null),
+        obstaclePosition: doorSelected !== 0 ? doorSelected : null,
       });
     }
     setPlayerSelected({});
     setCardSelected({});
     setDiscard(false);
+    setDoorSelected(0);
   };
 
   const defendCard = (cardToDefend) => {
@@ -182,8 +194,11 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                         player={player}
                         playerSelectedState={{name: playerSelected.name, setPlayerSelected}}
                         cardSelected={cardSelected}
-                        setDiscard={setDiscard}
+                        discardState={{discard, setDiscard}}
                         turn={gameData.turn}
+                        obstacles={gameData.obstacles}
+                        doorSelected={doorSelected}
+                        setDoorSelected={setDoorSelected}
                         />
               </div>        
           </div>
