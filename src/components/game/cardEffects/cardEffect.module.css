@@ -3,32 +3,32 @@
 
 .cardDeckContainer {
   display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
 }
 
 .cardcontainer {
   display: flex;
-  /* justify-content: center;  */
-  /* position: absolute; */
 }
 
 .card {
-  height: 200px;
-  width: 150px; 
-  /* margin-right: 10px; */
+  height: 160px;
+  width: 130px; 
   border-radius: 10px ;
   transition: 0.5s ease-out;
   background-color: #6022dd;
-  /* position: relative; */
-  /* left: 0px; */
+  position: relative;
+  left: 0px;
   box-shadow: -0.1rem 0 1rem #000;
 }
-
-.cornerCard {
-  position: absolute;
-  right: 245px; 
-  top: 325px;
+.card:not(:first-child) {
+  margin-left: -20px;
+}
+.card:hover {
+  transition: 0.4s ease-out;
+}
+.card:hover ~ .card {
+  position: relative;
+  left: 50px;
+  transition: 0.4s ease-out;
 }
 
 .text{
@@ -36,5 +36,4 @@
   color: rgb(255, 255, 255);
   font-size: 3vh;
   text-align: center;
-  /* margin-top: 16%;  */
 }

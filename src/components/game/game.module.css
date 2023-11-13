@@ -8,7 +8,6 @@
 
 .topbox{
     margin: 5px;
-    /* height: 160px; */
     width: 100%;
     display: flex;
     flex-grow: 1;
@@ -17,7 +16,6 @@
 }
 .bottombox{
     margin: 5px;
-    /* height: 500px; */
     width: 100%;
     display: flex;
     flex-grow: 2;
@@ -51,11 +49,6 @@
     padding: 0px;
 }
 
-/* .deckHandContainer div {
-    border: 1px solid white;
-} */
-
-
 .buttons{
     margin: 5px;
     flex-grow: 2;
@@ -73,12 +66,14 @@
     flex-grow: 2;
     display: flex;
     align-items: initial;
-    justify-content: center;
+    justify-content:space-evenly;
     max-height: 200px;
 }
 .hand{
     margin: 5px;
     flex-grow: 2;
+    display: flex;
+    align-items: end;
 }
 
 .chatContainer{
@@ -86,7 +81,7 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    align-items: right;
+    align-items: end;
 }
 
 .title{

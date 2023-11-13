@@ -66,7 +66,7 @@ const Deck = ({
 
     return (
         <>
-            <>
+            <div className={style.container}>
                 <div className={style[arrowClassName]}>
                     <img src="../../../src/img/arrow.png"/>
                 </div>
@@ -76,7 +76,7 @@ const Deck = ({
                 <div className={style.cardDeck} onClick={discardCard} data-testid="discard">
                     <img src={`../../../src/img/tachoBasura.png`}  className={style.trash} />
                 </div>
-            </>
+            </div>
         </>
     );
 };
