@@ -130,8 +130,9 @@ const Player = ({
         
         case "qen": 
           return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)  
+        
 
-        default: // defense cards, wiskey and vigila tus espaldas
+        default: // defense cards, wiskey, vigila tus espaldas and other panic cards
           return [];
       }
     };

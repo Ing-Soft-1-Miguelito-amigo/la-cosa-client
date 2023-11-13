@@ -66,6 +66,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
           case "whk":
           case "vte":
           case "det":
+          case "cpo":
             setCanPlayCard({
               canPlayCard: (playerSelected.name === undefined || discard) &&
                             cardSelected.cardId !== undefined,
