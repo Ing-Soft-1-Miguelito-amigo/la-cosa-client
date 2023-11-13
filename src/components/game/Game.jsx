@@ -62,9 +62,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
         }
         switch (cardSelected.code) {
           case "ups":
-            console.log("canPlayCard adentro de ups", canPlayCard);
           case "whk":
-            console.log("canPlayCard adentro de whisky", canPlayCard);
           case "vte":
           case "det":
             setCanPlayCard({
