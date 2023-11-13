@@ -20,7 +20,7 @@
   box-shadow: -0.1rem 0 1rem #000;
 }
 .card:not(:first-child) {
-  margin-left: -20px;
+  margin-left: -20px; 
 }
 .card:hover {
   transition: 0.4s ease-out;

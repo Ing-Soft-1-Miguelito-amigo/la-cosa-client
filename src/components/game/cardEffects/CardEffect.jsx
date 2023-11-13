@@ -6,7 +6,7 @@ const CardEffect = ({ showEffect, setShowEffect}) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShowEffect({showEffect: false, data: {}, type: ""});
-    }, 300000);
+    }, 3000);
 
     return () => {
       clearTimeout(timeout);
