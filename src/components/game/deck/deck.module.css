@@ -1,9 +1,10 @@
-.deckContainer {
+.container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: 20px;
+    margin: 5px;
+    flex-grow: 2;
+    display: flex;
+    align-items: initial;
+    justify-content: space-evenly;
 }
 
 .cardDeckContainer {
@@ -16,7 +17,7 @@
     margin-right: 10px;
     width: 150px;
     height: 200px;
-    margin: 10px;
+    /* margin: 10px; */
     transition: 0.2s;
 }
 
@@ -31,13 +32,13 @@
 .cardDeck img {
     width: 150px;
     height: 200px;
-    margin: 10px;
+    /* margin: 10px; */
 }
 
 .img2 {
     width: 150px;
     height: 200px;
-    margin: 10px;
+    /* margin: 10px; */
 }
 .img2:active{
     box-shadow: -0.1rem 0 1rem #ff0000;
@@ -60,17 +61,21 @@
 }
 
 .arrowRight {
-    width: 5%;
-    height: 5%;
+    /* width: 5%;
+    height: 5%; */
+    width: 40px;
+    height: 50px;
     transform: rotate(90deg);
     margin-right: 3%;
     transition: 0.4s;
+    margin-top: 60px;
 }
 
 .arrowLeft {
-    width: 5%;
-    height: 5%;
+    width: 40px;
+    height: 50px;
     transform: rotate(270deg);
     margin-right: 3%;
     transition: 0.4s;
+    margin-top: 60px;
 }

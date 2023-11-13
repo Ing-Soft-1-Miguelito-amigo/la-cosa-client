@@ -91,6 +91,7 @@ const Player = ({
   }, [cardSelected]);
 
 
+    
   const selectPlayer = () => {
     if (name === playerSelectedState.name){
       playerSelectedState.setPlayerSelected({});

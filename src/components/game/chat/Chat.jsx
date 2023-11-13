@@ -76,7 +76,6 @@ const Chat = ({socket, gameId, playerName}) => {
                     key={index}>
                         <div>
                             <span className={styles.sender}>{message.sender}</span>: {message.content}
-                            <div className={styles.date}>{message.date} </div> 
                         </div>
                     </div>
                 ))}
@@ -105,14 +104,14 @@ const Chat = ({socket, gameId, playerName}) => {
                 />
                 <button className={styles.button} onClick={handleSubmit(onSubmit)}>Enviar</button>
                 
+            </form>
                 {errors?.content && (
                 <span className={styles.spanInput}>
                     {errors.content.message}
                 </span>
-                )} 
+                )}
 
            
-            </form>
 
         </div>
     )
