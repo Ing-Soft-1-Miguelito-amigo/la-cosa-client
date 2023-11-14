@@ -1,7 +1,18 @@
 import FunctionButton from "../../functionButton/FunctionButton"
 
-const ActionButtons = ({ DeclareVictory, defend, playCard, exchangeCard, player, playerId, gameId,
-                         hasCardToDefend, canPlayCard, hasCardToDefendExchange, actionText }) => {
+const ActionButtons = ({ 
+    DeclareVictory,
+    defend, 
+    playCard, 
+    exchangeCard, 
+    player,
+    playerId, 
+    gameId,
+    hasCardToDefend, 
+    canPlayCard, 
+    hasCardToDefendExchange, 
+    actionText 
+}) => {
     return (
         <>
             {player.role == 3 && (

@@ -29,6 +29,8 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   const [cardLifted, setCardLifted] = useState(false);
   const [instructionReciever, setInstructionReciever] = useState("")
   const [doorSelected, setDoorSelected] = useState(0);
+  const [playedCard, setPlayedCard] = useState({});
+  const [cardsSelected, setCardsSelected] = useState([]);
 
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
@@ -62,13 +64,15 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
           setActionText("Jugar carta");
         }
         switch (cardSelected.code) {
-          case "ups":
           case "whk":
           case "vte":
           case "det":
           case "cpo":
           case "trc":
+          case "ups":
           case "eaf":
+          case "cac":
+          case "olv":
             setCanPlayCard({
               canPlayCard: (playerSelected.name === undefined || discard) &&
                             cardSelected.cardId !== undefined,
@@ -115,11 +119,28 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
         
         setActionText("Intercambiar carta");
         break;
-
+      case 6:
+        switch (playedCard.code){
+          case "cac":
+            setActionText("Intercambiar carta con el mazo");
+            setCanPlayCard({
+              canPlayCard: (cardsSelected.length === 1),
+              action: "panic"
+            });
+            break;
+          case "olv":
+            setActionText("Intercambiar cartas con el mazo");
+            setCanPlayCard({
+              canPlayCard: (cardsSelected.length === 3),
+              action: "panic"
+            });
+            break;
+        }
+        break;
       default: 
         break;
     }
-  }, [playerSelected, discard, cardSelected, turn, doorSelected]);
+  }, [playerSelected, discard, cardSelected, turn, doorSelected, cardsSelected]);
 
   const playCard = () => {
     if (canPlayCard.action === "discard") { //check if the action is discard
@@ -138,7 +159,28 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
         obstacleType: (cardSelected.code === "hac" ? (doorSelected !== 0 ? "ptr" : "cua"): null),
         obstaclePosition: doorSelected !== 0 ? doorSelected : null,
       });
+    } else if (canPlayCard.action === "panic") {
+      switch(playedCard.code){
+        case "cac":
+          socket.emit(playedCard.code, {
+            game_id: gameId,
+            player_id: playerId,
+            panic_card_id: playedCard.cardId,
+            card_id: cardsSelected[0]
+          })
+          break;
+        case "olv":
+          socket.emit(playedCard.code, {
+            game_id: gameId,
+            player_id: playerId,
+            panic_card_id: playedCard.cardId,
+            card_id: cardsSelected
+          })
+          break;
+      }
     }
+
+    setPlayedCard(cardSelected);
     setPlayerSelected({});
     setCardSelected({});
     setDiscard(false);
@@ -255,6 +297,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
                         setCardSelected={setCardSelected}
                         defendCard={defendCard}
                         cardSelected={cardSelected}
+                        cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
                       />
                     ) : (
                       <DeadPlayer socket={socket} />
