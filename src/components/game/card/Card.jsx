@@ -45,7 +45,7 @@ const Card = ({
             //check if the player selecting the card is the tOwner or 
             //check if the card is not a card is not a infected card or the player is the Thing
             //check if the card is not a card is not the Thing card
-            else if (isTurnOwner && (kind !== 3 || playerRole === 3)) {
+            else if (isTurnOwner && (kind !== 3 || playerRole === 3 || playerRole === 2)) {
               setCardSelected({ cardId:cardId, code:code, kind:kind });
             }
             break;
@@ -53,7 +53,7 @@ const Card = ({
             if (cardSelected.cardId === cardId ) {
               setCardSelected({});
             }//check if the player selecting the card is the recipent of the exchange
-            else if(isRecipientExchange && (kind !== 3 || playerRole === 3)){
+            else if(isRecipientExchange && (kind !== 3 || playerRole === 3 || playerRole === 2)){
               setCardSelected({ cardId:cardId, code:code, kind:kind });
             }
             break;
