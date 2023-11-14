@@ -80,15 +80,22 @@ describe('Table', () => {
     test('should render the players correctly', () => {
 
         const setPlayerSelected = vi.fn();
-        const setDiscard = vi.fn();
-  
+        const setDiscard =  vi.fn();
+        const discard = false;
+        const obstacles = [1];
+        const doorSelected = false;
+        const setDoorSelected = vi.fn();
+
         const { getByText } = render(
             <Table  players={players} 
                     player={mockPlayerData()}
                     playerSelectedState={{name: "ale", setPlayerSelected}}
                     cardSelected={{cardId: 1}}
-                    setDiscard={setDiscard}
+                    discardState={{discard, setDiscard}}
                     turn={turn}
+                    obstacles={obstacles}
+                    doorSelected={doorSelected}
+                    setDoorSelected={setDoorSelected}
                     />                             
         );
     
