@@ -25,13 +25,15 @@ const Logs = ({socket, gameId}) => {
     useEffect(() => {
         socket.on('action',  (data) => setLogs(state => [...state, data]))  
         socket.on('defense', (data) => setLogs(state => [...state, data]))  
-        socket.on('discard', (data) => setLogs(state => [...state, data]))  
+        socket.on('discard', (data) => setLogs(state => [...state, data]))
+        socket.on("turn_finished", (data) => setLogs(state => [...state, data]));  
 
         //turns off the listener
         return () => {
             socket.off('action')
             socket.off('defense')
             socket.off('discard')
+            socket.off('turn_finished')
         }
     } ,[])
 
