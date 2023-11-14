@@ -35,7 +35,6 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
   socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
   socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
   socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
-  socket.on("turn_finished", (data) => {setInstructionReciever(data.new_owner_name)});
   socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
   socket.on("ups", (data) => setShowEffect({showEffect: true, data, type: "ups"}));
   socket.on("ate", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
@@ -225,7 +224,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
   return (
     <>
-      <div className={style.general}>
+      <div className={style.general} data-testid="game">
           <div className={style.topbox} >
               <div className={style.instruction}>
                 {player.name === instructionReciever ? (

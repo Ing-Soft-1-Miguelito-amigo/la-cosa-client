@@ -2,8 +2,6 @@ import React , {useState }from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./endOfGame.module.css";
 import FunctionButton from "../functionButton/FunctionButton";
-import { getResults } from "../../containers/EndOfGameResults";
-import { set } from "react-hook-form";
 
 const EndOfGame = ({socket}) => {
   const navigate = useNavigate();
@@ -28,7 +26,7 @@ const EndOfGame = ({socket}) => {
   
   return (
     <>
-      <div className={styles.endOfGame} data-testid ="text" >
+      <div className={styles.endOfGame} data-testid ="text">
         <p className={styles.text}>{results.log}<br />Winners: {results.winners}</p> 
       </div>
       <div className={styles.button}>

@@ -1,17 +1,20 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { expect, test } from "vitest";
 import DeadPlayer from "../components/game/deadPlayer/DeadPlayer";
 import { BrowserRouter } from "react-router-dom";
-import MockedSocket from 'socket.io-mock';
+
 
 
 describe("GameCreationForm", () => {
     test("should render", async () => {
-        const socketMock = new MockedSocket();
+        const disconnect = vi.fn();
         render(<BrowserRouter>
-            <DeadPlayer socket={socketMock}/>
+            <DeadPlayer socket={{disconnect}}/>
         </BrowserRouter>);
         //expect(screen.getByText("¡Has sido incinerado!")).toBeDefined();
-        expect(screen.getByRole("button", { name: "Salir de la Partida" })).toBeDefined();
+        const button = screen.getByRole("button", { name: "Salir de la Partida" });
+        expect(button).toBeDefined();
+        fireEvent.click(button);
+        expect(disconnect).toHaveBeenCalledTimes(1);
     });
 });
