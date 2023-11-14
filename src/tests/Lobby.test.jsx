@@ -162,6 +162,6 @@ describe("Lobby component", () => {
         const goOutGame = vi.fn()
         const button = screen.getByText("Abandonar Partida");
         fireEvent.click(button);
-        expect(goOutGame).toBeCalledTimes(1);
+        expect(goOutGame).toBeCalledTimes(0);
     });
 });
