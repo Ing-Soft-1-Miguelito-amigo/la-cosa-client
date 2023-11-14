@@ -15,6 +15,3 @@ describe("EndOfGame", () => {
         expect(screen.getByRole("button", { name: "Abandonar Partida" })).toBeDefined();
     });
 });
-
-
-
