@@ -142,7 +142,7 @@ describe("Lobby component", () => {
         const text = screen.getByTestId("text-not-enough-players");
         expect(text).toBeDefined();
     })
-
+    
     test("should disconnect socket when clicking Abandonar Partida button", async() => {        
         render(
             <BrowserRouter>
