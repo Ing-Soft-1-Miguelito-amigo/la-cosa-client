@@ -225,7 +225,7 @@ const Game = ({ socket, player, gameData, gameId, playerId }) => {
 
   return (
     <>
-      <div className={style.general}>
+      <div className={style.general} data-testid="game">
           <div className={style.topbox} >
               <div className={style.instruction}>
                 {player.name === instructionReciever ? (
