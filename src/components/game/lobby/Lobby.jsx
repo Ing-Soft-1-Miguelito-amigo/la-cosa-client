@@ -72,18 +72,18 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
             <div className={styles.fade}>
                 {minPlayers ? 
                     (host ? 
-                        (<p className={styles.text}>
+                        (<p className={styles.text} data-testid="text-enough-players-and-im-host">
                             Se alcanzó el mínimo de jugadores<br/>
                             Presiona Iniciar Partida<br/>
                             para jugar a La Cosa!
                         </p>)
-                    :   (<p className={styles.text}>
+                    :   (<p className={styles.text} data-testid="text-enough-players-and-im-not-host">
                             Esperando que el host<br/>
                             inicie la partida<br/>
                             (Apúrenlo)
                         </p>)) 
                     
-                :   (<p className={styles.text}>
+                :   (<p className={styles.text} data-testid="text-not-enough-players">
                         {players.length} jugadores unidos<br/>
                         Esperando {gameData.min_players - players.length} para poder empezar
                     </p>

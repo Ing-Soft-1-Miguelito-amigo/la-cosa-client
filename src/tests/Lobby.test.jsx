@@ -21,15 +21,9 @@ const mockSocket = {
     disconnect: vi.fn()
 }
 
-const gameData = () => ({
-    "id": 1,
-    "name": "game1",
-    "min_players": 4,
-    "max_players": 12,
-    "state": 0,
-    "play_direction": null,
-    "turn_owner": null,
-    "players": [
+
+const gameData = (
+    players = [
         {
             "name": "player1",
             "table_position": 1,
@@ -55,13 +49,22 @@ const gameData = () => ({
             "quarantine": false
         }
     ]
+) => ({
+    "id": 1,
+    "name": "game1",
+    "min_players": 4,
+    "max_players": 12,
+    "state": 0,
+    "play_direction": null,
+    "turn_owner": null,
+    "players": players
 })
 
 
 
 describe("Lobby component", () => {
 
-    test("should render the waiting for host message", async () => {
+    test("should render the the host buttons", async () => {
 
         render(
             <BrowserRouter>
@@ -72,93 +75,93 @@ describe("Lobby component", () => {
                 />
             </BrowserRouter>
         );
-        const text = screen.getByTestId("text");
 
         const button1 = screen.getByText('Abandonar Partida');
         const button2 = screen.queryByTestId('Iniciar Partida');
 
         expect(button1).toBeDefined();
         expect(button2).toBeDefined();
-        expect(text).toBeDefined();
     })
 
-    test("should render the waiting for players message", async () => {
+
+    test("should render the the host buttons", async () => {
 
         render(
             <BrowserRouter>
                 <Lobby 
                     socket={mockSocket} 
-                    player={mockPlayerData()} 
+                    player={mockPlayerData("ale",false)} 
                     gameData={gameData()} 
                 />
             </BrowserRouter>
         );
 
-        const text = screen.getByTestId("text");
-
         const button1 = screen.getByText('Abandonar Partida');
-        const button2 = screen.queryByText('Iniciar Partida');
+        const button2 = screen.queryByTestId('Iniciar Partida');
 
         expect(button1).toBeDefined();
         expect(button2).toBeNull();
+    })
+
+    test("should render the text when enough players in the lobby and client is the host", async () => {
+        render(<BrowserRouter>
+                    <Lobby 
+                        socket={mockSocket} 
+                        player={mockPlayerData("maria", true)} 
+                        gameData={gameData()} 
+                    />
+                </BrowserRouter>
+        );
+        const text = screen.getByTestId("text-enough-players-and-im-host");
         expect(text).toBeDefined();
     })
 
+    
+    test("should render the text when enough players in the lobby and client is not the host", async () => {
+        render(<BrowserRouter>
+                    <Lobby 
+                        socket={mockSocket} 
+                        player={mockPlayerData()} 
+                        gameData={gameData()} 
+                    />
+                </BrowserRouter>
+        );
+        const text = screen.getByTestId("text-enough-players-and-im-not-host");
+        expect(text).toBeDefined();
+    })
 
-    // test('should render a button when host is true', () => {
-    //     const gameContextValue = {
-    //         "id": 1,
-    //         "name": "a",
-    //         "min_players": 4,
-    //         "max_players": 12,
-    //         "state": 0,
-    //         "play_direction": null,
-    //         "turn_owner": null,
-    //         "players": [
-    //             {
-    //             "name": "player1",
-    //             "table_position": 1,
-    //             "alive": true,
-    //             "quarantine": false
-    //             }
-    //         ]  
-    //     };
+    test("should render the text when not enough players in the lobby for the game to start", async () => {
+        render(<BrowserRouter>
+                    <Lobby 
+                        socket={mockSocket} 
+                        player={mockPlayerData()} 
+                        gameData={gameData([])} 
+                    />
+                </BrowserRouter>
+        );
+        const text = screen.getByTestId("text-not-enough-players");
+        expect(text).toBeDefined();
+    })
 
-    //     const playerContextValue = {
-    //         "name": "game1",
-    //         "owner": true,
-    //         "id": 2,
-    //         "table_position": 2,
-    //         "role": null,
-    //         "alive": true,
-    //         "quarantine": false,
-    //         "hand": []
-    //     };
+    test("should disconnect socket when clicking Abandonar Partida button", async() => {        
+        render(
+            <BrowserRouter>
+                <Lobby 
+                    socket={mockSocket} 
+                    player={mockPlayerData()} 
+                    gameData={gameData([{
+                        "name": "player1",
+                        "table_position": 1,
+                        "alive": true,
+                        "quarantine": false
+                    }])} 
+                />
+            </BrowserRouter>
+        );
 
-    //     render(
-    //         <Lobby player={playerContextValue} gameData={{ state: 0}}/>
-    //     );
-
-    //     const buttonElement = screen.queryByText('Iniciar Partida');
-    //     expect(buttonElement).not.toBeNull();
-    // });
-
-    // test("should disconnect socket when clicking Abandonar Partida button", async() => {        
-    //     render(
-    //         <BrowserRouter>
-    //             <Lobby 
-    //                 socket={mockSocket} 
-    //                 player={mockPlayerData()} 
-    //                 gameData={gameData()} 
-    //             />
-    //         </BrowserRouter>
-    //     );
-        
-    //     const button = screen.getByText('Abandonar Partida');
-    //     // const button2 = screen.getByText('Volver al inicio');
-    //     // fireEvent.click(button);
-    //     // fireEvent.click(button2);
-    //     expect(mockSocket.disconnect).toBeCalledTimes(0);
-    //     // expect(mockSocket.disconnect).toBeCalledTimes(1);
-    // });
+        const goOutGame = vi.fn()
+        const button = screen.getByText("Abandonar Partida");
+        fireEvent.click(button);
+        expect(goOutGame).toBeCalledTimes(1);
+    });
 });
