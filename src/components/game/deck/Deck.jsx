@@ -81,7 +81,7 @@ const Deck = ({
                     <p>Eres {roles[player.role - 1]}</p>
                     {player.quarantine > 0 && (<p>Estás en cuarentena!<br/>Turnos restantes para dejar de estarlo: {player.quarantine}</p>)}
                 </div>
-                <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
+                <div className={style.cardDeck} onClick={liftCard} data-testid="deck">
                     <img src={`../../../src/img/atk.png`} className={styleDeck} />
                 </div>
                 <div className={style.cardDeck} onClick={discardCard} data-testid="discard">

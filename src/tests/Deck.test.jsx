@@ -48,7 +48,8 @@ describe('Trash Icon', () => {
         const cardSelected = {
             cardId: 1,
         }
-
+        const setCardLifted = vi.fn();
+        const setInstructionReciever = vi.fn();
         render(            
 
             <Deck player={mockPlayerData()} 
@@ -58,7 +59,10 @@ describe('Trash Icon', () => {
                 turnState={1}
                 cardSelected={{cardId: 1}}
                 discardState={{discard, setDiscard}}
-                setPlayerSelected={setPlayerSelected}/>
+                setPlayerSelected={setPlayerSelected}
+                setCardLifted={setCardLifted}
+                setInstructionReciever={setInstructionReciever}
+            />
         )
 
         const trashIcon = screen.getByTestId("discard");
@@ -72,7 +76,8 @@ describe('Trash Icon', () => {
         const discard = false;
         const setDiscard = vi.fn();
         const setPlayerSelected = vi.fn();
-
+        const setCardLifted = vi.fn();
+        const setInstructionReciever = vi.fn();
         render(            
             <Deck player={mockPlayerData()} 
                 playDirection={1} 
@@ -81,7 +86,10 @@ describe('Trash Icon', () => {
                 turnState={1}
                 cardSelected={{cardId: 1}}
                 discardState={{discard, setDiscard}}
-                setPlayerSelected={setPlayerSelected}/>
+                setPlayerSelected={setPlayerSelected}
+                setCardLifted={setCardLifted}
+                setInstructionReciever={setInstructionReciever}
+                />
         )
 
         const trashIcon = screen.getByTestId("discard");
@@ -101,7 +109,8 @@ describe('Trash Icon', () => {
         const discard = false;
         const setDiscard = vi.fn();
         const setPlayerSelected = vi.fn();
-
+        const setCardLifted = vi.fn();
+        const setInstructionReciever = vi.fn();
         render(            
             <Deck player={mockPlayerData()} 
                 playDirection={1} 
@@ -110,7 +119,10 @@ describe('Trash Icon', () => {
                 turnState={1}
                 cardSelected={{cardId: 1}}
                 discardState={{discard, setDiscard}}
-                setPlayerSelected={setPlayerSelected}/>
+                setPlayerSelected={setPlayerSelected}
+                setCardLifted={setCardLifted}
+                setInstructionReciever={setInstructionReciever}
+            />
         )
 
         const trashIcon = screen.getByTestId("discard");
@@ -119,5 +131,33 @@ describe('Trash Icon', () => {
         fireEvent.click(trashIcon);      
         expect(setDiscard).toBeCalledTimes(0);
         expect(setPlayerSelected).toHaveBeenCalledTimes(0);
+    });
+});
+
+describe('Deck', () => {
+    test("should render the deck correctly", () => {
+        const discard = false;
+        const setDiscard = vi.fn();
+        const setPlayerSelected = vi.fn();
+        const setCardLifted = vi.fn();
+        const setInstructionReciever = vi.fn();
+        render(            
+            <Deck player={mockPlayerData()} 
+                playDirection={1} 
+                gameId={1}
+                turnOwner={1}
+                turnState={0}
+                cardSelected={{cardId: 1}}
+                discardState={{discard, setDiscard}}
+                setPlayerSelected={setPlayerSelected}
+                setCardLifted={setCardLifted}
+                setInstructionReciever={setInstructionReciever}
+            />
+        )
+
+        const deck = screen.getByTestId("deck");
+        expect(deck).toBeDefined();
+        fireEvent.click(deck);
+        expect(setCardLifted).toHaveBeenCalledTimes(1);
     });
 });
