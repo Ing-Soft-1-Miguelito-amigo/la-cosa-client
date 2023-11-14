@@ -11,9 +11,10 @@ const Card = ({
     playerRole,
     tablePosition,
     turn,
-    cardSelected
+    cardSelected,
+    cardsSelectedStatus
 }) => {
-    const cardStyle = cardSelected.cardId === cardId ? style.selected : style.card; //set the style of the card
+    const cardStyle = cardSelected.cardId === cardId || cardsSelectedStatus.cardsSelected.includes(cardId) ? style.selected : style.card; //set the style of the card
     const turnState = turn.state; //get the state of the turn
 
     const isTurnOwner = (tablePosition === turn.owner)
@@ -26,7 +27,7 @@ const Card = ({
     },[])
 
     const selectCard = () => {
-      // console.log(kind);
+      console.log(turn)
       if (cardSelected.kind !== 4 && kind !== 5) {
         switch (turnState) {
           case 1: //playing card
@@ -55,7 +56,25 @@ const Card = ({
             else if(isRecipientExchange && (kind !== 3 || playerRole === 3)){
               setCardSelected({ cardId:cardId, code:code, kind:kind });
             }
-
+            break;
+          case 6:
+            console.log(cardId)
+            if (cardsSelectedStatus.cardsSelected.includes(cardId)) {
+              cardsSelectedStatus.cardsSelected.splice(cardsSelectedStatus.cardsSelected.indexOf(cardId), 1);              
+              cardsSelectedStatus.setCardsSelected([...cardsSelectedStatus.cardsSelected]);
+            }
+            else{
+              if (cardsSelectedStatus.playedCard.code === "cac"){
+                cardsSelectedStatus.setCardsSelected([cardId]);
+              }
+              else if(cardsSelectedStatus.playedCard.code === "olv"){
+                if(cardsSelectedStatus.cardsSelected.length === 3){
+                  cardsSelectedStatus.cardsSelected.pop();
+                }
+                cardsSelectedStatus.setCardsSelected([...cardsSelectedStatus.cardsSelected, cardId]);
+              }
+            }
+            break;
           default: //ending exchange or ending turn or lifting card
             return 0;     
         };
