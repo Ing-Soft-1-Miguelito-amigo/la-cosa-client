@@ -80,7 +80,6 @@ const Lobby = ({socket, player, gameData, gameId, playerId}) => {
                     :   (<p className={styles.text} data-testid="text-enough-players-and-im-not-host">
                             Esperando que el host<br/>
                             inicie la partida<br/>
-                            (Apúrenlo)
                         </p>)) 
                     
                 :   (<p className={styles.text} data-testid="text-not-enough-players">
