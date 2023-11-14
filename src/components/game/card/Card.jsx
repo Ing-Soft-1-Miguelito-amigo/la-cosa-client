@@ -27,7 +27,7 @@ const Card = ({
     },[])
 
     const selectCard = () => {
-      console.log(turn)
+      // console.log(turn)
       if (cardSelected.kind !== 4 && kind !== 5) {
         switch (turnState) {
           case 1: //playing card
@@ -58,7 +58,6 @@ const Card = ({
             }
             break;
           case 6:
-            console.log(cardId)
             if (cardsSelectedStatus.cardsSelected.includes(cardId)) {
               cardsSelectedStatus.cardsSelected.splice(cardsSelectedStatus.cardsSelected.indexOf(cardId), 1);              
               cardsSelectedStatus.setCardsSelected([...cardsSelectedStatus.cardsSelected]);
