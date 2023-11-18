@@ -1,75 +1,87 @@
-import { useState, useContext, useEffect } from 'react';
-import { GameContext, PlayerContext, CardSelectedContext, SetDiscardContext, SetPlayerSelectedContext } from "../Game"
+import { useState, useEffect } from 'react';
 import FetchStealCard from '../../../containers/FetchStealCard';
 import style from '../deck/deck.module.css';
 
 const Deck = ({
-    player
+    player,
+    playDirection,
+    gameId,
+    turnOwner,
+    turnState,
+    cardSelected,
+    discardState,
+    setPlayerSelected,
+    setCardLifted,
+    setInstructionReciever
 }) => {
-    
-    const game = useContext(GameContext);
-    const cardSelected = useContext(CardSelectedContext); //Discard Card
-    const setDiscard = useContext(SetDiscardContext);
-    const setPlayerSelected = useContext(SetPlayerSelectedContext);
 
-    const gameId = game.id;
-    const turn = game.turn;
-    const turnOwner = turn.owner;
-    const turnState = turn.state;
-    
+    const isTurnOwner = (turnOwner === player.table_position); //calculate if the player is the owner of the turn
+
+
     const [message, setMessage] = useState('');
     const [clicked, setClicked] = useState(false);
     
-    const styleDeck = player.table_position == turnOwner ? style.img : style.img2;
-
+    const styleDeck =  (turnState === 0 && player.table_position == turnOwner) ? style.img : style.img2;
+    const arrowClassName = playDirection ? "arrowRight" : "arrowLeft";
 
     useEffect(()=>{
         setMessage('');
-        setClicked(false)
+        setClicked(false);
+        setCardLifted(false);
     },[turnOwner])
 
 
     const liftCard = async () => {
         switch (turnState) {
             case 0: //lifting card
+                setInstructionReciever(player.name);
                 if (player.hand.length >= 5){
-                    setMessage('Tienes el maximo de cartas ya!')
+                    setMessage('Tienes el maximo de cartas ya!');
                 }
                 else if (player.table_position == turnOwner && !clicked) {
                     const data = {game_id: gameId, player_id: player.id}
                     const response = await FetchStealCard(data)
                     if(response.status === 200) {
-                        setMessage(response.detail)
+                        setMessage(response.detail);
                         setClicked(true);
+                        setCardLifted(true);
                     }
                     else {
-                        setMessage(response.detail)
+                        setMessage(response.detail);
                     }
                 }
                 else if (player.table_position == turnOwner && clicked) {
-                    setMessage('Ya robaste una carta')
+                    setMessage('Ya robaste una carta');
                 }
                 else {
-                    setMessage('No es tu turno')
+                    setMessage('No es tu turno');
                 }
                 break;
             default:
-                setMessage('No puedes robar cartas ahora')
+                return 0;
                 }
-        return 0;
     }
 
     const discardCard = async () => {
-        if (player.table_position == turnOwner && cardSelected.cardId !== undefined) {     
-            setDiscard.setDiscard(!setDiscard.discard);
+        if (isTurnOwner && cardSelected.cardId !== undefined && turnState === 1) {     
+            discardState.setDiscard(!discardState.discard);
             setPlayerSelected({});
         }
     }
 
+    const roles = ["Humano", "Infectado", "La Cosa"]
+    console.log("player role", player.role)
 
     return (
-        <div className={style.deckContainer}>
-            <div className={style.cardDeckContainer}>
+        <>
+            <div className={style.container}>
+                <div>
+                    <div className={style[arrowClassName]}>
+                        <img src="../../../src/img/arrow.png"/>
+                    </div>
+                    <p>Eres {roles[player.role - 1]}</p>
+                    {player.quarantine > 0 && (<p>Estás en cuarentena!<br/>Turnos restantes para dejar de estarlo: {player.quarantine}</p>)}
+                </div>
                 <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
                     <img src={`../../../src/img/atk.png`} className={styleDeck} />
                 </div>
@@ -77,12 +89,7 @@ const Deck = ({
                     <img src={`../../../src/img/tachoBasura.png`}  className={style.trash} />
                 </div>
             </div>
-            <div className={style.messageContainer}>
-                <span className={style.span} data-testid="message" >
-                    {message}
-                </span>
-            </div>
-        </div>
+        </>
     );
 };
 

@@ -8,9 +8,9 @@
 .labelCreation {
   display: flex;
   display: block;
-  margin-left: 23%;
+  margin-left: 20%;
   margin-top: 10%;
-  font-size: 180%;
+  font-size: 140%;
   color: #ffffff;
   height: 20%;
 }
@@ -41,4 +41,11 @@
   margin-top: 7%;
   margin-left: 17%;
   margin-right: 15%;
+}
+
+.menuButton {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 2%; 
 }

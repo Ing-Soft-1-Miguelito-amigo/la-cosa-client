@@ -1,153 +1,270 @@
-import { useState, useEffect, createContext, useRef, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect} from "react";
 import style from "./game.module.css";
-import Lobby from "./lobby/Lobby";
 import Hand from "./hand/Hand";
-import Player from "./player/Player";
 import Table from "./table/Table";
-import FetchData from "../../containers/FetchGame";
-import FetchPlayer from "../../containers/FetchPlayer";
-import Deck from './deck/Deck';
-import FunctionButton from "../functionButton/FunctionButton";
+import Deck from "./deck/Deck";
 import FetchPlayCard from "../../containers/FetchPlayCard";
 import DeadPlayer from "./deadPlayer/DeadPlayer";
-import FetchDiscard from '../../containers/FetchDiscard';
+import FetchDiscard from "../../containers/FetchDiscard";
 import FetchResponse from "../../containers/FetchResponse";
 import FetchEndTurn from "../../containers/FetchEndTurn";
-import CardWhisky from '../game/cardEffects/cardWhisky';
-import CardAnalysis from "../game/cardEffects/cardAnalysis";
-import CardSuspicion from "../game/cardEffects/cardSuspicion";
+import DeclareVictory from "../../containers/DeclareVictory";
+import ExchangeCard from "../../containers/ExchangeCard";
+import ResponseExchange from "../../containers/ResponseExchange";
+import Chat from "./chat/Chat";
+import Logs from "./logs/Logs";
+import CardEffect from "./cardEffects/CardEffect";
+import ActionButtons from "./actionButtons/ActionButtons";
+import Instruction from "./instruction/Instruction";
 
-export const GameContext = createContext({})
-export const PlayerContext = createContext({})
-export const CardSelectedContext = createContext();
-export const PlayerSelectedContext = createContext();
-export const PlayersContext = createContext();
-export const SetPlayerSelectedContext = createContext();
-export const SetCardSelectedContext = createContext();
-export const TurnOwnerContext = createContext();
-export const PlayersAliveContext = createContext([]);
-export const SetDiscardContext = createContext();
-
-
-const Game = ({socket, player, gameData, gameId, playerId}) => {
-  const [cardSelected, setCardSelected] = useState({});//{cardId, code, kind}
-  const [playerSelected, setPlayerSelected] = useState({});//{name}
+const Game = ({ socket, player, gameData, gameId, playerId }) => {
+  const [cardSelected, setCardSelected] = useState({}); //{cardId, code, kind}
+  const [playerSelected, setPlayerSelected] = useState({}); //{name}
   const [canPlayCard, setCanPlayCard] = useState(false);
   const [discard, setDiscard] = useState(false);
+  const [hasCardToDefendExchange, setHasCardToDefendExchange] = useState(false);
   const [actionText, setActionText] = useState("");
-  const [hasCardToDefend, setHasCardToDefend] = useState();
-  const [cardAnalysis, setCardAnalysis] = useState(false);
-  const [cardSuspicion, setCardSuspicion] = useState(false);
-  const [cardWhisky, setCardWhisky] = useState(false);
-  const [analysisData, setAnalysisData] = useState({});
-  const [suspicionData, setSuspicionData] = useState({});
-  const [whiskyData, setWhiskyData] = useState({});
+  const [hasCardToDefend, setHasCardToDefend] = useState(false);  
+  const [showEffect, setShowEffect] = useState({showEffect: false, data: {}, type: ""});
+  const [cardLifted, setCardLifted] = useState(false);
+  const [instructionReciever, setInstructionReciever] = useState("")
+  const [doorSelected, setDoorSelected] = useState(0);
 
-  socket.on("discard",  (data) => console.log(JSON.stringify(data)));
-  socket.on("action",   (data) => console.log(JSON.stringify(data)));
-  socket.on("defense",  (data) => console.log(JSON.stringify(data)));
-  socket.on("analisis", (data) => {setCardAnalysis(true); setAnalysisData(data)});
-  socket.on("whisky",   (data) => {setCardWhisky(true); setWhiskyData(data)});
-  socket.on("sospecha", (data) => {setCardSuspicion(true); setSuspicionData(data)});
-
+  socket.on("analisis", (data) => setShowEffect({showEffect: true, data, type: "analisis"}));
+  socket.on("whisky", (data) => setShowEffect({showEffect: true, data, type: "whisky"}));
+  socket.on("sospecha", (data) => setShowEffect({showEffect: true, data, type: "sospecha"}));
+  socket.on("turn_finished", (data) => {setInstructionReciever(data.new_owner_name)});
+  socket.on("quarantine", (data) => setShowEffect({showEffect: true, data, type: "quarantine"}));
+  socket.on("ups", (data) => setShowEffect({showEffect: true, data, type: "ups"}));
+  socket.on("aterrador", (data) => setShowEffect({showEffect: true, data, type: "aterrador"}));
 
   const players = gameData.players;
-  useEffect(() => {
-      if ((gameData.turn.state === 5 && canPlayCard.action === 2) || canPlayCard.action === 1) {
-        console.log("gameData antes de fetchear endTurn", gameData)
-        FetchEndTurn({
-          gameId,
-        })
-      };
-  },[gameData.turn.state])
+  const turn = gameData.turn;
+  const turnState = turn.state; 
 
   useEffect(() => {
-    const action = discard ? 1 : 2;
-    if (discard && cardSelected !== undefined) {
-      setActionText("Descartar carta");
-    } else {
-      setActionText("Jugar carta");
+    if (turnState === 5 && player.table_position === turn.owner)  {
+      FetchEndTurn({
+        gameId
+      });
     }
-    switch (cardSelected.code) {
-      case "whk":
-      case "vte":
-        setCanPlayCard({
-          canPlayCard: (playerSelected.name === undefined || discard) && cardSelected.cardId !== undefined,
-          action: action
-        });
+  }, [turn]);
+
+  useEffect(() => {
+    switch(turnState) {
+      // making decision
+      case 1:
+        const action = discard ? "discard" : "playCard";
+        if (discard && cardSelected !== undefined) {
+          setActionText("Descartar carta");
+        } else {
+          setActionText("Jugar carta");
+        }
+        switch (cardSelected.code) {
+          case "ups":
+          case "whk":
+          case "vte":
+          case "det":
+            setCanPlayCard({
+              canPlayCard: (playerSelected.name === undefined || discard) &&
+                            cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+
+          case "hac": 
+            setCanPlayCard({
+              canPlayCard: (( playerSelected.name !== undefined || discard ) ||  (doorSelected !== 0 ) )&&
+                            cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+          default:
+            setCanPlayCard({
+              canPlayCard:
+                (playerSelected.name !== undefined || discard) &&
+                cardSelected.cardId !== undefined,
+              action: action,
+            });
+            break;
+        }
         break;
-      default:
+      
+      // exchange beginning
+      case 3:
+        setInstructionReciever(players.filter((player) => player.table_position === turn.owner)[0].name);
         setCanPlayCard({
-          canPlayCard: (playerSelected.name !== undefined || discard) && cardSelected.cardId !== undefined,
-          action: action
+          canExchangeCard: (cardSelected.cardId !== undefined)
         });
+        setActionText("Intercambiar carta");
+        break;
+      case 4:
+        setInstructionReciever(turn.destination_player_exchange);
+        setCanPlayCard({
+          canExchangeCard: (cardSelected.cardId !== undefined)
+        });
+
+        setHasCardToDefendExchange(cardSelected.code === "fal" || 
+                                   cardSelected.code === "ate" ||
+                                   cardSelected.code === "ngs" );
+
+        
+        setActionText("Intercambiar carta");
+        break;
+
+      default: 
         break;
     }
-  }, [playerSelected, discard, cardSelected, gameData.turn]);
+  }, [playerSelected, discard, cardSelected, turn, doorSelected]);
 
   const playCard = () => {
-    if (canPlayCard.action === 1) {
+    if (canPlayCard.action === "discard") { //check if the action is discard
       FetchDiscard({
         gameId: gameId,
         playerId: playerId,
-        cardId: cardSelected.cardId
+        cardId: cardSelected.cardId,
       });
-    } else if (canPlayCard.action === 2) {
+    } else if (canPlayCard.action === "playCard") {//check if the action is play card
       FetchPlayCard({
         gameId: gameId,
         playerId: playerId,
         cardId: cardSelected.cardId,
-        destinationName: playerSelected.name === undefined ? player.name : playerSelected.name
+        destinationName:
+          playerSelected.name === undefined ? player.name : playerSelected.name,
+        obstacleType: (cardSelected.code === "hac" ? (doorSelected !== 0 ? "ptr" : "cua"): null),
+        obstaclePosition: doorSelected !== 0 ? doorSelected : null,
       });
     }
     setPlayerSelected({});
     setCardSelected({});
     setDiscard(false);
+    setDoorSelected(0);
   };
-  
-  const defendCard = (
-    cardToDefend
-    ) => {
-      FetchResponse({
+
+  const defendCard = (cardToDefend) => {
+    if (cardToDefend !== null) {
+      setHasCardToDefend(true);
+    } else {
+      defend(false);
+    }
+  };
+
+  const defend = (defend) => {
+    FetchResponse({
+      gameId: gameId,
+      playerId: playerId,
+      responseCardId: defend ? cardSelected.cardId : null,
+    });
+    setHasCardToDefend(false);
+    setCardSelected({});
+  };
+
+  const exchangeCard = (defend) => {
+    if(turnState === 3){
+      ExchangeCard({
         gameId: gameId,
         playerId: playerId,
-        responseCardId: cardToDefend
-      });
+        cardId: cardSelected.cardId
+      })
+    } else if (turnState === 4){
+      ResponseExchange({
+        gameId: gameId,
+        playerId: playerId,
+        cardId:        defend ? null : cardSelected.cardId,
+        defenseCardId: defend ? cardSelected.cardId : null 
+      })
     }
+    setCardSelected({});
+  }
 
   return (
-        <div className={"game"}>
-          <span className={style.title} data-testid="La Cosa">La Cosa</span>
-          <span className={style.span}>Jugando en {gameData.name}</span>
-          <GameContext.Provider value={gameData}>
-              <CardSelectedContext.Provider value={cardSelected}>
-                  <SetPlayerSelectedContext.Provider value={setPlayerSelected}>
-                    <SetDiscardContext.Provider value={{setDiscard: setDiscard, discard:discard}}>
-                      <PlayersAliveContext.Provider value={players.filter(player => player.alive === true)}>
-                        <PlayerSelectedContext.Provider value={playerSelected.name}>
-                          <Table players={players} player={player}/>
-                        </PlayerSelectedContext.Provider>
-                      </PlayersAliveContext.Provider>
-                      {canPlayCard.canPlayCard && <FunctionButton text={actionText} onClick={playCard} />}
-                      {hasCardToDefend && <FunctionButton text={"Defenderme"} onClick={() => defendCard(true)}/>}
-                      {hasCardToDefend && <FunctionButton text={"No defenderme"} onClick={() => defendCard(false)} />}
-                      {cardAnalysis && <CardAnalysis data={analysisData} setCardAnalysis={setCardAnalysis}/>}
-                      {cardSuspicion && <CardSuspicion data={suspicionData} setCardSuspicion={setCardSuspicion}/>}
-                      {cardWhisky && <CardWhisky data={whiskyData} setCardWhisky={setCardWhisky}/>}
-                      {!(cardAnalysis || cardSuspicion ||  cardWhisky) && <Deck player={player}/>}
-                    </SetDiscardContext.Provider>
-                  </SetPlayerSelectedContext.Provider>
-                  
-                  <div>
-                    <SetCardSelectedContext.Provider value={setCardSelected}>
-                      {player.alive ? <Hand gameId={gameId} playerId={playerId} onSetHasCardToDefend={setHasCardToDefend}
-                       player={player} gameData={gameData} setCardSelected={setCardSelected} defendCard={defendCard}/>: <DeadPlayer socket={socket}/>}
-                    </SetCardSelectedContext.Provider>
-                  </div>
-              </CardSelectedContext.Provider>
-          </GameContext.Provider>  
-        </div>) 
+    <>
+      <div className={style.general}>
+          <div className={style.topbox} >
+              <div className={style.instruction}>
+                {player.name === instructionReciever ? (
+                  <Instruction  state={turnState} 
+                                cardLifted={cardLifted}
+                                cardSelected={cardSelected}
+                  />
+                ) : (
+                  <span>Espera tu turno para ser parte de la acción!</span>
+                )
+                }
+              </div>        
+              <div className={style.table}>
+                <Table  players={players} 
+                        player={player}
+                        playerSelectedState={{name: playerSelected.name, setPlayerSelected}}
+                        cardSelected={cardSelected}
+                        discardState={{discard, setDiscard}}
+                        turn={gameData.turn}
+                        obstacles={gameData.obstacles}
+                        doorSelected={doorSelected}
+                        setDoorSelected={setDoorSelected}
+                        />
+              </div>        
+          </div>
+          <div className={style.bottombox} >
+              <div className={style.buttonsLogsContainer} >
+                  <div className={style.buttons}>
+                    <ActionButtons  DeclareVictory={DeclareVictory} 
+                                    defend={defend}
+                                    playCard={playCard}
+                                    exchangeCard={exchangeCard}
+                                    player={player}
+                                    playerId={playerId}
+                                    gameId={gameId}
+                                    hasCardToDefend={hasCardToDefend}
+                                    canPlayCard={canPlayCard}
+                                    hasCardToDefendExchange={hasCardToDefendExchange}
+                                    actionText={actionText}
+                    />
+                  </div>        
+                  <div className={style.logs}>
+                    <Logs socket={socket} gameId={gameId} />
+                  </div>        
+              </div>
+              <div className={style.deckHandContainer} >
+                  <div className={style.deck}>
+                    {showEffect.showEffect ? (
+                      <CardEffect showEffect={showEffect} setShowEffect={setShowEffect}/>
+                    ) : (
+                      <Deck player={player} 
+                            playDirection={gameData.play_direction} 
+                            gameId={gameId}
+                            turnOwner={turn.owner}
+                            turnState={turnState}
+                            cardSelected={cardSelected}
+                            discardState={{discard, setDiscard}}
+                            setPlayerSelected={setPlayerSelected}
+                            setCardLifted={setCardLifted}
+                            setInstructionReciever={setInstructionReciever}
+                      />
+                    )}
+                  </div>        
+                  <div className={style.hand}>
+                    {player.alive ? (
+                      <Hand
+                        player={player}
+                        turn={turn}
+                        setCardSelected={setCardSelected}
+                        defendCard={defendCard}
+                        cardSelected={cardSelected}
+                      />
+                    ) : (
+                      <DeadPlayer socket={socket} />
+                    )}
+                  </div>        
+              </div>
+              <div className={style.chatContainer}>
+                <Chat socket={socket} gameId={gameId} playerName={player.name} />
+              </div>
+          </div>
+
+      </div>        
+    </>
+  )
 };
 
 export default Game;

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+
 .body {
     display: flex;
     display:block;
@@ -26,15 +28,15 @@
 }
 
 .text{
-    font-family: 'Creepster', cursive;
+    font-family: 'Montserrat', sans-serif;
     color: rgb(255, 255, 255);
-    font-size: 10vh;
+    font-size: 4vh;
     text-align: center;
-    margin-top: 16%; 
+    margin-top: 10%; 
 }
 
 .error{
-    font-family: 'Creepster', cursive;
+    font-family: 'Montserrat', sans-serif;
     color: rgb(255, 255, 255);
     font-size: 3vh;
     text-align: center;

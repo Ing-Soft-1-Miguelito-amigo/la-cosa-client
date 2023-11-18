@@ -1,18 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+
 .body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    font-family: 'Creepster', cursive;
+    font-family: 'Montserrat', sans-serif;
 
 }
 
 .labelJoin{
     display: flex;
     display: block;
-    margin-left: 23%;
+    margin-left: 20%;
     margin-top: 10%;    
-    font-size: 180%;
+    font-size: 140%;
     color: #ffffff;
     height: 20%;
 }
@@ -43,4 +45,11 @@
     margin-top: 7%;
     margin-left: 20%;
     margin-right: 20%;
+}
+
+.menuButton {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 2%; 
 }
