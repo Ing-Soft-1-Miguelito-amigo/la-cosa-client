@@ -57,7 +57,9 @@ const Player = ({
     // obtain the player alives next to the turnOwner
     turnOwnerIndex = playersAlive.findIndex(player => player.table_position === turnOwner);  
     const player_on_right = playersAlive[(turnOwnerIndex + 1) % playersAlive.length];
-    const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];    
+    const player_on_left = playersAlive[(((turnOwnerIndex - 1) + playersAlive.length) % playersAlive.length)];  
+    const player_three_on_right = playersAlive[(turnOwnerIndex + 3) % playersAlive.length];
+    const player_three_on_left = playersAlive[(((turnOwnerIndex - 3) + playersAlive.length) % playersAlive.length)];  
 
     const pTS = () => {    
       switch (cardSelected.code){
@@ -65,6 +67,8 @@ const Player = ({
         case "sos": //sospecha
         case "ana": //análisis
         case "ptr": //puerta atrancada
+        case "qen": //Que quede entre nosotros
+        case "cua": //cuarentena
           return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right) 
         case "lla": //lanzallamas
           if (player.quarantine == 0){
@@ -73,10 +77,10 @@ const Player = ({
           else {
             return [];
           }
-        case "cua": //cuarentena
-         return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right)
-        case "sed": //seducción
 
+        case "sed": //seducción
+        case "sda": //sal de aquí
+        case "npa": //¿no podemos ser amigos?
           const allAlivePlayers = playersAlive.filter(player => player.table_position != turnOwner && player.quarantine == 0);
 
           //check if some of the adyacent players has locked door
@@ -94,7 +98,6 @@ const Player = ({
           else 
             return allAlivePlayers
 
-
         case "cdl": //cambio de lugar           
           if (player.quarantine == 0){
             // if (player_on_right.quarantine == 0 && player_on_left.quarantine == 0)
@@ -103,7 +106,6 @@ const Player = ({
             //   return [player_on_left];
             // else if (player_on_left.quarantine !== 0)
             //   return [player_on_right]
-
 
               return getAdyacentPlayersWithNoLockedDoor(player_on_left, player_on_right).filter(player => player.quarantine == 0)
           }
@@ -128,7 +130,10 @@ const Player = ({
           console.log("adyacentPlayers", adyacentPlayers);
           return adyacentPlayers;
 
-        default: // defense cards, wiskey and vigila tus espaldas
+        case "und": //uno, dos ...
+          return [player_three_on_left, player_three_on_right].filter(player => player.quarantine == 0);
+
+        default: // defense cards, wiskey, vigila tus espaldas and other panic cards
           return [];
       }
     };
@@ -161,9 +166,13 @@ const Player = ({
         case "cdl": //cambio de lugar
         case "mvc": //mas vale que corras
         case "sed": //seducción
+        case "sda": //sal de aquí 
         case "cua": //cuarentena
         case "ptr": //puerta atrancada 
         case "hac": //hacha
+        case "qen": //queda entre nosotros
+        case "npa": //¿no podemos ser amigos?
+        case "und": //uno, dos ...
           if (playersToSelect.filter(player => player.name === name).length !== 0){
             playerSelectedState.setPlayerSelected({ name: name });
             setDiscard(false);

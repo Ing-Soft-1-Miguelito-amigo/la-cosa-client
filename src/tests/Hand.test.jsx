@@ -67,7 +67,9 @@ const cardSelected = (
     }
 );
 
-
+const cardsSelected = [1,2,3];
+const setCardsSelected = vi.fn();
+const playedCard = {};
 
 describe('PlayerHand', () => {
 
@@ -83,6 +85,7 @@ describe('PlayerHand', () => {
                 setCardSelected={setCardSelected}
                 defendCard={defendCard}
                 cardSelected={cardSelected()}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
 
@@ -100,6 +103,7 @@ describe('PlayerHand', () => {
                 setCardSelected={setCardSelected}
                 defendCard={defendCard}
                 cardSelected={cardSelected()}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
             
@@ -121,6 +125,7 @@ describe('PlayerHand', () => {
                 setCardSelected={setCardSelected}
                 defendCard={defendCard}
                 cardSelected={cardSelected()}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
 
@@ -142,6 +147,7 @@ describe('PlayerHand', () => {
                 setCardSelected={setCardSelected}
                 defendCard={defendCard}
                 cardSelected={cardSelected()}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
 
@@ -164,6 +170,7 @@ describe('PlayerHand', () => {
                 setCardSelected={setCardSelected}
                 defendCard={defendCard}
                 cardSelected={cardSelected()}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
 
@@ -185,6 +192,7 @@ describe('PlayerHand', () => {
                 setCardSelected={setCardSelected}
                 defendCard={defendCard}
                 cardSelected={cardSelected()}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
 
@@ -207,6 +215,7 @@ describe('PlayerHand', () => {
                 setCardSelected={setCardSelected}
                 defendCard={defendCard}
                 cardSelected={cardSelected()}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
 

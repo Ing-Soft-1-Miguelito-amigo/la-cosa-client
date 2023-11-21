@@ -63,14 +63,13 @@ const Deck = ({
     }
 
     const discardCard = async () => {
-        if (isTurnOwner && cardSelected.cardId !== undefined && turnState === 1) {     
+        if (isTurnOwner && cardSelected.cardId !== undefined && turnState === 1 && cardSelected.kind !== 4) {    
             discardState.setDiscard(!discardState.discard);
             setPlayerSelected({});
         }
     }
 
-    const roles = ["Humano", "Infectado", "La Cosa"]
-    console.log("player role", player.role)
+    const roles = ["Humano", "Infectado", "La Cosa!"]
 
     return (
         <>
@@ -82,7 +81,7 @@ const Deck = ({
                     <p>Eres {roles[player.role - 1]}</p>
                     {player.quarantine > 0 && (<p>Estás en cuarentena!<br/>Turnos restantes para dejar de estarlo: {player.quarantine}</p>)}
                 </div>
-                <div className={style.cardDeck} onClick={liftCard} data-testid="card-deck">
+                <div className={style.cardDeck} onClick={liftCard} data-testid="deck">
                     <img src={`../../../src/img/atk.png`} className={styleDeck} />
                 </div>
                 <div className={style.cardDeck} onClick={discardCard} data-testid="discard">

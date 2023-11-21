@@ -44,28 +44,38 @@ describe('Component Card', () => {
     test('should render a card', async () => {
         
         const setCardSelected= vi.fn();
+        const cardsSelected = [];
+        const setCardsSelected = vi.fn();
+        const playedCard = {};
         render(
             <Card
                 cardId = {1}
                 code = "lla"
                 number_in_card = {1}
-                kind = {2}
+                kind = {1}
                 setCardSelected={setCardSelected}
                 playerName={"ale"}
                 playerRole={1}
                 tablePosition={1}
-                turn={turn(1, null, null)}
+                turn={turn(0, null, null)}
                 cardSelected={{}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         );
         const card = screen.getByTestId("card-1");
         expect(card).toBeDefined();    
+        expect(setCardSelected).toHaveBeenCalledTimes(0);
+        fireEvent.click(card);
+        expect(setCardSelected).toHaveBeenCalledTimes(0);
+
     });
 
     test('should call setCardSelected when click on card on turn state 1', async () => {
-        
         const turn_1 = turn(1, null, null, 1);//state 1
         const setCardSelected= vi.fn();
+        const cardsSelected = [];
+        const setCardsSelected = vi.fn();
+        const playedCard = {};
         render(<>
             <Card
                 cardId = {1}
@@ -78,6 +88,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_1}
                 cardSelected={{}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
             <Card
                 cardId = {2}
@@ -90,6 +101,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_1}
                 cardSelected={{}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
             <Card
                 cardId = {3}
@@ -102,6 +114,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_1}
                 cardSelected={{cardId:3}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         </>);
         
@@ -124,6 +137,9 @@ describe('Component Card', () => {
         
         const turn_3 = turn(3, null, null, 1);//state 1
         const setCardSelected= vi.fn();
+        const cardsSelected = [];
+        const setCardsSelected = vi.fn();
+        const playedCard = {};
         render(<>
             <Card
                 cardId = {1}
@@ -136,6 +152,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_3}
                 cardSelected={{}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
             <Card
                 cardId = {2}
@@ -148,6 +165,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_3}
                 cardSelected={{}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
             <Card
                 cardId = {3}
@@ -160,6 +178,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_3}
                 cardSelected={{cardId:3}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         </>);
         
@@ -182,6 +201,9 @@ describe('Component Card', () => {
         
         const turn_4 = turn(4, null, "ale", 1);//state 1
         const setCardSelected= vi.fn();
+        const cardsSelected = [];
+        const setCardsSelected = vi.fn();
+        const playedCard = {};
         render(<>
             <Card
                 cardId = {1}
@@ -194,6 +216,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_4}
                 cardSelected={{}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
             <Card
                 cardId = {2}
@@ -206,6 +229,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_4}
                 cardSelected={{}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
             <Card
                 cardId = {3}
@@ -218,6 +242,7 @@ describe('Component Card', () => {
                 tablePosition={1}
                 turn={turn_4}
                 cardSelected={{cardId:3}}
+                cardsSelectedStatus={{cardsSelected, setCardsSelected, playedCard}}
             />
         </>);
         
@@ -235,4 +260,120 @@ describe('Component Card', () => {
         expect(setCardSelected).toHaveBeenCalledTimes(4);
         expect(setCardSelected).toHaveBeenCalledWith({});
     });
+
+    test('should call setCardsSelected when click on cards on turn state 6 when the played card is cac', async () => {
+        
+        const turn_6 = turn(6, null, null, 1);//state 1
+        const setCardSelected= vi.fn();
+
+        const cardsSelectedStatus= (
+            code1 = "cac"
+        ) => ({
+            cardsSelected : [1], 
+            setCardsSelected: vi.fn(), 
+            playedCard : {code: code1}
+        });
+
+        const cardsSelectedStat = cardsSelectedStatus();
+        render(<>
+            <Card
+                cardId = {1}
+                code = "lla"
+                number_in_card = {2}
+                kind = {1}
+                setCardSelected={setCardSelected}
+                playerName={"ale"}
+                playerRole={1}
+                tablePosition={1}
+                turn={turn_6}
+                cardSelected={{}}
+                cardsSelectedStatus={cardsSelectedStat}
+            />
+            <Card
+                cardId = {2}
+                code = "cdl"
+                number_in_card = {3}
+                kind = {3}
+                setCardSelected={setCardSelected}
+                playerName={"ale"}
+                playerRole={3}
+                tablePosition={1}
+                turn={turn_6}
+                cardSelected={{}}
+                cardsSelectedStatus={cardsSelectedStat}
+            />
+        </>);
+        
+        const card1 = screen.getByTestId("card-1"); 
+        const card2 = screen.getByTestId("card-2");            
+        fireEvent.click(card1);
+
+        expect(cardsSelectedStat.setCardsSelected).toHaveBeenCalledTimes(1);
+        expect(cardsSelectedStat.setCardsSelected).toHaveBeenCalledWith([]);
+        fireEvent.click(card2);
+        expect(cardsSelectedStat.setCardsSelected).toHaveBeenCalledTimes(2);
+        expect(cardsSelectedStat.setCardsSelected).toHaveBeenCalledWith([2]);
+    });
+
+    test('should call setCardsSelected when click on cards on turn state 6 when the played card is olv', async () => {
+        
+        const turn_6 = turn(6, null, null, 1);//state 1
+        const setCardSelected= vi.fn();
+
+        const cardsSelectedStatus = {
+            cardsSelected : [3,4], 
+            setCardsSelected: vi.fn(), 
+            playedCard : {code: "olv"}
+        };
+
+        const cardsSelectedStatus2 = {
+            cardsSelected : [11,10,4], 
+            setCardsSelected: vi.fn(), 
+            playedCard : {code: "olv"}
+        };
+
+
+
+        render(<>
+            <Card
+                cardId = {1}
+                code = "lla"
+                number_in_card = {2}
+                kind = {4}
+                setCardSelected={setCardSelected}
+                playerName={"ale"}
+                playerRole={1}
+                tablePosition={1}
+                turn={turn_6}
+                cardSelected={{}}
+                cardsSelectedStatus={cardsSelectedStatus}
+            />
+            <Card
+                cardId = {2}
+                code = "cdl"
+                number_in_card = {3}
+                kind = {3}
+                setCardSelected={setCardSelected}
+                playerName={"ale"}
+                playerRole={3}
+                tablePosition={1}
+                turn={turn_6}
+                cardSelected={{}}
+                cardsSelectedStatus={cardsSelectedStatus2}
+            />
+        </>);
+        
+        const card1 = screen.getByTestId("card-1"); 
+        const card2 = screen.getByTestId("card-2");            
+        
+        fireEvent.click(card1);
+        expect(setCardSelected).toHaveBeenCalledTimes(1);
+        expect(cardsSelectedStatus.setCardsSelected).toHaveBeenCalledTimes(1);
+        expect(cardsSelectedStatus.setCardsSelected).toHaveBeenCalledWith([3,4,1]);
+        fireEvent.click(card2);
+        console.log(cardsSelectedStatus2)
+        expect(cardsSelectedStatus2.setCardsSelected).toHaveBeenCalledTimes(1);
+        expect(cardsSelectedStatus2.setCardsSelected).toHaveBeenCalledWith([11,10,2]);
+    });
+
 });

@@ -7,7 +7,8 @@ const Hand = ({
   turn, 
   setCardSelected, 
   defendCard,
-  cardSelected
+  cardSelected,
+  cardsSelectedStatus
 }) => {
   const [hand, setHand] = useState([]);
   useEffect(() => {
@@ -61,6 +62,7 @@ const Hand = ({
             tablePosition={player.table_position}
             turn={turn}
             cardSelected={cardSelected}
+            cardsSelectedStatus={cardsSelectedStatus}
             />
         ))}
     </div>
